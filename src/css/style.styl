@@ -1,0 +1,75 @@
+@font-face
+  font-family HFNSS
+  src url("https://cdn.rawgit.com/Chadtech-Online-1/Chadtech-Online-1.github.io/master/HFNSS.ttf")
+
+
+standardSize    = 2em
+biggerSize      = 4em
+wayBig          = 8em
+cellWidth       = 50px
+cellHeight      = 19px
+
+pointColor      = #b0a69a
+
+importantText   = #b39f4b
+importanterText = #e3d34b
+
+ignorable       = #807872
+veryIgnorable   = #54574d
+
+background      = #030907
+offBackground   = #060c0a
+actualBlack     = #000000
+
+critical        = #f21d23
+good            = #366317
+prettyBlue      = #175cfe
+
+::-webkit-input-placeholder 
+   color veryIgnorable
+
+
+standardBorder()
+  border-style      solid
+  border-width      2px
+  border-color      pointColor
+  outline           none
+
+body
+  background background
+  padding    0
+  margin     0
+  
+#number-1-canvas
+  background red
+  image-rendering pixelated
+  
+
+  
+    
+
+.point
+  font-family  HFNSS
+  color        pointColor
+  font-size    standardSize
+  margin       0 
+  &.clickable
+    cursor pointer
+    color importantText
+    &:hover
+      color importanterText
+    
+  &.important
+    color importantText
+  &.urgenter
+    color importanterText
+  &.critical
+    color critical
+    
+.root
+  width  100%
+  height 100%
+  padding 11px
+
+  
+  
