@@ -1,3 +1,6 @@
-./public/app.js
-./public/elm.js
-./public/style.css
+elm-stuff
+node_modules
+
+public/app.js
+public/elm.js
+public/style.css
