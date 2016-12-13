@@ -8,22 +8,22 @@ import Debug            exposing (log)
 
 main =
   App.program
-  { init          = (Model "Elm 0.17 Gulp Coffeescript Stylus Lodash Browserify Boilerplate!", Cmd.none) 
-  , view          = view
+  { init          = (0, Cmd.none) 
+  , view          = always view
   , update        = update
   , subscriptions = subscriptions
   }
 
-subscriptions : Model -> Sub Msg
+subscriptions : Int -> Sub Msg
 subscriptions model =
   Sub.none
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Int -> (Int, Cmd Msg)
 update message model =
   case message of 
 
     Draw ->
-      (model, draw ())
+      (0, draw ())
 
 
 

@@ -7,8 +7,8 @@ import Types            exposing (..)
 import Components       exposing (..)
 
 
-view : Model -> Html Msg
-view m = 
+view : Html Msg
+view = 
   div [ class "root" ]
   [ ignorablePoint "Dank"
   , break
