@@ -1,7 +1,7 @@
 module Types exposing (..)
 
 type Msg 
-  = Draw
+  = MessItUp
 
 type alias Model =
-  { field  : String }
+  { twoDivs : Bool }

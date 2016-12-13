@@ -8,22 +8,22 @@ import Debug            exposing (log)
 
 main =
   App.program
-  { init          = (0, Cmd.none) 
-  , view          = always view
+  { init          = (Model False, Cmd.none) 
+  , view          = view
   , update        = update
   , subscriptions = subscriptions
   }
 
-subscriptions : Int -> Sub Msg
+subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
 
-update : Msg -> Int -> (Int, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd Msg)
 update message model =
   case message of 
 
-    Draw ->
-      (0, draw ())
+    MessItUp ->
+      (Model (not model.twoDivs), Cmd.none)
 
 
 

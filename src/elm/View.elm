@@ -5,14 +5,22 @@ import Html.Attributes  exposing (..)
 import Html.Events      exposing (..)
 import Types            exposing (..)
 import Components       exposing (..)
+import Canvas
 
 
-view : Html Msg
-view = 
+view : Model -> Html Msg
+view {twoDivs} =
+  let
+    canvas' = 
+      if twoDivs then
+        div [] [ Canvas.toHtml [ id "neat-canvas" ] ]
+      else
+        Canvas.toHtml []
+  in
   div [ class "root" ]
-  [ ignorablePoint "Dank"
+  [ ignorablePoint "Elm Canvas!"
   , break
-  , clickablePoint "Draw" Draw
+  , clickablePoint "Mess up the html tree" MessItUp
   , break
-  , canvas [ id "number-1-canvas" ] []
+  , canvas'
   ]

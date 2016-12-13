@@ -26,19 +26,3 @@ clickablePoint str msg =
 break : Html Msg
 break = br [] []
 
-
-
---onKeyDown : (Int -> Msg) -> Attribute Msg
---onKeyDown msg =
---  on "keydown" <|Json.map msg keyCode
-
---inputField : String -> Html Msg
---inputField str =
---  input
---  [ class        "input-field"
---  , value        str
---  , onInput      UpdateField
---  , spellcheck   False
---  , onKeyDown    CheckForEnter
---  ]
---  []
