@@ -4,7 +4,7 @@ import Html.App         as App
 import Types            exposing (..)
 import Ports            exposing (..)
 import View             exposing (view)
-import Debug exposing (log)
+import Debug            exposing (log)
 
 main =
   App.program
@@ -23,7 +23,7 @@ update message model =
   case message of 
 
     Draw ->
-      (model, draw "get draw!")
+      (model, draw ())
 
 
 
