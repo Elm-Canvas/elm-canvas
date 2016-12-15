@@ -5,15 +5,18 @@ var _user$project$Native_Canvas = function () {
   }
 
   function drawCanvas(domNode, data) {
-    return domNode;
+    return drawCanvasData(domNode, data.model);
   }
 
-  function listToJSArray(list, array) {
-    if (list.ctor == "::") {
-      array.push(list._0);
-      return listToJSArray(list._1, array);
-    } 
-    return array;
+  function listToJSArray(list) {
+    var output = [];
+
+    while (list.ctor == "::") {
+      output.push(list._0);
+      list = list._1;
+    }
+
+    return output;
   }
 
   function canvas(factList, width, height, data) {
@@ -24,13 +27,9 @@ var _user$project$Native_Canvas = function () {
       data: listToJSArray(data, [])
     };
 
-    // console.log('A', listToJSArray(data,[]));
-
     return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation);
   }
 
-  // function toHtml(functionCalls, factList, renderables) {
-  // function toHtml(factList, renderables) {
   function toHtml(factList, width, height) {
 
     var data = [];
@@ -49,38 +48,34 @@ var _user$project$Native_Canvas = function () {
 
   var implementation = {
     render: renderCanvas,
-    diff: diff
+    diff: diff,
   };
 
-  function renderCanvas(model) {
-
-    LOG('Render canvas');
-    var canvas = document.createElement('canvas');
+  function drawCanvasData(canvas, model) {
+    // canvas = document.createElement('canvas');
 
     canvas.width        = model.width;
     canvas.height       = model.height;
     canvas.style.width  = model.width;
     canvas.style.height = model.height
 
-    // console.log(model)
-
     var ctx = canvas.getContext('2d');
     var imageData = ctx.getImageData(0, 0, model.width, model.height);
 
     for (var i = 0; i < imageData.data.length; i++) {
-      console.log(model.data[i]);
       imageData.data[i] = model.data[i];
     }
-    // console.log(imageData);
 
     ctx.putImageData(imageData, 0, 0);
 
-    // ctx.beginPath();
-    // ctx.rect(0, 0, model.width, model.height);
-    // ctx.fillStyle = "red";
-    // ctx.fill();
-
     return canvas;
+  }
+
+  function renderCanvas(model) {
+
+    LOG('Render canvas');
+
+    return drawCanvasData(document.createElement('canvas'), model);
   }
 
 

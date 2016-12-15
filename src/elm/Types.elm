@@ -1,7 +1,21 @@
 module Types exposing (..)
 
+import Array exposing (Array)
+
 type Msg 
-  = MessItUp
+  = Switch
+  | AddCanvas
+  | UpdateCanvas Int Canvas
+  | IncreaseWidth Int
+  | DecreaseWidth Int
+  | IncreaseHeight Int
+  | DecreaseHeight Int
 
 type alias Model =
-  { twoDivs : Bool }
+  { canvases : Array Canvas }
+
+type alias Canvas =
+  { width  : Int
+  , height : Int
+  , data   : List Int
+  }

@@ -17,11 +17,13 @@ ignorablePoint str =
 
 clickablePoint : String -> Msg -> Html Msg
 clickablePoint str msg =
-  p 
-  [ class "point clickable" 
+  input 
+  [ class "button" 
   , onClick msg
+  , type' "submit"
+  , value str
   ] 
-  [ text str]
+  []
 
 break : Html Msg
 break = br [] []

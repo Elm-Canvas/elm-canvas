@@ -5,27 +5,48 @@ import Html.Attributes  exposing (..)
 import Html.Events      exposing (..)
 import Types            exposing (..)
 import Components       exposing (..)
-import List             exposing (repeat)
+import List             exposing (repeat, map)
+import Array            exposing (Array, toIndexedList)
 import Canvas
 
 
 view : Model -> Html Msg
-view {twoDivs} =
-  let
-    canvas' = 
-      let
-        data =  
-          repeat (256 * 4) 159
-      in
-      if twoDivs then
-        div [] [ Canvas.canvas [ id "neat-canvas" ] 16 16 data ]
-      else
-        Canvas.canvas [] 16 16 data
-  in
-  div [ class "root" ]
-  [ ignorablePoint "Elm Canvas!"
-  , break
-  , clickablePoint "Mess up the html tree" MessItUp
-  , break
-  , canvas'
+view model =
+  div
+  [ class "root" ]
+  [ ignorablePoint "Elm Canvas!" 
+  , clickablePoint "Add Canvas" AddCanvas
+  , div 
+    []
+    (canvases model.canvases)
   ]
+
+
+canvases : Array Canvas -> List (Html Msg)
+canvases canvases' =
+  canvases'
+  |>toIndexedList
+  |>map canvasView
+
+
+canvasView : (Int, Canvas) -> Html Msg
+canvasView (index, cv) =
+  let {width, height, data} = cv in
+  div 
+  [ class "canvas-container"
+  , style [ ("width", (toString width)) ] 
+  ]
+  [ clickablePoint 
+      "Increase Width" 
+      (IncreaseWidth index)
+  , clickablePoint
+      "Decrease WIdth"
+      (DecreaseWidth index)
+  , Canvas.canvas 
+      [ id (toString index) ] 
+      width
+      height 
+      data
+  ]
+
+
