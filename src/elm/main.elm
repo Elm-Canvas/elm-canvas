@@ -1,6 +1,5 @@
 import Html             exposing (p, text)
 import Html.Attributes  exposing (class)
-import Html.App         as App
 import List             exposing (repeat)
 import Array            exposing (Array, fromList, push, get, set)
 import Types            exposing (..)
@@ -26,7 +25,7 @@ initModel =
   }
 
 main =
-  App.program
+  Html.program
   { init          = (initModel, Cmd.none) 
   , view          = view
   , update        = update
