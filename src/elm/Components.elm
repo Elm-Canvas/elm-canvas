@@ -28,3 +28,6 @@ clickablePoint str msg =
 break : Html Msg
 break = br [] []
 
+optionRow : List (Html Msg) -> Html Msg
+optionRow =
+  div [ class "option-row" ]

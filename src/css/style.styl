@@ -37,12 +37,16 @@ standardBorder()
 
 canvas
   image-rendering pixelated
+  margin 2px
 
 body
   background background
   padding    0
   margin     0
   
+.option-row
+  display table
+
 .canvas-container
   float left
   margin 5px
@@ -55,8 +59,8 @@ body
   cursor       pointer
   color        importantText
   outline      none
-  border       none
-  // tex 
+  border       none 
+  float   left
   &:hover
     color      importanterText
     
@@ -64,7 +68,8 @@ body
   font-family  HFNSS
   color        pointColor
   font-size    standardSize
-  margin       0 
+  margin       0
+  float left 
   &.clickable
     cursor pointer
     color importantText

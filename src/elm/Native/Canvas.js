@@ -24,7 +24,7 @@ var _user$project$Native_Canvas = function () {
     var model = {
       width: width,
       height: height,
-      data: listToJSArray(data, [])
+      data: listToJSArray(data)
     };
 
     return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation);
@@ -80,6 +80,27 @@ var _user$project$Native_Canvas = function () {
 
 
   function diff(oldModel, newModel) {
+
+    var oldString = oldModel.model.data
+      .map(function(datum) { return String(datum); })
+      .reduce(function(memo, item) {
+        return memo + item;
+      })
+
+    var newString = newModel.model.data
+      .map(function(datum) { return String(datum); })
+      .reduce(function(memo, item) {
+        return memo + item;
+      })
+
+    var whatToDo;
+
+    if (newString === oldString) {
+      whatToDo = drawCanvas
+    } else {
+      whatToDo = function(a) { return a }
+    }
+
     newModel.model.cache = oldModel.model.cache;
     return {
       applyPatch: drawCanvas,
