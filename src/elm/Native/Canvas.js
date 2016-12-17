@@ -4,8 +4,8 @@ var _user$project$Native_Canvas = function () {
     // console.log(msg);
   }
 
-  function drawCanvas(domNode, data) {
-    return drawCanvasData(domNode, data.model);
+  function canvasPatch(domNode, data) {
+    return drawCanvas(domNode, data.model);
   }
 
   function listToJSArray(list) {
@@ -30,29 +30,12 @@ var _user$project$Native_Canvas = function () {
     return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation);
   }
 
-  function toHtml(factList, width, height) {
-
-    var data = [];
-    while (data.length < (width * height * 4)) {
-      data.push(255 * Math.random());
-    }
-
-    var model = {
-      width: width,
-      height: height,
-      data: data
-    };
-
-    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation);
-  }
-
   var implementation = {
     render: renderCanvas,
     diff: diff,
   };
 
-  function drawCanvasData(canvas, model) {
-    // canvas = document.createElement('canvas');
+  function drawCanvas(canvas, model) {
 
     canvas.width        = model.width;
     canvas.height       = model.height;
@@ -75,7 +58,7 @@ var _user$project$Native_Canvas = function () {
 
     LOG('Render canvas');
 
-    return drawCanvasData(document.createElement('canvas'), model);
+    return drawCanvas(document.createElement('canvas'), model);
   }
 
 
@@ -93,26 +76,23 @@ var _user$project$Native_Canvas = function () {
         return memo + item;
       })
 
-    var whatToDo;
+    var patch;
 
-    if (newString === oldString) {
-      whatToDo = drawCanvas
+    if (newString !== oldString) {
+      patch = canvasPatch;
     } else {
-      whatToDo = function(a) { return a }
+      patch = function(a) { return a }
     }
 
     newModel.model.cache = oldModel.model.cache;
     return {
-      applyPatch: drawCanvas,
+      applyPatch: patch,
       data: newModel
     };
   }
 
   return {
     canvas: F4(canvas),
-    toHtml: F3(toHtml),
-    // toHtml: F2(toHtml)
-    // toHtml: toHtml
   };
 
 }();

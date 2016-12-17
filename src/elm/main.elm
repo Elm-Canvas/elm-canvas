@@ -144,7 +144,7 @@ decreaseRed : Canvas -> Canvas
 decreaseRed canvas =
   let (r,g,b) = canvas.color in
   { canvas
-  | color =  (r - 10, g, b)
+  | color =  (r - 30, g, b)
   }
 
 increaseRed : Canvas -> Canvas
