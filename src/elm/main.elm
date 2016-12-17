@@ -4,10 +4,8 @@ import Html.App         as App
 import List             exposing (repeat)
 import Array            exposing (Array, fromList, push, get, set)
 import Types            exposing (..)
-import Ports            exposing (..)
 import View             exposing (view)
 import Maybe            exposing (withDefault)
-import Debug            exposing (log)
 
 
 (.) = flip 
@@ -217,18 +215,5 @@ increaseHeight canvas =
   { canvas
   | height = canvas.height + 1
   }
-    --Switch ->
-    --  { model | switch = (not model.switch) }
-    --  |>flip (,) Cmd.none
-
-    --Increase ->
-    --  { model | amount = model.amount + 1 }
-    --  |>flip (,) Cmd.none
-
-    --Decrease ->
-    --  { model | amount = model.amount - 1 }
-    --  |>flip (,) Cmd.none
-
-
 
 
