@@ -1,4 +1,4 @@
-var _user$project$Native_Canvas = function () {
+var _Chadtech$elm_canvas$Native_Canvas = function () {
 
   function LOG(msg) {
     // console.log(msg);
