@@ -13,15 +13,15 @@ point str =
 
 ignorablePoint : String -> Html Msg
 ignorablePoint str =
-  p [ class "point ignorable" ] [ text str]
+  p [ class "point ignorable" ] [ text str ]
 
 clickablePoint : String -> Msg -> Html Msg
 clickablePoint str msg =
   input 
-  [ class "button" 
+  [ class   "button" 
   , onClick msg
-  , type' "submit"
-  , value str
+  , type_   "submit"
+  , value   str
   ] 
   []
 

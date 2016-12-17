@@ -1,11 +1,11 @@
 module View exposing (..)
 
-import Html             exposing (..)
-import Html.Attributes  exposing (..)
+import Html             exposing (div, Html)
+import Html.Attributes  exposing (class, style, id)
 import Html.Events      exposing (..)
 import Types            exposing (..)
 import Components       exposing (..)
-import List             exposing (repeat, map, concat)
+import List             exposing (repeat, map, concat, range)
 import Array            exposing (Array, toIndexedList)
 import Canvas
 
@@ -26,8 +26,8 @@ view model =
 
 
 canvases : Array Canvas -> List (Html Msg)
-canvases canvases' =
-  canvases'
+canvases canvases_ =
+  canvases_
   |>toIndexedList
   |>map canvasView
 
@@ -83,19 +83,20 @@ canvasView (index, cv) =
 getData : Canvas -> List Int
 getData {width, height, color, gradient} =
   let 
+    dataSize = width * height
     pixels =
-      let 
-        (r, g, b) = color
-        dataSize  = width * height 
-      in
+      let (r, g, b) = color in
       if gradient then
         map 
-          (\a -> [ r, g, b, a % 256 ])
-          [ 0 .. dataSize ]
+          (setAlphaValue r g b) 
+          (range 0 dataSize)
       else
-        repeat dataSize [ r, g, b, 255]
+        repeat dataSize [ r, g, b, 255 ]
   in
   concat pixels
 
+setAlphaValue : Int -> Int -> Int -> Int -> List Int
+setAlphaValue r g b a =
+  [ r, g, b, a % 256 ]
 
 
