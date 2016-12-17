@@ -61,7 +61,6 @@ var _user$project$Native_Canvas = function () {
     return drawCanvas(document.createElement('canvas'), model);
   }
 
-
   function diff(oldModel, newModel) {
 
     var oldString = oldModel.model.data
