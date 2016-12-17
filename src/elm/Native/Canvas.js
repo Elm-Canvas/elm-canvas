@@ -22,9 +22,9 @@ var _user$project$Native_Canvas = function () {
   function canvas(factList, width, height, data) {
 
     var model = {
-      width: width,
+      width:  width,
       height: height,
-      data: listToJSArray(data)
+      data:   listToJSArray(data)
     };
 
     return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation);
@@ -32,7 +32,7 @@ var _user$project$Native_Canvas = function () {
 
   var implementation = {
     render: renderCanvas,
-    diff: diff,
+    diff:   diff,
   };
 
   function drawCanvas(canvas, model) {
@@ -42,7 +42,7 @@ var _user$project$Native_Canvas = function () {
     canvas.style.width  = model.width;
     canvas.style.height = model.height
 
-    var ctx = canvas.getContext('2d');
+    var ctx       = canvas.getContext('2d');
     var imageData = ctx.getImageData(0, 0, model.width, model.height);
 
     for (var i = 0; i < imageData.data.length; i++) {
@@ -61,19 +61,16 @@ var _user$project$Native_Canvas = function () {
     return drawCanvas(document.createElement('canvas'), model);
   }
 
+  function dataToString(data) {
+    return data.map(String).reduce(function(memo, item) {
+      return memo + item;
+    });
+  }
+
   function diff(oldModel, newModel) {
 
-    var oldString = oldModel.model.data
-      .map(function(datum) { return String(datum); })
-      .reduce(function(memo, item) {
-        return memo + item;
-      })
-
-    var newString = newModel.model.data
-      .map(function(datum) { return String(datum); })
-      .reduce(function(memo, item) {
-        return memo + item;
-      })
+    var oldString = dataToString(oldModel.model.data);
+    var newString = dataToString(newModel.model.data);
 
     var patch;
 
@@ -84,6 +81,7 @@ var _user$project$Native_Canvas = function () {
     }
 
     newModel.model.cache = oldModel.model.cache;
+
     return {
       applyPatch: patch,
       data: newModel
