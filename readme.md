@@ -4,3 +4,8 @@ I would like to make the canvas element accessible within Elm, a front end ml sy
 
 ## MILESTONES
 **20161213** Made a native elm module that returns a canvas element with a red square on it
+**20161216** Elm-Canvas now contains a function called canvas, which takes a width, height, and list of canvas data, and returns a canvas with that data. 
+
+## GOALS
+0 ~~Make a function that can return a canvas with given canvas data~~
+1 Make a library that can efficiently modify canvas data, however sophisticated the API might be
