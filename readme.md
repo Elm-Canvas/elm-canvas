@@ -8,4 +8,5 @@ I would like to make the canvas element accessible within Elm, a front end ml sy
 
 ## GOALS
 0 ~~Make a function that can return a canvas with given canvas data~~
+
 1 Make a library that can efficiently modify canvas data, however sophisticated the API might be
