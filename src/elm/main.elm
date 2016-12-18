@@ -7,14 +7,16 @@ import View             exposing (view)
 import Maybe            exposing (withDefault)
 import Canvas           exposing (setPixels, Pixel)
 import Task             exposing (attempt)
+import Mouse            exposing (Position)
 import Debug            exposing (log)
 
 (.) = flip 
 
 initModel : Model
 initModel =
-  { field = ""
-  , canvasName = "the-canvas"
+  { canvasName    = "the-canvas"
+  , mousePosition = Position 0 0 
+  , mouseDown     = False
   }
 
 main =
@@ -22,25 +24,46 @@ main =
   { init          = (initModel, Cmd.none) 
   , view          = view
   , update        = update
-  , subscriptions = always Sub.none
+  , subscriptions = subscriptions
   }
+
+subscriptions : Model -> Sub Msg
+subscriptions {mouseDown} =
+  if mouseDown then
+    Sub.batch 
+    [ Mouse.moves MovingTo
+    , Mouse.ups HandleMouseUp 
+    ]
+  else
+    Sub.none
+
+  --case model.mouseDown of
+  --  Nothing ->
+  --    Sub.none
+
+  --  Just _ ->
+  --    Sub.batch [ Mouse.moves DragAt, Mouse.ups DragEnd ]
 
 aPixel : Int -> Int -> Pixel
 aPixel b a =
-  ((b, a), (255, a, (255 - (3 * a) % 256), 255))
+  ((b, a), (255, (2 * a) % 256, (255 - (3 * a) % 256), 255))
 
 somePixels : List Pixel
 somePixels =
   map 
     (\c -> map (aPixel c) (range 0 500))
-    (range 0 200)
+    (range 0 300)
   |>concat
+
+colorPixel : Position -> List Pixel
+colorPixel {x, y} =
+  [ ((x, y), (0, 0, 255, 255)) ]
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update message model =
   case message of 
 
-    Draw ->
+    PopulateData ->
       let
         msg =
           attempt
@@ -52,8 +75,24 @@ update message model =
     DrawError err ->
       (model, Cmd.none)
 
-    DrawSuccess val ->
-      ({model | field = val }, Cmd.none)
+    DrawSuccess ->
+      (model, Cmd.none)
+
+    HandleMouseDown ->
+      ({ model | mouseDown = True }, Cmd.none)
+
+    HandleMouseUp _ ->
+      ({ model | mouseDown = False }, Cmd.none)
+
+    MovingTo position ->
+      let
+        msg =
+          position
+          |>colorPixel
+          |>setPixels model.canvasName
+          |>attempt handleDrawCompletion
+      in
+      (model, msg)
 
 
 handleDrawCompletion : Result Canvas.Error () -> Msg
@@ -63,6 +102,6 @@ handleDrawCompletion result =
       DrawError err
 
     Ok _ ->
-      DrawSuccess "neato"
+      DrawSuccess
 
 

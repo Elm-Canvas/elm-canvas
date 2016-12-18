@@ -17,14 +17,20 @@ view model =
   [ div 
     [] 
     [ ignorablePoint "Elm Canvas!" 
-    , clickablePoint "Draw" Draw
+    , clickablePoint "PopulateData" PopulateData
     , mainCanvas model.canvasName
     ]
   ]
 
 mainCanvas : String -> Html Msg
-mainCanvas id_ = 
-  let attr = [ id id_, style [ ("display", "table") ] ] in
+mainCanvas canvasId = 
+  let 
+    attr = 
+      [ id canvasId
+      , style [ ("display", "table") ] 
+      , onMouseDown HandleMouseDown
+      ] 
+  in
   canvas attr 800 800 []
 
 

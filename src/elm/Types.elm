@@ -1,13 +1,18 @@
 module Types exposing (..)
 
+import Mouse exposing (Position)
 import Canvas
 
 type Msg 
-  = Draw
+  = PopulateData
   | DrawError Canvas.Error
-  | DrawSuccess String
+  | DrawSuccess
+  | HandleMouseDown
+  | HandleMouseUp Position
+  | MovingTo Position
 
 type alias Model =
-  { field : String 
-  , canvasName : String
+  { canvasName    : String
+  , mousePosition : Position
+  , mouseDown     : Bool
   }
