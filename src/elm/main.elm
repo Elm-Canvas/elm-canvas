@@ -57,7 +57,7 @@ somePixels =
 
 colorPixel : Position -> List Pixel
 colorPixel {x, y} =
-  [ ((x, y), (0, 0, 255, 255)) ]
+  [ ((x, y), (235, 20, 10, 255)) ]
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update message model =
