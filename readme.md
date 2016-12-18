@@ -7,6 +7,8 @@ I would like to make the canvas element accessible within Elm, a front end ml sy
 
 **20161216** Elm-Canvas now contains a function called canvas, which takes a width, height, and list of canvas data, and returns a canvas with that data. 
 
+**20161217** putPixels function, which given a list of (Coordinate, Color), changes the pixels at those coordinates on a specific canvas to those colors
+
 ## GOALS
 0 ~~Make a function that can return a canvas with given canvas data~~
 
