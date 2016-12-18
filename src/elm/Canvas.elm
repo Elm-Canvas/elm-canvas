@@ -1,12 +1,34 @@
 module Canvas exposing (..)
 
 import Html exposing (Html, Attribute)
+import Task exposing (Task)
 import Native.Canvas
 
 
+type alias Coordinate = (Int, Int)
+type alias Color      = (Int, Int, Int, Int)
+type alias Pixel      = (Coordinate, Color)
 
+type Error 
+  = CanvasDoesNotExist 
 
+---------------
+-- SETPIXELS --
+---------------
+-- a function that dictates color changes
+-- to specific pixel coordinates on a
+-- specific canvas
 
+-- PARAMETER canvasID
+-- Which canvas element should be modified
+
+-- PARAMETER pixels
+-- A list of pixels, as in, a list of colors and
+-- coordinates paired together, with the intention
+-- that the coordinates become those colors
+setPixels : String -> List Pixel -> Task Error ()
+setPixels canvasId pixels =
+  Native.Canvas.setPixels canvasId pixels
 
 
 ------------
