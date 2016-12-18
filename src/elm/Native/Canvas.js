@@ -69,17 +69,15 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
   }
 
 
-
-
   function canvas(factList, width, height, data) {
     var model = {
       width:  width,
       height: height,
       data:   listToJSArray(data)
     };
+
     return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation);
   }
-
 
   var implementation = {
     render: renderCanvas,
@@ -113,6 +111,10 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
 
   function dataToString(data) {
+    if (data.length === 0) { 
+      return ""; 
+    }
+
     return data.map(String).reduce(function(memo, item) {
       return memo + item;
     });

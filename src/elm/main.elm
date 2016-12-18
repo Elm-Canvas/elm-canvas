@@ -27,13 +27,13 @@ main =
 
 aPixel : Int -> Int -> Pixel
 aPixel b a =
-  ((a + b, a), (255, a, (255 - (3 * a)), 255))
+  ((b, a), (255, a, (255 - (3 * a) % 256), 255))
 
 somePixels : List Pixel
 somePixels =
   map 
-    (\c -> map (aPixel c) (range 0 100))
-    (range 0 100)
+    (\c -> map (aPixel c) (range 0 500))
+    (range 0 200)
   |>concat
 
 update : Msg -> Model -> (Model, Cmd Msg)

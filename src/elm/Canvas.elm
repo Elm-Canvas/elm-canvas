@@ -13,7 +13,7 @@ type Error
   = CanvasDoesNotExist 
 
 ---------------
--- SETPIXELS --
+-- setPixels --
 ---------------
 -- a function that dictates color changes
 -- to specific pixel coordinates on a
@@ -32,7 +32,7 @@ setPixels canvasId pixels =
 
 
 ------------
--- CANVAS --
+-- canvas --
 ------------
 -- Simple function that returns a canvas with input
 -- canvas data
@@ -52,7 +52,6 @@ setPixels canvasId pixels =
 -- A list of the canvas data. Its length must be width * height * 4
 -- and the form is [ r0, g0, b0, a0, r1, g1, b1, a1, .. ], where
 -- r1 is the red value for upper left most pixel.
-
 canvas : List (Attribute msg) -> Int -> Int -> List Int -> Html msg
 canvas attr width height data =
   Native.Canvas.canvas attr width height data
