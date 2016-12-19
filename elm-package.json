@@ -4,7 +4,8 @@
     "repository": "https://github.com/Chadtech/elm-canvas.git",
     "license": "BSD3",
     "source-directories": [
-        "./src/elm"
+        "./src/elm",
+        "./src/elm/Tools"
     ],
     "exposed-modules": [],
     "native-modules": true,

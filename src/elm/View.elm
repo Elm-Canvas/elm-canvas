@@ -16,9 +16,8 @@ view model =
   [ class "root" ]
   [ div 
     [] 
-    [ ignorablePoint "Elm Canvas!" 
-    , clickablePoint "PopulateData" PopulateData
-    , mainCanvas model.canvasName
+    [ ignorablePoint "Elm Canvas" 
+    , mainCanvas model.canvasId
     ]
   ]
 
@@ -27,10 +26,10 @@ mainCanvas canvasId =
   let 
     attr = 
       [ id canvasId
-      , style [ ("display", "table") ] 
+      , class "drawing-canvas"
       , onMouseDown HandleMouseDown
       ] 
   in
-  canvas attr 800 800 []
+  canvas attr 400 400 []
 
 

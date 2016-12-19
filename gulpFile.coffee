@@ -9,7 +9,7 @@ browserify = require 'browserify'
 
 paths =
   public:   './public'
-  elm:      './src/elm/*.elm'
+  elm:      './src/elm/**/*.elm'
   css:      './src/css/*.styl'
   coffee:   './src/js/*.coffee'
   electron: './main-electron.coffee'
@@ -34,7 +34,7 @@ gulp.task 'stylus', ->
 
 gulp.task 'elm', ->  
   cmd  = 'elm-make '
-  cmd += paths.elm
+  cmd += './src/elm/main.elm'
   cmd += ' --output '
   cmd += './public'
   cmd += '/elm.js'

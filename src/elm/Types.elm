@@ -4,15 +4,18 @@ import Mouse exposing (Position)
 import Canvas
 
 type Msg 
-  = PopulateData
+  = Draw
   | DrawError Canvas.Error
   | DrawSuccess
   | HandleMouseDown
   | HandleMouseUp Position
-  | MovingTo Position
+  | SetPosition Position
+  | AppendPixels (List Canvas.Pixel)
 
 type alias Model =
-  { canvasName    : String
-  , mousePosition : Position
-  , mouseDown     : Bool
+  { canvasId       : String
+  , mousePosition  : Position
+  , mouseDown      : Bool
+  , pixelsToChange : List Canvas.Pixel
+  --, canvasData     : List Int
   }
