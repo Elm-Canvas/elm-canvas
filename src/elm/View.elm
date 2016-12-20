@@ -16,20 +16,37 @@ view model =
   [ class "root" ]
   [ div 
     [] 
-    [ ignorablePoint "Elm Canvas" 
-    , mainCanvas model.canvasId
+    [ div 
+      [ class "canvas-container" ]
+      [ ignorablePoint "Elm Canvas" 
+      , clickablePoint "Populate with black" Populate
+      , mainCanvas model 
+      ]
     ]
   ]
 
-mainCanvas : String -> Html Msg
-mainCanvas canvasId = 
+mainCanvas : Model -> Html Msg
+mainCanvas {canvasId, canvasCoordinates} = 
   let 
     attr = 
+      let (x, y) = canvasCoordinates in
       [ id canvasId
+      , style
+        [ ("position", "absolute")
+        , top y
+        , left x
+        ]
       , class "drawing-canvas"
       , onMouseDown HandleMouseDown
       ] 
   in
+  --repeat (400 * 400) [ 0, 0, 0, 255 ]
+  --|>concat
+  --|>canvas attr 400 400
   canvas attr 400 400 []
 
+top : Int -> (String, String)
+top t = ("top", toString t ++ "px")
 
+left : Int -> (String, String)
+left l = ("left", toString l ++ "px")

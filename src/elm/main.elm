@@ -9,26 +9,29 @@ import Canvas           exposing (setPixels, Pixel)
 import Task             exposing (attempt)
 import Mouse            exposing (Position)
 import Line             exposing (line)
+import Ports            exposing (populate)
 import Debug            exposing (log)
 
 (.) = flip 
 
 initModel : Model
 initModel =
-  { canvasId       = "the-canvas"
-  , mousePosition  = Position 0 0 
-  , mouseDown      = False
-  , pixelsToChange = [] 
+  { canvasId          = "the-canvas"
+  , mousePosition     = Position 0 0 
+  , mouseDown         = False
+  , pixelsToChange    = [] 
+  , canvasCoordinates = (300, 300)
   }
 
 
 main =
   Html.program
-  { init          = (initModel, Cmd.none) 
+  { init          = (initModel, populate "the-canvas") 
   , view          = view
   , update        = update
   , subscriptions = subscriptions
   }
+
 
 
 subscriptions : Model -> Sub Msg
@@ -70,16 +73,15 @@ update message model =
 
     SetPosition position ->
       let 
-        {mousePosition, mouseDown} = model
-
+        {mousePosition, mouseDown, canvasCoordinates} = model
         model_ =
           { model | mousePosition = position}
-
       in
       if mouseDown then
         let 
           pixels =
             line mousePosition position
+            |>map (accountForCanvasPosition canvasCoordinates)
             |>pairWithColor (240, 30, 10, 255)
         in
         update (AppendPixels pixels) model_
@@ -93,6 +95,13 @@ update message model =
           concat [ pixelsToChange, pixels ]
       }
       |>update Draw
+
+    Populate ->
+      (model, populate (model.canvasId))
+
+accountForCanvasPosition : (Int, Int) -> Canvas.Coordinate -> Canvas.Coordinate
+accountForCanvasPosition (x0, y0) (x1, y1) =
+  (x1 - x0, y1 - y0)
 
 
 pairWithColor : Canvas.Color -> List Canvas.Coordinate -> List Canvas.Pixel

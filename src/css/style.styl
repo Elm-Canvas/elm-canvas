@@ -38,11 +38,22 @@ standardBorder()
 canvas
   image-rendering pixelated
   margin 2px
+  cursor crosshair
+  margin 0
+  padding 0
 
 body
-  background background
+  background veryIgnorable
   padding    0
   margin     0
+  overflow   hidden
+  
+.canvas-container
+  width 100%
+  height 100%
+  position relative
+  float left
+
   
 .drawing-canvas
   display table
@@ -50,10 +61,6 @@ body
 
 .option-row
   display table
-
-.canvas-container
-  float left
-  margin 5px
 
 .button
   font-family  HFNSS
@@ -89,7 +96,6 @@ body
 .root
   width  100%
   height 100%
-  padding 11px
 
   
   

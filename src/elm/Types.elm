@@ -11,11 +11,12 @@ type Msg
   | HandleMouseUp Position
   | SetPosition Position
   | AppendPixels (List Canvas.Pixel)
+  | Populate
 
 type alias Model =
-  { canvasId       : String
-  , mousePosition  : Position
-  , mouseDown      : Bool
-  , pixelsToChange : List Canvas.Pixel
-  --, canvasData     : List Int
+  { canvasId          : String
+  , mousePosition     : Position
+  , mouseDown         : Bool
+  , pixelsToChange    : List Canvas.Pixel
+  , canvasCoordinates : (Int, Int)
   }

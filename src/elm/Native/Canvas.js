@@ -1,7 +1,7 @@
 var _Chadtech$elm_canvas$Native_Canvas = function () {
 
   function LOG(msg) {
-    // console.log(msg);
+    console.log(msg);
   }
 
 
@@ -123,23 +123,30 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
   function diff(oldModel, newModel) {
 
-    var oldString = dataToString(oldModel.model.data);
-    var newString = dataToString(newModel.model.data);
-
-    var patch;
-
-    if (newString !== oldString) {
-      patch = canvasPatch;
-    } else {
-      patch = function(a) { return a }
-    }
-
-    newModel.model.cache = oldModel.model.cache;
+    // newModel.model.cache = oldModel.model.cache;
 
     return {
-      applyPatch: patch,
-      data: newModel
+      applyPatch: function(a) { return a },
+      data: oldModel
     };
+
+    // var oldString = dataToString(oldModel.model.data);
+    // var newString = dataToString(newModel.model.data);
+
+    // var patch;
+
+    // if (newString !== oldString) {
+    //   patch = canvasPatch;
+    // } else {
+    //   patch = function(a) { return a }
+    // }
+
+    // newModel.model.cache = oldModel.model.cache;
+
+    // return {
+    //   applyPatch: patch,
+    //   data: newModel
+    // };
   }
 
 
