@@ -5,7 +5,7 @@ import Canvas
 
 type Msg 
   = Draw
-  | DrawError Canvas.Error
+  | DrawError (List Canvas.Pixel) Canvas.Error
   | DrawSuccess
   | HandleMouseDown
   | HandleMouseUp Position

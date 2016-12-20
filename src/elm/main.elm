@@ -21,6 +21,7 @@ initModel =
   , pixelsToChange = [] 
   }
 
+
 main =
   Html.program
   { init          = (initModel, Cmd.none) 
@@ -28,6 +29,7 @@ main =
   , update        = update
   , subscriptions = subscriptions
   }
+
 
 subscriptions : Model -> Sub Msg
 subscriptions {mouseDown} =
@@ -39,20 +41,6 @@ subscriptions {mouseDown} =
   else
     Mouse.moves SetPosition
 
-aPixel : Int -> Int -> Pixel
-aPixel b a =
-  ((b, a), (255, (2 * a) % 256, (255 - (3 * a) % 256), 255))
-
-somePixels : List Pixel
-somePixels =
-  map 
-    (\c -> map (aPixel c) (range 0 500))
-    (range 0 300)
-  |>concat
-
-colorPixel : Position -> List Pixel
-colorPixel {x, y} =
-  [ ((x, y), (235, 20, 10, 255)) ]
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update message model =
@@ -62,11 +50,11 @@ update message model =
         msg = 
           let {canvasId, pixelsToChange} = model in
           setPixels canvasId pixelsToChange
-          |>attempt handleDrawCompletion
+          |>attempt (handleDrawCompletion pixelsToChange)
       in
       ({ model | pixelsToChange = [] }, msg)
 
-    DrawError err ->
+    DrawError failedData err ->
       let _ = Debug.crash "ERROR : " ++ (toString err) in
       (model, Cmd.none)
 
@@ -91,10 +79,8 @@ update message model =
       if mouseDown then
         let 
           pixels =
-            map 
-              ((,) . (240, 30, 10, 255)) 
-              (line mousePosition position)
-          --_ = log "HERE THO" "HERE"
+            line mousePosition position
+            |>pairWithColor (240, 30, 10, 255)
         in
         update (AppendPixels pixels) model_
       else
@@ -105,16 +91,20 @@ update message model =
       { model 
       | pixelsToChange =
           concat [ pixelsToChange, pixels ]
-          --((x, y), (235, 30, 10, 255)) :: pixelsToChange
       }
       |>update Draw
 
 
-handleDrawCompletion : Result Canvas.Error () -> Msg
-handleDrawCompletion result =
+pairWithColor : Canvas.Color -> List Canvas.Coordinate -> List Canvas.Pixel
+pairWithColor color =
+  map ((,) . color)
+
+
+handleDrawCompletion : List Canvas.Pixel -> Result Canvas.Error () -> Msg
+handleDrawCompletion failedData result =
   case result of
     Err err ->
-      DrawError err
+      DrawError failedData err
 
     Ok _ ->
       DrawSuccess

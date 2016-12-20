@@ -12,8 +12,10 @@ line p0 p1 =
 coordinate : Position -> Coordinate
 coordinate {x, y} = (x, y)
 
+
 type alias BresenhamStatics = 
   { sx : Int, sy : Int, dx : Float, dy : Float, x1 : Int, y1 : Int}
+
 
 bresenhamLine : Coordinate -> Coordinate -> List Coordinate
 bresenhamLine (x0, y0) (x1, y1) =
@@ -30,6 +32,7 @@ bresenhamLine (x0, y0) (x1, y1) =
       BresenhamStatics sx sy dx dy x1 y1
   in
   bresenhamLineLoop statics error (x0, y0) []
+
 
 bresenhamLineLoop : BresenhamStatics -> Float -> Coordinate -> List Coordinate -> List Coordinate
 bresenhamLineLoop statics error (x0, y0) coordinates =
