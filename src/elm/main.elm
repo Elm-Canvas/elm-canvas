@@ -5,7 +5,7 @@ import Array            exposing (Array, fromList, push, get, set)
 import Types            exposing (..)
 import View             exposing (view)
 import Maybe            exposing (withDefault)
-import Canvas           exposing (setPixels, Pixel)
+import Canvas           exposing (Pixel)
 import Task             exposing (attempt)
 import Mouse            exposing (Position)
 import Line             exposing (line)
@@ -21,6 +21,9 @@ initModel =
   , mouseDown         = False
   , pixelsToChange    = [] 
   , canvasCoordinates = (300, 300)
+  , data              = 
+      repeat (400 * 400) [ 0, 0, 0, 255 ]
+      |>concat
   }
 
 
@@ -52,7 +55,7 @@ update message model =
       let 
         msg = 
           let {canvasId, pixelsToChange} = model in
-          setPixels canvasId pixelsToChange
+          Canvas.setPixels canvasId pixelsToChange
           |>attempt (handleDrawCompletion pixelsToChange)
       in
       ({ model | pixelsToChange = [] }, msg)
@@ -82,7 +85,7 @@ update message model =
           pixels =
             line mousePosition position
             |>map (accountForCanvasPosition canvasCoordinates)
-            |>pairWithColor (240, 30, 10, 255)
+            |>pairWithColor (80, 0, 87, 255)
         in
         update (AppendPixels pixels) model_
       else

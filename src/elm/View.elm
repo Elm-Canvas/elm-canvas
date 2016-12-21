@@ -26,7 +26,7 @@ view model =
   ]
 
 mainCanvas : Model -> Html Msg
-mainCanvas {canvasId, canvasCoordinates} = 
+mainCanvas {canvasId, canvasCoordinates, data} = 
   let 
     attr = 
       let (x, y) = canvasCoordinates in
@@ -40,10 +40,7 @@ mainCanvas {canvasId, canvasCoordinates} =
       , onMouseDown HandleMouseDown
       ] 
   in
-  --repeat (400 * 400) [ 0, 0, 0, 255 ]
-  --|>concat
-  --|>canvas attr 400 400
-  canvas attr 400 400 []
+  canvas attr 400 400 data
 
 top : Int -> (String, String)
 top t = ("top", toString t ++ "px")

@@ -19,4 +19,5 @@ type alias Model =
   , mouseDown         : Bool
   , pixelsToChange    : List Canvas.Pixel
   , canvasCoordinates : (Int, Int)
+  , data              : List Int
   }
