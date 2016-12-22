@@ -125,7 +125,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     newModel.model.cache = oldModel.model.cache;
 
     return {
-      applyPatch: function(a) { return a },
+      applyPatch: function(domElement) { return domElement },
       data: oldModel
     };
 

@@ -36,7 +36,6 @@ main =
   }
 
 
-
 subscriptions : Model -> Sub Msg
 subscriptions {mouseDown} =
   if mouseDown then
