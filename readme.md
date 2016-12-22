@@ -18,10 +18,9 @@ The data property is a list of color values in the canvas element, where the fir
 
 ```
   data = [ r0, g0, b0, a0, r1, g1, b1, a1, ... , rn, gn, bn, an ]
-  Where ri is the red value at pixel i. 
+  for a canvas with n pixels, and where ri is the red value at pixel i. 
   
   Pixel i has the x and y coordinates of (i % width, i // width)
-
 ```
 
 Width and height are the vertical and horizontal _resolutions_ of the canvas element, not the width and height of the element itself. To set the width and height, use the width and height style properties of the canvas element. If the width and height resolution dont match the width and height styles of the canvas element, then the pixels just wont be square.
