@@ -4,7 +4,7 @@ Making the canvas API accessible within Elm. The canvas element is a very simple
 
 ## What is the canvas element?
 
-The canvas element is a unique html element with mutable image data. By modification of the canvas elements data, the color value of individual pixels can be set on the screen. The basic definition of the canvas data type is..
+The canvas element is a unique html element with mutable image data. By modification of the canvas elements data, the color value of individual pixels on the screen can be set. The basic definition of the canvas data type is..
 
 ``` Elm
   type alias Canvas =
@@ -14,11 +14,19 @@ The canvas element is a unique html element with mutable image data. By modifica
     }
 ```
 
-The data property is a list of color values in the canvas element, where the first four represent the red, green, blue, and alpha levels of the upper left most pixel, and the second four represent the rgba value of the pixel to the right of the upper left most, etc. The data property is always width * height * 4 long, Four ints for each pixel in the canvas.
+The data property is a list of color values in the canvas element, where the first four represent the red, green, blue, and alpha levels of the upper left most pixel, and the second four represent the rgba values of the pixel to the right of the upper left most, etc. The data property is always width * height * 4 long, Four ints for each pixel in the canvas.
 
-Width and height are the vertical and horizontal _resolutiosn_ of the canvas element, not the width and height of the element itself. To set the width and height, use the width and height style properties of the canvas element. If the width and height resolution dont match the width and height styles of the canvas element, then the pixels wont be square.
+```
+  data = [ r0, g0, b0, a0, r1, g1, b1, a1, ... , rn, gn, bn, an ]
+  Where ri is the red value at pixel i. 
+  
+  Pixel i has the x and y coordinates of (i % width, i // width)
 
-To demonstrate how the canvas element works, lets consider an example where I need to set the pixel at x=50,y=20 to red (rgba = 255, 0, 0, 255) in a canvas 116 pixels wide and 333 pixels tall. I would set the data value at index (4 * 50) + (20 * 4 * 116) to 255, (4 * 50) + (20 * 4 * 116) + 1 to 0, (4 * 50) + (20 * 4 * 116) + 2 to 0, and (4 * 50) + (20 * 4 * 116) + 3 to 255. Thats 4 times the x position, plus 4 times the y position times the width, plus 0, 1, 2, or 3 for the red, green, blue, and alpha values respectively.
+```
+
+Width and height are the vertical and horizontal _resolutions_ of the canvas element, not the width and height of the element itself. To set the width and height, use the width and height style properties of the canvas element. If the width and height resolution dont match the width and height styles of the canvas element, then the pixels just wont be square.
+
+To demonstrate how the canvas element works, lets consider an example where I need to set the pixel at x=50, y=20 to red (rgba = 255, 0, 0, 255) in a canvas 116 pixels wide and 333 pixels tall. I would set the data value at index (4 * 50) + (20 * 4 * 116) to 255, (4 * 50) + (20 * 4 * 116) + 1 to 0, (4 * 50) + (20 * 4 * 116) + 2 to 0, and (4 * 50) + (20 * 4 * 116) + 3 to 255. Thats 4 times the x position, plus 4 times the y position times the width, plus 0, 1, 2, or 3 for the red, green, blue, and alpha values respectively.
 
 ## When should you use Canvas?
 
