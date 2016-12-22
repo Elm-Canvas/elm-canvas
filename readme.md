@@ -42,6 +42,8 @@ Think hard before choosing to use the Elm Canvas library! For most use cases, th
 
 3 the setPixels function takes a list of pixels, and draws them one at a time. It works fast enough, but for some sufficiently large list of pixels it wont be optimal. At some point, making a seperate image data with all the pixels and pasting it onto the canvas will work better.
 
+4 Re-organize this repo so that there is a src folder only containing Native/Canvas.js and Canvas.elm, and an examples folder where uses of Canvas.elm are demonstrated.
+
 ##Concerns
 
 0 Canvas data needs to be stored in the elm project seperately from the canvas data that exists within the canvas element itself. This violates the single source of truth principle. The canvas data must exist, and it therefore will exist outside of the elm frame work. To constantly update the canvas data from data within the elm framework is very un-performant. The data should exist within the elm frame work, for two reasons: 0 because the canvas element itself might disappear and if it does then its data will too; and 1 because some canvas operations are useful when they are functions of the existing data, (flood fill, and color inversion, for example). In this moment, I suppose the solution is to make an API that causes parrallel modification to the elm canvas data and the canvas data itself.
