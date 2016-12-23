@@ -32,10 +32,13 @@ model =
   , width  = width
   , height = height
   , data   = 
-      [ 23, 92, 254, 255 ]
-      |>repeat (width * height)
-      |>concat
+      concat <| repeat (width * height) prettyBlue
   }
+
+
+prettyBlue : List Int
+prettyBlue =
+  [ 23, 92, 254, 255 ]
 
 
 
