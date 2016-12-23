@@ -4,6 +4,11 @@ import Html exposing (Html, Attribute)
 import Task exposing (Task)
 import Native.Canvas
 
+type alias Canvas =
+  { width  : Int
+  , height : Int
+  , data   : List Int
+  }
 
 type alias Coordinate = (Int, Int)
 type alias Color      = (Int, Int, Int, Int)
