@@ -7,16 +7,18 @@ stylus     = require 'gulp-stylus'
 coffeeify  = require 'coffeeify'
 browserify = require 'browserify'
 
+devSrc = (path) ->
+  './dev-src/' + path
+
 paths =
   public:   './public'
-  elm:      './src/elm/**/*.elm'
-  css:      './src/css/*.styl'
-  coffee:   './src/js/*.coffee'
-  electron: './main-electron.coffee'
+  elm:      devSrc 'elm/**/*.elm'
+  css:      devSrc 'css/*.styl'
+  coffee:   devSrc 'js/*.coffee'
 
 gulp.task 'coffee', ->
   bCache = {}
-  b = browserify './src/js/app.coffee',
+  b = browserify './dev-src/js/app.coffee',
     debug: true
     interestGlobals: false
     cache: bCache
@@ -34,10 +36,8 @@ gulp.task 'stylus', ->
 
 gulp.task 'elm', ->  
   cmd  = 'elm-make '
-  cmd += './src/elm/main.elm'
-  cmd += ' --output '
-  cmd += './public'
-  cmd += '/elm.js'
+  cmd += devSrc 'elm/main.elm'
+  cmd += ' --output ./public/elm.js'
 
   cp.exec cmd, (error, stdout) ->
     if error
@@ -52,8 +52,7 @@ gulp.task 'watch', ->
     server:   './public/*.html'
     stylus:   paths.css
     coffee:   paths.coffee
-    elm:      [ paths.elm, './src/elm/*/**.js']
-    electron: paths.electron
+    elm:      [ paths.elm, devSrc 'elm/*/**.js']
 
 gulp.task 'server', -> require './server'
 
