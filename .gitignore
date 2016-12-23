@@ -1,8 +1,9 @@
 # These are made from the commands 'elm package install' and 'npm install' respectively
 elm-stuff
-node_modules
+dev/elm-stuff
+dev/node_modules
 
 # These are made from the command 'gulp'
-public/app.js
-public/elm.js
-public/style.css
+dev/public/app.js
+dev/public/elm.js
+dev/public/style.css
