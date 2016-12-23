@@ -39,9 +39,7 @@ Think hard before choosing to use the Elm Canvas library! For most use cases, th
 
 2 Keep making functions that satisfy the various needs a canvas programmer will have, and develope a technique of how canvas should be used in Elm.
 
-3 the setPixels function takes a list of pixels, and draws them one at a time. It works fast enough, but for some sufficiently large list of pixels it wont be optimal. At some point, making a seperate image data with all the pixels and pasting it onto the canvas will work better.
-
-4 Re-organize this repo so that there is a src folder only containing Native/Canvas.js and Canvas.elm, and an examples folder where uses of Canvas.elm are demonstrated.
+3 Make a pasteCanvas or pasteImage function. 
 
 ##Concerns
 
