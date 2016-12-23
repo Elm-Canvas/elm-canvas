@@ -47,10 +47,10 @@ prettyBlue =
 
 
 view : Model -> Html msg
-view cvs =
+view canvas =
   div 
   [] 
   [ p [] [ text "Elm-Canvas" ] 
-  , Canvas.render cvs 
+  , Canvas.toHtml canvas 
   ]
 

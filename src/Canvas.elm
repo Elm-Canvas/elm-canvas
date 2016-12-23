@@ -38,8 +38,8 @@ setPixels canvasId pixels =
   Native.Canvas.setPixels canvasId pixels
 
 
-render : Canvas -> Html msg
-render cs =
+toHtml : Canvas -> Html msg
+toHtml cs =
   Native.Canvas.canvas
   [ id cs.id 
   , style
