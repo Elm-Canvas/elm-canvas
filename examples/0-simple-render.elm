@@ -22,7 +22,7 @@ type alias Model = Canvas.Canvas
 
 
 
-model : Canvas.Canvas
+model : Model
 model =
   let
     width  = 500
@@ -46,7 +46,7 @@ prettyBlue =
 
 
 
-view : Canvas.Canvas -> Html msg
+view : Model -> Html msg
 view cvs =
   div 
   [] 
