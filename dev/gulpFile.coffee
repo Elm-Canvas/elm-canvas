@@ -8,7 +8,7 @@ coffeeify  = require 'coffeeify'
 browserify = require 'browserify'
 
 devSrc = (path) ->
-  './dev-src/' + path
+  './src/' + path
 
 paths =
   public:   './public'
@@ -18,7 +18,7 @@ paths =
 
 gulp.task 'coffee', ->
   bCache = {}
-  b = browserify './dev-src/js/app.coffee',
+  b = browserify (devSrc 'js/app.coffee'),
     debug: true
     interestGlobals: false
     cache: bCache

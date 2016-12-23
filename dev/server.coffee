@@ -7,7 +7,7 @@ bodyParser  = require 'body-parser'
 
 app.use bodyParser.json()
 
-PORT = Number process.env.PORT or 2996
+PORT = Number process.env.PORT or 2995
 
 app.use express.static join __dirname, '/public'
 

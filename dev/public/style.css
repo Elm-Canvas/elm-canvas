@@ -1,0 +1,73 @@
+@font-face {
+  font-family: HFNSS;
+  src: url("https://cdn.rawgit.com/Chadtech-Online-1/Chadtech-Online-1.github.io/master/HFNSS.ttf");
+}
+::-webkit-input-placeholder {
+  color: #54574d;
+}
+canvas {
+  image-rendering: pixelated;
+  margin: 2px;
+  cursor: crosshair;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: #54574d;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+.canvas-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  float: left;
+}
+.drawing-canvas {
+  display: table;
+  border: 2px solid #807872;
+}
+.option-row {
+  display: table;
+}
+.button {
+  font-family: HFNSS;
+  background: none;
+  font-size: 2em;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  color: #b39f4b;
+  outline: none;
+  border: none;
+}
+.button:hover {
+  color: #e3d34b;
+}
+.point {
+  font-family: HFNSS;
+  color: #b0a69a;
+  font-size: 2em;
+  margin: 0;
+}
+.point.clickable {
+  cursor: pointer;
+  color: #b39f4b;
+}
+.point.clickable:hover {
+  color: #e3d34b;
+}
+.point.important {
+  color: #b39f4b;
+}
+.point.urgenter {
+  color: #e3d34b;
+}
+.point.critical {
+  color: #f21d23;
+}
+.root {
+  width: 100%;
+  height: 100%;
+}
