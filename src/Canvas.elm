@@ -1,11 +1,13 @@
 module Canvas exposing (..)
 
 import Html exposing (Html, Attribute)
+import Html.Attributes exposing (id, style)
 import Task exposing (Task)
 import Native.Canvas
 
 type alias Canvas =
-  { width  : Int
+  { id     : String
+  , width  : Int
   , height : Int
   , data   : List Int
   }
@@ -36,6 +38,19 @@ setPixels canvasId pixels =
   Native.Canvas.setPixels canvasId pixels
 
 
+render : Canvas -> Html msg
+render cs =
+  Native.Canvas.canvas
+  [ id cs.id 
+  , style
+    [ ("width", (toString cs.width)) 
+    , ("height", (toString cs.height))
+    ]
+  ]
+  cs.width
+  cs.height
+  cs.data
+
 ------------
 -- canvas --
 ------------
@@ -60,6 +75,7 @@ setPixels canvasId pixels =
 canvas : List (Attribute msg) -> Int -> Int -> List Int -> Html msg
 canvas attr width height data =
   Native.Canvas.canvas attr width height data
+
 
 
 

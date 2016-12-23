@@ -2,6 +2,7 @@
 elm-stuff
 dev/elm-stuff
 dev/node_modules
+examples/elm-stuff
 
 # These are made from the command 'gulp'
 dev/public/app.js
