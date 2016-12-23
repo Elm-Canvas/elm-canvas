@@ -1,20 +1,31 @@
 module Canvas exposing (..)
 
+
 import Html exposing (Html, Attribute)
 import Html.Attributes exposing (id, style)
+import Color exposing (Color)
 import Task exposing (Task)
 import Native.Canvas
 
-type alias Canvas =
-  { id     : String
-  , width  : Int
+
+type alias ImageData =
+  { width  : Int
   , height : Int
   , data   : List Int
   }
 
-type alias Coordinate = (Int, Int)
-type alias Color      = (Int, Int, Int, Int)
-type alias Pixel      = (Coordinate, Color)
+type alias Position = 
+  { x : Int, y : Int }
+
+type alias Pixel      = 
+  { position : Position
+  , color    : Color
+  }
+
+
+--fromPixels : List Pixel -> ImageData
+--fromPixels pixels =
+
 
 type Error 
   = CanvasDoesNotExist 
@@ -38,18 +49,18 @@ setPixels canvasId pixels =
   Native.Canvas.setPixels canvasId pixels
 
 
-toHtml : Canvas -> Html msg
-toHtml cs =
+toHtml : String -> ImageData -> Html msg
+toHtml id_ imageData =
   Native.Canvas.canvas
-  [ id cs.id 
+  [ id id_ 
   , style
-    [ ("width", (toString cs.width)) 
-    , ("height", (toString cs.height))
+    [ ("width", (toString imageData.width)) 
+    , ("height", (toString imageData.height))
     ]
   ]
-  cs.width
-  cs.height
-  cs.data
+  imageData.width
+  imageData.height
+  imageData.data
 
 ------------
 -- canvas --

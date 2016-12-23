@@ -18,7 +18,7 @@ main =
 -- MODEL
 
 
-type alias Model = Canvas.Canvas
+type alias Model = Canvas.ImageData
 
 
 
@@ -28,8 +28,7 @@ model =
     width  = 500
     height = 400
   in
-  { id     = "the-canvas"
-  , width  = width
+  { width  = width
   , height = height
   , data   = 
       concat <| repeat (width * height) prettyBlue
@@ -51,6 +50,6 @@ view canvas =
   div 
   [] 
   [ p [] [ text "Elm-Canvas" ] 
-  , Canvas.toHtml canvas 
+  , Canvas.toHtml "the-canvas" canvas 
   ]
 
