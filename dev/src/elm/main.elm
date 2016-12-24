@@ -6,6 +6,7 @@ import Types            exposing (..)
 import View             exposing (view)
 import Maybe            exposing (withDefault)
 import Canvas           exposing (Pixel)
+import Color            exposing (Color, rgb)
 import Task             exposing (attempt)
 import Mouse            exposing (Position)
 import Line             exposing (line)
@@ -84,7 +85,7 @@ update message model =
           pixels =
             line mousePosition position
             |>map (accountForCanvasPosition canvasCoordinates)
-            |>pairWithColor (80, 0, 87, 255)
+            |>map (Pixel (rgb 80 0 87)) 
         in
         update (AppendPixels pixels) model_
       else
@@ -101,14 +102,10 @@ update message model =
     Populate ->
       (model, populate (model.canvasId))
 
-accountForCanvasPosition : (Int, Int) -> Canvas.Coordinate -> Canvas.Coordinate
-accountForCanvasPosition (x0, y0) (x1, y1) =
-  (x1 - x0, y1 - y0)
+accountForCanvasPosition : (Int, Int) -> Position -> Position
+accountForCanvasPosition (cx, cy) {x, y} =
+  Position (x - cx) (y - cx)
 
-
-pairWithColor : Canvas.Color -> List Canvas.Coordinate -> List Canvas.Pixel
-pairWithColor color =
-  map ((,) . color)
 
 
 handleDrawCompletion : List Canvas.Pixel -> Result Canvas.Error () -> Msg

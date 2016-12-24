@@ -1,57 +1,52 @@
 module Line exposing (..)
 
-import Canvas exposing (Coordinate, Pixel)
 import Mouse exposing (Position)
 
 
-line : Position -> Position -> List Coordinate
-line p0 p1 =
-  bresenhamLine (coordinate p0) (coordinate p1)
-
-
-coordinate : Position -> Coordinate
-coordinate {x, y} = (x, y)
+line : Position -> Position -> List Position
+line =
+  bresenhamLine
 
 
 type alias BresenhamStatics = 
-  { sx : Int, sy : Int, dx : Float, dy : Float, x1 : Int, y1 : Int}
+  { finish : Position, sx : Int, sy : Int, dx : Float, dy : Float }
 
 
-bresenhamLine : Coordinate -> Coordinate -> List Coordinate
-bresenhamLine (x0, y0) (x1, y1) =
+bresenhamLine : Position -> Position -> List Position
+bresenhamLine p q  =
   let
-    dx = (toFloat << abs) (x1 - x0)
-    sx = if x0 < x1 then 1 else -1
-    dy = (toFloat << abs) (y1 - y0)
-    sy = if y0 < y1 then 1 else -1
+    dx = (toFloat << abs) (q.x - p.x)
+    sx = if p.x < q.x then 1 else -1
+    dy = (toFloat << abs) (q.y - p.y)
+    sy = if p.y < q.y then 1 else -1
 
     error =
       (if dx > dy then dx else -dy) / 2
 
     statics = 
-      BresenhamStatics sx sy dx dy x1 y1
+      BresenhamStatics q sx sy dx dy 
   in
-  bresenhamLineLoop statics error (x0, y0) []
+  bresenhamLineLoop statics error p []
 
 
-bresenhamLineLoop : BresenhamStatics -> Float -> Coordinate -> List Coordinate -> List Coordinate
-bresenhamLineLoop statics error (x0, y0) coordinates =
+bresenhamLineLoop : BresenhamStatics -> Float -> Position -> List Position -> List Position
+bresenhamLineLoop statics error p positions =
   let 
-    coordinates_ = (x0, y0) :: coordinates 
-    {sx, sy, dx, dy, x1, y1} = statics
+    positions_ = p :: positions 
+    {sx, sy, dx, dy, finish} = statics
   in
-  if (x0 == x1) && (y0 == y1) then coordinates_
+  if (p.x == finish.x) && (p.y == finish.y) then positions_
   else
     let
-      (dErrX, x0_) =
-        if error > -dx then (-dy, sx + x0)
-        else (0, x0)
+      (dErrX, x) =
+        if error > -dx then (-dy, sx + p.x)
+        else (0, p.x)
 
-      (dErrY, y0_) =
-        if error < dy then (dx, sy + y0)
-        else (0, y0)
+      (dErrY, y) =
+        if error < dy then (dx, sy + p.y)
+        else (0, p.y)
 
       error_ = error + dErrX + dErrY
     in
-    bresenhamLineLoop statics error_ (x0_, y0_) coordinates_
+    bresenhamLineLoop statics error_ (Position x y) positions_
  

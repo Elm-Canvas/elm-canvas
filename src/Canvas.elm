@@ -18,8 +18,8 @@ type alias Position =
   { x : Int, y : Int }
 
 type alias Pixel      = 
-  { position : Position
-  , color    : Color
+  { color    : Color
+  , position : Position
   }
 
 
