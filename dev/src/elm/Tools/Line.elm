@@ -3,17 +3,12 @@ module Line exposing (..)
 import Mouse exposing (Position)
 
 
-line : Position -> Position -> List Position
-line =
-  bresenhamLine
-
-
 type alias BresenhamStatics = 
   { finish : Position, sx : Int, sy : Int, dx : Float, dy : Float }
 
 
-bresenhamLine : Position -> Position -> List Position
-bresenhamLine p q  =
+line : Position -> Position -> List Position
+line p q  =
   let
     dx = (toFloat << abs) (q.x - p.x)
     sx = if p.x < q.x then 1 else -1

@@ -21,7 +21,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
         var ctx = canvas.getContext('2d');
 
-        pixels = listToJSArray(pixels).map(tupleToPixel)
+        pixels = listToJSArray(pixels).map(formatPixel)
 
         pixels.forEach(function(pixel) {
           var imageData = ctx.createImageData(1,1);
@@ -42,14 +42,14 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     })
   }
 
-  function tupleToPixel(pixel) {
+  function formatPixel(pixel) {
     return {
-      r: pixel._1._0,
-      g: pixel._1._1,
-      b: pixel._1._2,
-      a: pixel._1._3,
-      x: pixel._0._0,
-      y: pixel._0._1,
+      r: pixel.color._0,
+      g: pixel.color._1,
+      b: pixel.color._2,
+      a: Math.floor(pixel.color._3 * 255),
+      x: pixel.position.x,
+      y: pixel.position.y,
     }
   }
 
