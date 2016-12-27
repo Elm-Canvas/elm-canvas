@@ -4,6 +4,10 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     // console.log(msg);
   }
 
+  function putPixels(canvas, pixels) {
+    console.log("CANVAS", canvas, "PIXELS", pixels)
+    return canvas;
+  }
 
   function setPixels(canvasId, pixels) {
     LOG("SET PIXELS");
@@ -21,7 +25,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
         var ctx = canvas.getContext('2d');
 
-        pixels = listToJSArray(pixels).map(formatPixel)
+        pixels = listToJSArray(pixels).map(formatPixel);
 
         pixels.forEach(function(pixel) {
           var imageData = ctx.createImageData(1,1);

@@ -17,14 +17,22 @@ import Debug            exposing (log)
 
 initModel : Model
 initModel =
-  { canvasId          = "the-canvas"
-  , mousePosition     = Position 0 0 
-  , mouseDown         = False
-  , pixelsToChange    = [] 
-  , canvasCoordinates = (300, 300)
-  , data              = 
-      repeat (400 * 400) [ 0, 0, 0, 255 ]
-      |>concat
+  { pixelsToChange = []
+  , canvas = 
+    { id = "the-canvas"
+    , imageData =
+      let
+        width = 300
+        height = 300
+      in
+      { width = width
+      , height = height
+      , data = 
+          [ 0, 0, 0, 255 ]
+          |>repeat (width * height)
+          |>concat
+      }
+    }
   }
 
 
@@ -33,88 +41,29 @@ main =
   { init          = (initModel, populate "the-canvas") 
   , view          = view
   , update        = update
-  , subscriptions = subscriptions
+  , subscriptions = always Sub.none
   }
 
 
-subscriptions : Model -> Sub Msg
-subscriptions {mouseDown} =
-  if mouseDown then
-    Sub.batch 
-    [ Mouse.moves SetPosition
-    , Mouse.ups HandleMouseUp 
-    ]
-  else
-    Mouse.moves SetPosition
+--subscriptions : Model -> Sub Msg
+--subscriptions {mouseDown} =
+--  if mouseDown then
+--    Sub.batch 
+--    [ Mouse.moves SetPosition
+--    , Mouse.ups HandleMouseUp 
+--    ]
+--  else
+--    Mouse.moves SetPosition
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update message model =
   case message of 
     Draw ->
-      let 
-        msg = 
-          let {canvasId, pixelsToChange} = model in
-          Canvas.setPixels canvasId pixelsToChange
-          |>attempt (handleDrawCompletion pixelsToChange)
-      in
-      ({ model | pixelsToChange = [] }, msg)
-
-    DrawError failedData err ->
-      let _ = Debug.crash "ERROR : " ++ (toString err) in
       (model, Cmd.none)
 
-    DrawSuccess ->
+    ClickCanvas i ->
+      let _ = log "I!" i in
       (model, Cmd.none)
-
-    HandleMouseDown ->
-      let {mousePosition} = model in
-      ({ model | mouseDown = True }, Cmd.none)
-
-    HandleMouseUp _ ->
-      ({ model | mouseDown = False }, Cmd.none)
-
-    SetPosition position ->
-      let 
-        {mousePosition, mouseDown, canvasCoordinates} = model
-        model_ =
-          { model | mousePosition = position}
-      in
-      if mouseDown then
-        let 
-          pixels =
-            line mousePosition position
-            |>map (accountForCanvasPosition canvasCoordinates)
-            |>map (Pixel (rgb 80 0 87)) 
-        in
-        update (AppendPixels pixels) model_
-      else
-        (model_, Cmd.none)
-
-    AppendPixels pixels ->
-      let {pixelsToChange} = model in
-      { model 
-      | pixelsToChange =
-          concat [ pixelsToChange, pixels ]
-      }
-      |>update Draw
-
-    Populate ->
-      (model, populate (model.canvasId))
-
-accountForCanvasPosition : (Int, Int) -> Position -> Position
-accountForCanvasPosition (cx, cy) {x, y} =
-  Position (x - cx) (y - cx)
-
-
-
-handleDrawCompletion : List Canvas.Pixel -> Result Canvas.Error () -> Msg
-handleDrawCompletion failedData result =
-  case result of
-    Err err ->
-      DrawError failedData err
-
-    Ok _ ->
-      DrawSuccess
 
 

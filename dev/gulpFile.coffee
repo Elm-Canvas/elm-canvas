@@ -52,7 +52,7 @@ gulp.task 'watch', ->
     server:   './public/*.html'
     stylus:   paths.css
     coffee:   paths.coffee
-    elm:      [ paths.elm, devSrc 'elm/*/**.js']
+    elm:      [ '../src/**/*', paths.elm, devSrc 'elm/*/**.js']
 
 gulp.task 'server', -> require './server'
 

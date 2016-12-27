@@ -5,8 +5,14 @@ import Html exposing (Html, Attribute)
 import Html.Attributes exposing (id, style)
 import Color exposing (Color)
 import Task exposing (Task)
+import List
 import Native.Canvas
 
+
+type alias Canvas =
+  { id        : String
+  , imageData : ImageData
+  }
 
 type alias ImageData =
   { width  : Int
@@ -30,6 +36,32 @@ type alias Pixel      =
 type Error 
   = CanvasDoesNotExist 
 
+--type Msg
+--  = SetPixels (List Pixel)
+
+
+--update : Msg -> Canvas -> (Canvas, Cmd Msg)
+--update msg c =
+--  case msg of
+--    SetPixels pixels ->
+--      let
+--        cmd = 
+--          setPixels c.id pixels
+--          |>attempt
+--      in
+
+
+putPixels : Canvas -> List Pixel -> Canvas
+putPixels =
+  Native.Canvas.putPixels
+
+
+
+
+
+
+
+
 ---------------
 -- setPixels --
 ---------------
@@ -49,18 +81,26 @@ setPixels canvasId pixels =
   Native.Canvas.setPixels canvasId pixels
 
 
-toHtml : String -> ImageData -> Html msg
-toHtml id_ imageData =
+toHtml : Canvas -> List (Attribute msg) -> Html msg
+toHtml c attr =
   Native.Canvas.canvas
-  [ id id_ 
-  , style
-    [ ("width", (toString imageData.width)) 
-    , ("height", (toString imageData.height))
-    ]
-  ]
-  imageData.width
-  imageData.height
-  imageData.data
+  (List.concat [ attr, [ id c.id ] ])
+  c.imageData.width
+  c.imageData.height
+  c.imageData.data
+
+--toHtml : String -> ImageData -> Html msg
+--toHtml id_ imageData =
+--  Native.Canvas.canvas
+--  [ id id_ 
+--  , style
+--    [ ("width", (toString imageData.width)) 
+--    , ("height", (toString imageData.height))
+--    ]
+--  ]
+--  imageData.width
+--  imageData.height
+--  imageData.data
 
 ------------
 -- canvas --

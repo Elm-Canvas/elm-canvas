@@ -5,19 +5,9 @@ import Canvas
 
 type Msg 
   = Draw
-  | DrawError (List Canvas.Pixel) Canvas.Error
-  | DrawSuccess
-  | HandleMouseDown
-  | HandleMouseUp Position
-  | SetPosition Position
-  | AppendPixels (List Canvas.Pixel)
-  | Populate
+  | ClickCanvas Int
 
 type alias Model =
-  { canvasId          : String
-  , mousePosition     : Position
-  , mouseDown         : Bool
-  , pixelsToChange    : List Canvas.Pixel
-  , canvasCoordinates : (Int, Int)
-  , data              : List Int
+  { canvas : Canvas.Canvas
+  , pixelsToChange : List Canvas.Pixel
   }
