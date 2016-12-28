@@ -7,22 +7,27 @@ import Types            exposing (..)
 import Components       exposing (..)
 import List             exposing (repeat, map, concat, range)
 import Array            exposing (Array, toIndexedList)
-import Canvas           exposing (canvas)
-import Json.Decode as Json
+import Canvas           exposing (canvas, Position)
 
-leftPos : Json.Decoder Int
-leftPos =
-  Json.at ["target", "offsetLeft"] Json.int
 
-leftPositionOnClick : (Int -> msg) -> Attribute msg
-leftPositionOnClick tagger =
-  on "click" (Json.map tagger leftPos)
+width : Int -> (String, String)
+width i =
+  ("width", (toString i) ++ "px")
+
+height : Int -> (String, String)
+height i =
+  ("height", (toString i) ++ "px")
 
 mainCanvas : Model -> Html Msg
-mainCanvas model = 
+mainCanvas {canvas} = 
   Canvas.toHtml 
-    model.canvas 
-    [ leftPositionOnClick ClickCanvas ]
+    canvas 
+    [ Canvas.onMouseDown ClickCanvas
+    , style
+      [ width canvas.imageData.width
+      , height canvas.imageData.height
+      ]
+    ]
 
 view : Model -> Html Msg
 view model =
@@ -38,9 +43,6 @@ view model =
     ]
   ]
 
-
-
---onMouseDown : ()
 
 top : Int -> (String, String)
 top t = ("top", toString t ++ "px")

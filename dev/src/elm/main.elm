@@ -17,8 +17,7 @@ import Debug            exposing (log)
 
 initModel : Model
 initModel =
-  { pixelsToChange = []
-  , canvas = 
+  { canvas = 
     { id = "the-canvas"
     , imageData =
       let
@@ -44,16 +43,9 @@ main =
   , subscriptions = always Sub.none
   }
 
-
---subscriptions : Model -> Sub Msg
---subscriptions {mouseDown} =
---  if mouseDown then
---    Sub.batch 
---    [ Mouse.moves SetPosition
---    , Mouse.ups HandleMouseUp 
---    ]
---  else
---    Mouse.moves SetPosition
+prettyBlue : Color
+prettyBlue =
+  rgb 23 92 254
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -62,8 +54,15 @@ update message model =
     Draw ->
       (model, Cmd.none)
 
-    ClickCanvas i ->
-      let _ = log "I!" i in
-      (model, Cmd.none)
+    ClickCanvas position ->
+      let
+        updatedCanvas =
+          Canvas.putPixels model.canvas []
+      in
+      ({ model 
+      | canvas = Canvas.putPixels model.canvas [ Pixel prettyBlue position ]
+      }
+      , Cmd.none)
+
 
 

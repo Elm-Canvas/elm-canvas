@@ -5,9 +5,8 @@ import Canvas
 
 type Msg 
   = Draw
-  | ClickCanvas Int
+  | ClickCanvas Position
 
 type alias Model =
   { canvas : Canvas.Canvas
-  , pixelsToChange : List Canvas.Pixel
   }

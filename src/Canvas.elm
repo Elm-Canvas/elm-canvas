@@ -3,11 +3,15 @@ module Canvas exposing (..)
 
 import Html exposing (Html, Attribute)
 import Html.Attributes exposing (id, style)
+import Html.Events      exposing (on)
 import Color exposing (Color)
 import Task exposing (Task)
 import List
 import Native.Canvas
+import Json.Decode exposing (..)
+import Json.Decode as Json
 
+import Debug exposing (log)
 
 type alias Canvas =
   { id        : String
@@ -51,6 +55,8 @@ type Error
 --      in
 
 
+
+
 putPixels : Canvas -> List Pixel -> Canvas
 putPixels =
   Native.Canvas.putPixels
@@ -58,7 +64,30 @@ putPixels =
 
 
 
+onMouseDown : (Position -> msg) -> Attribute msg
+onMouseDown message =
+  on "mousedown" <| Json.map (canvasPosition >> message) positionDecoder
 
+
+canvasPosition : (Position, Position) -> Position
+canvasPosition (client, offset) =
+  Position (client.x - offset.x) (client.y - offset.y)
+
+
+positionDecoder : Json.Decoder (Position, Position)
+positionDecoder = 
+  at ["target"] (toPosition "offsetLeft" "offsetTop")
+  |>Json.map2 (,) (toPosition "clientX" "clientY")
+
+
+toPosition : String -> String -> Json.Decoder Position
+toPosition x y =
+  Json.map2 Position (field_ x) (field_ y)
+
+
+field_ : String -> Json.Decoder Int
+field_ key =
+  field key Json.int
 
 
 
