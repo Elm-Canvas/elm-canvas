@@ -60,7 +60,10 @@ update message model =
           Canvas.putPixels model.canvas []
       in
       ({ model 
-      | canvas = Canvas.putPixels model.canvas [ Pixel prettyBlue position ]
+      | canvas = 
+          Canvas.putPixels 
+            model.canvas 
+            [ Pixel prettyBlue position ]
       }
       , Cmd.none)
 

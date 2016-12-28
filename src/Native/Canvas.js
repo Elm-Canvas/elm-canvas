@@ -154,6 +154,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
 
   return {
+    putPixels: F2(putPixels),
     setPixels: F2(setPixels),
     canvas: F4(canvas)
   };

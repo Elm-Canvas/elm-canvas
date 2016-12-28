@@ -66,11 +66,11 @@ putPixels =
 
 onMouseDown : (Position -> msg) -> Attribute msg
 onMouseDown message =
-  on "mousedown" <| Json.map (canvasPosition >> message) positionDecoder
+  on "mousedown" <| Json.map (positionInCanvas >> message) positionDecoder
 
 
-canvasPosition : (Position, Position) -> Position
-canvasPosition (client, offset) =
+positionInCanvas : (Position, Position) -> Position
+positionInCanvas (client, offset) =
   Position (client.x - offset.x) (client.y - offset.y)
 
 
