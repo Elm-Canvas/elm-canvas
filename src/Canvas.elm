@@ -35,26 +35,7 @@ type alias Pixel =
 
 type alias Index = Int
 
---fromPixels : List Pixel -> ImageData
---fromPixels pixels =
 
-
-type Error 
-  = CanvasDoesNotExist 
-
---type Msg
---  = SetPixels (List Pixel)
-
-
---update : Msg -> Canvas -> (Canvas, Cmd Msg)
---update msg c =
---  case msg of
---    SetPixels pixels ->
---      let
---        cmd = 
---          setPixels c.id pixels
---          |>attempt
---      in
 
 toData : Int -> Pixel -> List (Index, Int)
 toData width {color, position} =
@@ -124,25 +105,6 @@ field_ key =
 
 
 
----------------
--- setPixels --
----------------
--- a function that dictates color changes
--- to specific pixel coordinates on a
--- specific canvas
-
--- PARAMETER canvasID
--- Which canvas element should be modified
-
--- PARAMETER pixels
--- A list of pixels, as in, a list of colors and
--- coordinates paired together, with the intention
--- that the coordinates become those colors
-setPixels : String -> List Pixel -> Task Error ()
-setPixels canvasId pixels =
-  Native.Canvas.setPixels canvasId pixels
-
-
 toHtml : Canvas -> List (Attribute msg) -> Html msg
 toHtml c attr =
   Native.Canvas.canvas
@@ -151,18 +113,6 @@ toHtml c attr =
   c.imageData.height
   c.imageData.data
 
---toHtml : String -> ImageData -> Html msg
---toHtml id_ imageData =
---  Native.Canvas.canvas
---  [ id id_ 
---  , style
---    [ ("width", (toString imageData.width)) 
---    , ("height", (toString imageData.height))
---    ]
---  ]
---  imageData.width
---  imageData.height
---  imageData.data
 
 ------------
 -- canvas --
