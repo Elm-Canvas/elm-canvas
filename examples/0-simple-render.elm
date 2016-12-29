@@ -1,7 +1,8 @@
 import Html exposing (p, text, div, Html)
 import Html.Attributes exposing (id, style)
-import Canvas
+import Canvas exposing (Canvas)
 import List exposing (repeat, concat)
+import Array exposing (fromList)
 
 
 
@@ -18,7 +19,7 @@ main =
 -- MODEL
 
 
-type alias Model = Canvas.ImageData
+type alias Model = Canvas
 
 
 
@@ -28,11 +29,18 @@ model =
     width  = 500
     height = 400
   in
-  { width  = width
-  , height = height
-  , data   = 
-      concat <| repeat (width * height) prettyBlue
+  { id = "the-canvas"
+  , imageData =
+    { width  = width
+    , height = height
+    , data   = 
+        prettyBlue
+        |>repeat (width * height)
+        |>concat
+        |>fromList
+    }
   }
+
 
 
 prettyBlue : List Int
@@ -50,6 +58,6 @@ view canvas =
   div 
   [] 
   [ p [] [ text "Elm-Canvas" ] 
-  , Canvas.toHtml "the-canvas" canvas 
+  , Canvas.toHtml canvas []
   ]
 

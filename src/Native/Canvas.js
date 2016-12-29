@@ -67,7 +67,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     var model = {
       width:  width,
       height: height,
-      data:   listToJSArray(data)
+      data: _elm_lang$core$Native_Array.toJSArray(data)
     };
     return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation);
   }
