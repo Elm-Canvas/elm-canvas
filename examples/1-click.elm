@@ -1,32 +1,26 @@
 import Html exposing (p, text, div, Html)
 import Html.Attributes exposing (id, style)
-import Canvas
+import Canvas exposing (Canvas, Pixel)
 import List exposing (repeat, concat)
 import Mouse exposing (Position)
-
+import Array exposing (fromList)
+import Color exposing (rgb, Color)
 
 
 
 main = 
   Html.program
-  { model  = model 
+  { init  = (model, Cmd.none) 
   , view   = view 
   , update = update
+  , subscriptions = always Sub.none
   }
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-  Mouse.downs Draw
 
 
 -- MODEL
 
 
-type alias Model = Canvas.ImageData
+type alias Model = Canvas
 
 
 type Msg
@@ -39,10 +33,16 @@ model =
     width  = 500
     height = 400
   in
-  { width  = width
-  , height = height
-  , data   = 
-      concat <| repeat (width * height) black
+  { id = "the-canvas"
+  , imageData =
+    { width  = width
+    , height = height
+    , data   = 
+        black
+        |>repeat (width * height)
+        |>concat
+        |>fromList
+    }
   }
 
 
@@ -51,38 +51,38 @@ black =
   [ 0, 0, 0, 255 ]
 
 
-prettyBlue : List Int
+prettyBlue : Color
 prettyBlue =
-  [ 23, 92, 254, 255 ]
-
+  rgb 23 92 254
 
 
 -- UPDATE
 
 
-update : Model -> Msg -> (Model, Cmd Msg)
-update model message =
+update :  Msg -> Canvas -> (Canvas, Cmd Msg)
+update message canvas =
   case message of 
 
     Draw position ->
-      let
-
-
-
-
+      let 
+        updatedCanvas =
+          Canvas.putPixels
+            canvas
+            [ Pixel prettyBlue position ]
+      in
+      (updatedCanvas, Cmd.none)
 
 
 -- VIEW
 
 
 
-view : Model -> Html msg
+view : Canvas -> Html Msg
 view canvas =
   div 
   [] 
-  [ p [] [ text "Elm-Canvas" ] 
-  , Canvas.toHtml "the-canvas" canvas 
+  [ p [] [ text "Elm-Canvas" ]
+  , Canvas.toHtml 
+      canvas 
+      [ Canvas.onMouseDown Draw ]
   ]
-
-
-

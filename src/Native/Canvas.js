@@ -1,7 +1,7 @@
 var _Chadtech$elm_canvas$Native_Canvas = function () {
 
   function LOG(msg) {
-    // console.log(msg);
+    console.log(msg);
   }
 
   function putPixels(canvas, newData) {
@@ -19,7 +19,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
         var pixel = formatPixel(newData._0);
 
         var imageData = ctx.createImageData(1, 1);
-        var data = imageData.data
+        var data = imageData.data;
 
         data[0] = pixel.r;
         data[1] = pixel.g;
@@ -47,23 +47,8 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     }
   }
 
-
-  function listToJSArray(list) {
-    var output = [];
-    while (list.ctor == "::") {
-      output.push(list._0);
-      list = list._1;
-    }
-    return output;
-  }
-
-
-  function canvasPatch(domNode, data) {
-    return drawCanvas(domNode, data.model);
-  }
-
-
   function canvas(factList, width, height, data) {
+    LOG("CANVAS")
     var model = {
       width:  width,
       height: height,
@@ -98,23 +83,13 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
 
   function renderCanvas(model) {
-    LOG('Render canvas');
+    LOG('RENDER CANVAS');
     return drawCanvas(document.createElement('canvas'), model);
   }
 
 
-  function dataToString(data) {
-    if (data.length === 0) { 
-      return ""; 
-    }
-
-    return data.map(String).reduce(function(memo, item) {
-      return memo + item;
-    });
-  }
-
-
   function diff(oldModel, newModel) {
+    LOG("DIFF")
 
     newModel.model.cache = oldModel.model.cache;
 
