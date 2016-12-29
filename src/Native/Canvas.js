@@ -4,9 +4,34 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     // console.log(msg);
   }
 
-  function putPixels(canvas, pixels) {
-    console.log("CANVAS", canvas, "PIXELS", pixels)
-    return canvas;
+  function putPixels(elmCanvas, newData) {
+
+    var canvasEl = document.getElementById(elmCanvas.id)  
+
+    if (canvasEl === null) {
+      return elmCanvas;
+    } else {
+
+      var ctx = canvasEl.getContext('2d');
+
+      while (newData.ctor == "::") {
+        var pixel = formatPixel(newData._0);
+
+        var imageData = ctx.createImageData(1, 1);
+        var data = imageData.data
+
+        data[0] = pixel.r;
+        data[1] = pixel.g;
+        data[2] = pixel.b;
+        data[3] = pixel.a;
+
+        ctx.putImageData(imageData, pixel.x, pixel.y);
+
+        newData = newData._1;
+      }
+    }
+
+    return elmCanvas;
   }
 
   function setPixels(canvasId, pixels) {

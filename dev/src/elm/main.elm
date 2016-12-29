@@ -1,6 +1,7 @@
 import Html             exposing (p, text)
 import Html.Attributes  exposing (class)
 import List             exposing (repeat, map, range, concat)
+import Array            exposing (fromList)
 import Array            exposing (Array, fromList, push, get, set)
 import Types            exposing (..)
 import View             exposing (view)
@@ -30,6 +31,7 @@ initModel =
           [ 0, 0, 0, 255 ]
           |>repeat (width * height)
           |>concat
+          |>fromList
       }
     }
   }
@@ -55,10 +57,6 @@ update message model =
       (model, Cmd.none)
 
     ClickCanvas position ->
-      let
-        updatedCanvas =
-          Canvas.putPixels model.canvas []
-      in
       ({ model 
       | canvas = 
           Canvas.putPixels 

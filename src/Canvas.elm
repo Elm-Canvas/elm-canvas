@@ -7,9 +7,10 @@ import Html.Events      exposing (on)
 import Color exposing (Color)
 import Task exposing (Task)
 import List
+import Array exposing (Array)
 import Native.Canvas
-import Json.Decode exposing (..)
 import Json.Decode as Json
+import Color exposing (toRgb)
 
 import Debug exposing (log)
 
@@ -21,17 +22,18 @@ type alias Canvas =
 type alias ImageData =
   { width  : Int
   , height : Int
-  , data   : List Int
+  , data   : Array Int
   }
 
 type alias Position = 
   { x : Int, y : Int }
 
-type alias Pixel      = 
+type alias Pixel = 
   { color    : Color
   , position : Position
   }
 
+type alias Index = Int
 
 --fromPixels : List Pixel -> ImageData
 --fromPixels pixels =
@@ -54,14 +56,45 @@ type Error
 --          |>attempt
 --      in
 
+toData : Int -> Pixel -> List (Index, Int)
+toData width {color, position} =
+  let
+    i = 
+      position.x + (width * position.y)
 
+    {red, green, blue, alpha} =
+      toRgb color
+  in
+  [ (i, red)
+  , (i + 1, green)
+  , (i + 2, blue)
+  , (i + 3, round (alpha * 255))
+  ]
+
+
+insertDatum : (Index, Int) -> Array Int -> Array Int
+insertDatum (index, datum) data =
+  Array.set index datum data
 
 
 putPixels : Canvas -> List Pixel -> Canvas
-putPixels =
-  Native.Canvas.putPixels
+putPixels {id, imageData} pixels =
+  let
+    newData =
+      List.concat <|
+      List.map (toData imageData.width) pixels
 
-
+    canvas =
+      Canvas id
+      { imageData 
+      | data =
+          pixels
+          |>List.map (toData imageData.width)
+          |>List.concat
+          |>List.foldr insertDatum imageData.data
+      }
+  in
+  Native.Canvas.putPixels canvas pixels
 
 
 onMouseDown : (Position -> msg) -> Attribute msg
@@ -76,7 +109,7 @@ positionInCanvas (client, offset) =
 
 positionDecoder : Json.Decoder (Position, Position)
 positionDecoder = 
-  at ["target"] (toPosition "offsetLeft" "offsetTop")
+  Json.at ["target"] (toPosition "offsetLeft" "offsetTop")
   |>Json.map2 (,) (toPosition "clientX" "clientY")
 
 
@@ -87,7 +120,7 @@ toPosition x y =
 
 field_ : String -> Json.Decoder Int
 field_ key =
-  field key Json.int
+  Json.field key Json.int
 
 
 
