@@ -1,5 +1,5 @@
-import Html exposing (p, text, div, input, Html)
-import Html.Attributes exposing (id, style, type_, value)
+import Html exposing (p, text, div, canvas, Html)
+import Html.Attributes exposing (id, style)
 import Html.Events exposing (..)
 import Canvas exposing (Canvas, Pixel)
 import List exposing (repeat, concat)
@@ -84,7 +84,7 @@ update message model =
       { model
       | canvas =
           Canvas.putPixels
-            model.canvas
+            canvas
             [ Pixel prettyBlue position ]
       }
       Cmd.none
@@ -114,4 +114,3 @@ view {canvas, snapshot} =
 
 
 
-  

@@ -12,6 +12,9 @@ import Json.Decode as Json
 import Color exposing (toRgb)
 
 
+-- TYPES
+
+
 type alias Canvas =
   { id        : String
   , imageData : ImageData
@@ -38,6 +41,28 @@ type alias Pixel =
 type alias Index = Int
 
 
+-- putPixels
+
+
+putPixels : Canvas -> List Pixel -> Canvas
+putPixels {id, imageData} pixels =
+  let
+    newData =
+      List.concat <|
+      List.map (toData imageData.width) pixels
+
+    canvas =
+      Canvas id
+      { imageData 
+      | data =
+          pixels
+          |>List.map (toData imageData.width)
+          |>List.concat
+          |>List.foldr insertDatum imageData.data
+      }
+  in
+  Native.Canvas.putPixels canvas pixels
+
 
 toData : Int -> Pixel -> List (Index, Int)
 toData width {color, position} =
@@ -60,24 +85,9 @@ insertDatum (index, datum) data =
   Array.set index datum data
 
 
-putPixels : Canvas -> List Pixel -> Canvas
-putPixels {id, imageData} pixels =
-  let
-    newData =
-      List.concat <|
-      List.map (toData imageData.width) pixels
 
-    canvas =
-      Canvas id
-      { imageData 
-      | data =
-          pixels
-          |>List.map (toData imageData.width)
-          |>List.concat
-          |>List.foldr insertDatum imageData.data
-      }
-  in
-  Native.Canvas.putPixels canvas pixels
+
+-- onMouseDown
 
 
 onMouseDown : (Position -> msg) -> Attribute msg
@@ -107,14 +117,6 @@ field_ key =
 
 
 
-toHtml : Canvas -> List (Attribute msg) -> Html msg
-toHtml c attr =
-  Native.Canvas.canvas
-  (List.concat [ attr, [ id c.id ] ])
-  c.imageData.width
-  c.imageData.height
-  c.imageData.data
-
 
 ------------
 -- canvas --
@@ -142,7 +144,13 @@ canvas attr width height data =
   Native.Canvas.canvas attr width height data
 
 
-
+toHtml : Canvas -> List (Attribute msg) -> Html msg
+toHtml c attr =
+  Native.Canvas.canvas
+  (List.concat [ attr, [ id c.id ] ])
+  c.imageData.width
+  c.imageData.height
+  c.imageData.data
 
 
 

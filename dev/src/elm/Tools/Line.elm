@@ -8,7 +8,7 @@ type alias BresenhamStatics =
 
 
 line : Position -> Position -> List Position
-line p q  =
+line p q =
   let
     dx = (toFloat << abs) (q.x - p.x)
     sx = if p.x < q.x then 1 else -1
