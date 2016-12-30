@@ -1,11 +1,12 @@
-import Html exposing (p, text, div, Html)
+import Html exposing (p, text, div, canvas, Html)
 import Html.Attributes exposing (id, style)
+import Html.Events exposing (..)
 import Canvas exposing (Canvas, Pixel)
 import List exposing (repeat, concat)
 import Mouse exposing (Position)
 import Array exposing (fromList)
 import Color exposing (rgb, Color)
-
+import Debug exposing (log)
 
 
 main = 
@@ -27,7 +28,7 @@ type Msg
   = Draw Position
 
 
-model : Model
+model : Canvas
 model =
   let
     width  = 500
@@ -56,10 +57,11 @@ prettyBlue =
   rgb 23 92 254
 
 
+
 -- UPDATE
 
 
-update :  Msg -> Canvas -> (Canvas, Cmd Msg)
+update :  Msg -> Model -> (Model, Cmd Msg)
 update message canvas =
   case message of 
 
@@ -73,11 +75,12 @@ update message canvas =
       (updatedCanvas, Cmd.none)
 
 
+
 -- VIEW
 
 
 
-view : Canvas -> Html Msg
+view : Model -> Html Msg
 view canvas =
   div 
   [] 

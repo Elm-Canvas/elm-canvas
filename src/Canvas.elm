@@ -3,21 +3,20 @@ module Canvas exposing (..)
 
 import Html exposing (Html, Attribute)
 import Html.Attributes exposing (id, style)
-import Html.Events      exposing (on)
+import Html.Events exposing (on)
 import Color exposing (Color)
-import Task exposing (Task)
 import List
 import Array exposing (Array)
 import Native.Canvas
 import Json.Decode as Json
 import Color exposing (toRgb)
 
-import Debug exposing (log)
 
 type alias Canvas =
   { id        : String
   , imageData : ImageData
   }
+
 
 type alias ImageData =
   { width  : Int
@@ -25,13 +24,16 @@ type alias ImageData =
   , data   : Array Int
   }
 
+
 type alias Position = 
   { x : Int, y : Int }
+
 
 type alias Pixel = 
   { color    : Color
   , position : Position
   }
+
 
 type alias Index = Int
 

@@ -39,7 +39,7 @@ initModel =
 
 main =
   Html.program
-  { init          = (initModel, populate "the-canvas") 
+  { init          = (initModel, Cmd.none) 
   , view          = view
   , update        = update
   , subscriptions = always Sub.none
