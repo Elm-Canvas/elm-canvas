@@ -10,7 +10,7 @@ import Array exposing (Array)
 import Native.Canvas
 import Json.Decode as Json
 import Color exposing (toRgb)
-
+import Debug exposing (log)
 
 -- TYPES
 
@@ -41,34 +41,61 @@ type alias Pixel =
 type alias Index = Int
 
 
+blank : String -> Int -> Int -> Color -> Canvas
+blank id width height color =
+  let {red, green, blue, alpha} = toRgb color in
+  [ red, green, blue, round (alpha * 255) ]
+  |>List.repeat (width * height)
+  |>List.concat
+  |>Array.fromList
+  |>ImageData width height 
+  |>Canvas id
+
+
+-- putImageData 
+
+
+putImageData : ImageData -> Position -> Canvas -> Canvas
+putImageData {width, height, data} position {id, imageData} =
+  data
+  |>Array.toIndexedList
+  |>List.map (addIndex (getIndex width position))
+  |>List.foldr putDatum data
+  |>ImageData width height
+  |>Canvas id
+  |>Native.Canvas.putImageData (ImageData width height data) position
+
+
+putDatum : (Int, Int) -> Array Int -> Array Int
+putDatum (index, datum) data =
+  Array.set index datum data
+
+
+addIndex : Int -> (Int, Int) -> (Int, Int)
+addIndex index_ (index, datum) =
+  (index_ + index, datum)
+
+
 -- putPixels
 
 
-putPixels : Canvas -> List Pixel -> Canvas
-putPixels {id, imageData} pixels =
-  let
-    newData =
-      List.concat <|
-      List.map (toData imageData.width) pixels
-
-    canvas =
-      Canvas id
-      { imageData 
-      | data =
-          pixels
-          |>List.map (toData imageData.width)
-          |>List.concat
-          |>List.foldr insertDatum imageData.data
-      }
-  in
-  Native.Canvas.putPixels canvas pixels
+putPixels : List Pixel -> Canvas -> Canvas
+putPixels pixels {id, imageData} =
+  { imageData 
+  | data =
+      pixels
+      |>List.map (toData imageData.width)
+      |>List.concat
+      |>List.foldr insertDatum imageData.data
+  }
+  |>Canvas id
+  |>Native.Canvas.putPixels pixels
 
 
 toData : Int -> Pixel -> List (Index, Int)
 toData width {color, position} =
   let
-    i = 
-      position.x + (width * position.y)
+    i = getIndex width position
 
     {red, green, blue, alpha} =
       toRgb color
@@ -85,6 +112,9 @@ insertDatum (index, datum) data =
   Array.set index datum data
 
 
+getIndex : Int -> Position -> Int
+getIndex width {x, y} = 
+  (x + (width * y)) * 4
 
 
 -- onMouseDown
@@ -114,8 +144,6 @@ toPosition x y =
 field_ : String -> Json.Decoder Int
 field_ key =
   Json.field key Json.int
-
-
 
 
 ------------

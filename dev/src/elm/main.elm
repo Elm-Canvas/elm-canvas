@@ -1,4 +1,4 @@
-import Html exposing (p, text, div, input, Html)
+import Html exposing (..)
 import Html.Attributes exposing (id, style, type_, value)
 import Html.Events exposing (..)
 import Canvas exposing (Canvas, Pixel)
@@ -34,43 +34,20 @@ type Msg
 
 
 
-blankCanvas : Canvas
-blankCanvas =
-  let
-    width  = 500
-    height = 400
-  in
-  { id = "the-canvas"
-  , imageData =
-    { width  = width
-    , height = height
-    , data   = 
-        black
-        |>repeat (width * height)
-        |>concat
-        |>fromList
-    }
-  }
+initCanvas : String -> Canvas
+initCanvas id =
+  Canvas.blank id 500 400 Color.black
+
 
 
 init : Model
 init =
-  { canvas = blankCanvas
-  , snapshot = blankCanvas
+  { canvas = initCanvas "canvas"
+  , snapshot = initCanvas "snapshot"
   }
 
 
-
-black : List Int
-black =
-  [ 0, 0, 0, 255 ]
-
-
-prettyBlue : Color
-prettyBlue =
-  rgb 23 92 254
-
-
+origin = Position 0 0
 
 -- UPDATE
 
@@ -80,17 +57,25 @@ update message model =
   case message of 
 
     Draw position ->
-      (,)
-      { model
-      | canvas =
-          Canvas.putPixels
-            model.canvas
-            [ Pixel prettyBlue position ]
-      }
-      Cmd.none
+      let 
+        bluePixel = [ Pixel Color.blue position ] 
+
+        {canvas} = model
+      in
+        (,)
+        { model | canvas = Canvas.putPixels bluePixel canvas }
+        Cmd.none
 
     TakeSnapshot ->
-      ({ model | snapshot = model.canvas }, Cmd.none)
+      (,)
+      { model 
+      | snapshot = 
+          Canvas.putImageData 
+            model.canvas.imageData 
+            origin 
+            model.snapshot
+      }
+      Cmd.none
 
 
 
@@ -102,16 +87,23 @@ view : Model -> Html Msg
 view {canvas, snapshot} =
   div 
   [] 
-  [ p [] [ text "Elm-Canvas" ]
-  , Canvas.toHtml canvas [ Canvas.onMouseDown Draw ]
-  , Canvas.toHtml snapshot []
+  [ p 
+    [] 
+    [ text "Elm-Canvas" ]
+
   , input 
     [ type_ "submit"
     , value "take snapshot" 
     , onClick TakeSnapshot
     ] []
+  , div 
+    []
+    [ p [] [ text "draw here" ]
+    , Canvas.toHtml canvas [ Canvas.onMouseDown Draw ]
+    , p [] [ text "snap shot:"]
+    , Canvas.toHtml snapshot []
+    ]
   ]
 
 
 
-  

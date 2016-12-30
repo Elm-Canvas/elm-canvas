@@ -1,51 +1,31 @@
 import Html exposing (p, text, div, Html)
-import Html.Attributes exposing (id, style)
 import Canvas exposing (Canvas)
-import List exposing (repeat, concat)
-import Array exposing (fromList)
+import Color exposing (Color)
 
 
 
 
 main =
   Html.beginnerProgram
-  { model  = model
+  { model  = canvas
   , view   = view
   , update = identity
   }
 
 
 
+
 -- MODEL
 
 
-type alias Model = Canvas
+canvas : Canvas
+canvas =
+  Canvas.blank "the-canvas" 500 400 prettyBlue
 
 
-
-model : Model
-model =
-  let
-    width  = 500
-    height = 400
-  in
-  { id = "the-canvas"
-  , imageData =
-    { width  = width
-    , height = height
-    , data   = 
-        prettyBlue
-        |>repeat (width * height)
-        |>concat
-        |>fromList
-    }
-  }
-
-
-
-prettyBlue : List Int
+prettyBlue : Color
 prettyBlue =
-  [ 23, 92, 254, 255 ]
+  Color.rgb 23 92 256
 
 
 
@@ -53,7 +33,7 @@ prettyBlue =
 
 
 
-view : Model -> Html msg
+view : Canvas -> Html msg
 view canvas =
   div 
   [] 

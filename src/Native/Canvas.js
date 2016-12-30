@@ -4,7 +4,36 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     // console.log(msg);
   }
 
-  function putPixels(canvas, newData) {
+  function putImageData(imageData, position, canvas) {
+
+    var el = document.getElementById(canvas.id)  
+
+    if (el === null) {
+      return canvas;
+    } else {
+
+      var ctx = el.getContext('2d');
+
+      var data = _elm_lang$core$Native_Array.toJSArray(imageData.data);
+
+      var imageData_ = ctx.createImageData(imageData.width, imageData.height);
+      var data_ = imageData_.data;
+
+
+      var i = 0;
+      while (i < data.length) {
+        data_[i] = data[i]
+        i++;
+      }
+
+      ctx.putImageData(imageData_, position.x, position.y);
+
+    }
+
+    return canvas;
+  }
+
+  function putPixels(newData, canvas) {
     LOG("PUT PIXELS");
 
     var el = document.getElementById(canvas.id)  
@@ -103,6 +132,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
   return {
     putPixels: F2(putPixels),
+    putImageData: F3(putImageData),
     canvas: F4(canvas)
   };
 }();
