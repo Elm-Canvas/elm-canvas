@@ -56,27 +56,30 @@ blank id width height color =
 
 
 putImageData : ImageData -> Position -> Canvas -> Canvas
-putImageData {width, height, data} position {id, imageData} =
-  data
-  |>Array.toIndexedList
-  |>List.map (addIndex (getIndex width position))
-  |>List.foldr putDatum data
-  |>ImageData width height
-  |>Canvas id
-  |>Native.Canvas.putImageData (ImageData width height data) position
+putImageData imageData position canvas =
+  Native.Canvas.putImageData 
+    imageData 
+    position
+    { canvas 
+    | imageData =
+      { imageData 
+      | data = 
+          Array.foldr 
+            (putDatum (getIndex (4 * imageData.width) position)) 
+            imageData.data
+            (Array.indexedMap (,) imageData.data)
+      }  
+    }
 
 
-putDatum : (Int, Int) -> Array Int -> Array Int
-putDatum (index, datum) data =
-  Array.set index datum data
+putDatum : Int -> (Int, Int) -> Array Int -> Array Int
+putDatum indexShift (index, datum) data =
+  Array.set (index + indexShift) datum data
 
-
-addIndex : Int -> (Int, Int) -> (Int, Int)
-addIndex index_ (index, datum) =
-  (index_ + index, datum)
 
 
 -- putPixels
+
 
 
 putPixels : List Pixel -> Canvas -> Canvas

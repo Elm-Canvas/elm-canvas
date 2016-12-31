@@ -9,20 +9,19 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     var el = document.getElementById(canvas.id)  
 
     if (el === null) {
+
       return canvas;
+    
     } else {
 
-      var ctx = el.getContext('2d');
-
-      var data = _elm_lang$core$Native_Array.toJSArray(imageData.data);
-
+      var ctx        = el.getContext('2d');
+      var data       = _elm_lang$core$Native_Array.toJSArray(imageData.data);
       var imageData_ = ctx.createImageData(imageData.width, imageData.height);
-      var data_ = imageData_.data;
-
+      var data_      = imageData_.data;
 
       var i = 0;
       while (i < data.length) {
-        data_[i] = data[i]
+        data_[i] = data[i];
         i++;
       }
 
@@ -31,6 +30,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     }
 
     return canvas;
+
   }
 
   function putPixels(newData, canvas) {
