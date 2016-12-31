@@ -11,11 +11,15 @@ The canvas element has three properties, width, height, and data. The width and 
 The data property of the canvas element is the color information in the canvas. Its a little tricky to explain, but straight forward once you understand it. The data property is an array of numbers. Each number is a color value for a pixel. The first four numbers are the red, green, blue, and alpha values of the first pixel (the one in the upper left most corner). The next four are the red, green, blue, and alpha values for the next pixel, which is the pixel to the right of the first pixel.
 
 ``` Elm
-  -- 3x2 canvas :
+  --  canvas thats three pixels wide and two pixels tall :
 
-  --  red | white | red
+  --       |       | 
+  --   red | white | red
+  --       |       | 
   --  -------------------
+  --       |       | 
   --   red | black | black
+  --       |       |
 
   data =
   --  first pixel (red)        second pixel (white)     third pixel (red)
