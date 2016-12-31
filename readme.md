@@ -18,11 +18,11 @@ The data property of the canvas element is the color information in the canvas. 
   --   red | black | black
 
   data =
-  --   first pixel (red)      second pixel (white)     third pixel (red)
+  --  first pixel (red)        second pixel (white)     third pixel (red)
   --  red  green blue alpha    red  green blue alpha    red  green blue alpha
     [ 255,   0,    0, 255,     255, 255,  255, 255,     255, 255,  255, 255
     , 255,   0,    0, 255,       0,   0,    0, 255,       0,   0,   0,  255
-  --   fourth pixel (red)    fifth pixel (black)       sixth pixel (black)
+  --  fourth pixel (red)      fifth pixel (black)       sixth pixel (black)
     ]
 
 ```
