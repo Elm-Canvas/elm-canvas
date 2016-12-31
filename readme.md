@@ -54,9 +54,9 @@ Think hard before choosing to use the Elm Canvas library! For most use cases, th
 
 1 Rewrite the canvas.elm comments in a style consist with that of other elm modules
 
-2 develop a technique of how canvas should be used in Elm.
+2 develop a technique of how canvas should be used in Elm
 
-3 Make a pasteCanvas or pasteImage function. 
+~~3 Make a pasteCanvas or pasteImage function. ~~ putImageData implemented but its very sloooooooow
 
 ##Concerns
 
