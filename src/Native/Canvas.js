@@ -26,7 +26,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
       }
 
       ctx.putImageData(imageData_, position.x, position.y);
-      canvas.imageData.data = _elm_lang$core$Native_Array.fromJSArray(data);
+      canvas.imageData.data = _elm_lang$core$Native_Array.fromJSArray(data_);
 
     }
 
