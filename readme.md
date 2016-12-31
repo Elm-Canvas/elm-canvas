@@ -4,40 +4,42 @@ Making the canvas API accessible within Elm. The canvas element is a very simple
 
 ## What is the canvas element?
 
-The canvas element is a unique html element with mutable image data. By modification of the canvas elements data, the color value of individual pixels on the screen can be set. The basic definition of the canvas data type is..
+The canvas element is a unique html element that contains image data. The canvas element presents its image data, and by modification to the canvas elements image data you can change what is rendered. 
+
+The canvas element has three properties, width, height, and data. The width and height are the resolution of the canvas- NOT the actual dimensions of the canvas. To set the width and height of a canvas, one must set the width and height properties in the style of the element. If the styles width and the canvass width are not equal, the pixels wont be rendered as perfeclty square.
+
+The data property of the canvas element is the color information in the canvas. Its a little tricky to explain, but straight forward once you understand it. The data property is an array of numbers. Each number is a color value for a pixel. The first four numbers are the red, green, blue, and alpha values of the first pixel (the one in the upper left most corner). The next four are the red, green, blue, and alpha values for the next pixel, which is the pixel to the right of the first pixel.
 
 ``` Elm
-  type alias Canvas =
-    { width : Int
-    , height : Int
-    , data : List Int
-    }
+  -- 3x2 canvas :
+
+  --  red | white | red
+  --  -------------------
+  --   red | black | black
+
+  data =
+  --   first pixel (red)      second pixel (white)     third pixel (red)
+  --  red  green blue alpha    red  green blue alpha    red  green blue alpha
+    [ 255,   0,    0, 255,     255, 255,  255, 255,     255, 255,  255, 255
+    , 255,   0,    0, 255,       0,   0,    0, 255,       0,   0,   0,  255
+  --   fourth pixel (red)    fifth pixel (black)       sixth pixel (black)
+    ]
+
 ```
 
-The data property is a list of color values in the canvas element, where the first four represent the red, green, blue, and alpha levels of the upper left most pixel, and the second four represent the rgba values of the pixel to the right of the upper left most, etc. The data property is always width * height * 4 long, Four ints for each pixel in the canvas.
-
-```
-  data = [ r0, g0, b0, a0, r1, g1, b1, a1, ... , rn, gn, bn, an ]
-  for a canvas with n pixels, and where ri is the red value at pixel i. 
-  
-  Pixel i has the x and y coordinates of (i % width, i // width)
-```
-
-Width and height are the vertical and horizontal _resolutions_ of the canvas element, not the width and height of the element itself. To set the width and height, use the width and height style properties of the canvas element. If the width and height resolution dont match the width and height styles of the canvas element, then the pixels just wont be square.
-
-To demonstrate how the canvas element works, lets consider an example where I need to set the pixel at x=50, y=20 to red (rgba = 255, 0, 0, 255) in a canvas 116 pixels wide and 333 pixels tall. I would set the data value at index (4 * 50) + (20 * 4 * 116) to 255, (4 * 50) + (20 * 4 * 116) + 1 to 0, (4 * 50) + (20 * 4 * 116) + 2 to 0, and (4 * 50) + (20 * 4 * 116) + 3 to 255. Thats 4 times the x position, plus 4 times the y position times the width, plus 0, 1, 2, or 3 for the red, green, blue, and alpha values respectively.
+Because every pixel is four numbers long, and every canvas has width * height pixels, every canvas has 4 * width * height long data properties.
 
 ## When should you use Canvas?
 
-Think hard before choosing to use the Elm Canvas library! For most use cases, there are probably better tools than Canvas. If you have image assets you want to move around the screen (like in a video game), then evancz/elm-graphics and elm-community/webgl are better options. You should use the canvas when you absolutely need to change pixel values at a very low level way, which is an unusual project requirement. If you are making a paint app then you should be using canvas, because you need to render image data, but the image data is determined at run time (unlike pre-existing images).
+Think hard before choosing to use the Elm Canvas library! For most use cases, there are probably better tools than Canvas. If you have image assets you want to move around the screen (like in a video game), then evancz/elm-graphics and elm-community/webgl are better options. You should use the canvas when you absolutely need to change pixel values in a very low level way, which is an unusual project requirement. Generally speaking, the canvas element should be used when you need to render images that are not defined until run time. Making a paint app is an example of a project that needs a canvas element.
 
 ##Todo
 
-0 Review this readme (I wrote it when I was very sleepy)
+~~0 Review this readme (I wrote it when I was very sleepy)~~
 
 1 Rewrite the canvas.elm comments in a style consist with that of other elm modules
 
-2 Keep making functions that satisfy the various needs a canvas programmer will have, and develope a technique of how canvas should be used in Elm.
+2 develop a technique of how canvas should be used in Elm.
 
 3 Make a pasteCanvas or pasteImage function. 
 
