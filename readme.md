@@ -31,7 +31,18 @@ The data property of the canvas element is the color information in the canvas. 
 
 ```
 
-Because every pixel is four numbers long, and every canvas has width * height pixels, every canvas has 4 * width * height long data properties.
+Because every pixel is four numbers long, and every canvas has width * height pixels, every canvas data has a length of 4 * width * height
+
+Because the data is a one dimensional format of a two dimensional arrangement of pixels, to change the pixel at x=50 y=20 of a 116 x 55 canvas (where x=0 y=0 is the upper left corner), one must change the values at indices.. 
+
+```
+((50 + (20 * 116)) * 4)
+((50 + (20 * 116)) * 4) + 1
+((50 + (20 * 116)) * 4) + 2
+((50 + (20 * 116)) * 4) + 4
+
+(x + (y * width)) * 4
+```
 
 ## When should you use Canvas?
 
