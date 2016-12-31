@@ -24,6 +24,7 @@ main =
 type alias Model = 
   { canvas : Canvas
   , snapshot : Canvas
+  , snapShotCount : Int
   }
 
 
@@ -44,6 +45,7 @@ init : Model
 init =
   { canvas = initCanvas "canvas"
   , snapshot = initCanvas "snapshot"
+  , snapShotCount = 1
   }
 
 
@@ -74,6 +76,7 @@ update message model =
             model.canvas.imageData 
             origin 
             model.snapshot
+      , snapShotCount = model.snapShotCount + 1
       }
       Cmd.none
 
@@ -84,7 +87,11 @@ update message model =
 
 
 view : Model -> Html Msg
-view {canvas, snapshot} =
+view {canvas, snapshot, snapShotCount} =
+  let
+    snapshots =
+      List.repeat snapShotCount (Canvas.toHtml snapshot [])
+  in
   div 
   [] 
   [ p 
@@ -98,11 +105,13 @@ view {canvas, snapshot} =
     ] []
   , div 
     []
-    [ p [] [ text "draw here" ]
-    , Canvas.toHtml canvas [ Canvas.onMouseDown Draw ]
-    , p [] [ text "snap shot:"]
-    , Canvas.toHtml snapshot []
-    ]
+    <|concat
+      [ [ p [] [ text "draw here" ]
+        , Canvas.toHtml canvas [ Canvas.onMouseDown Draw ]
+        , p [] [ text "snap shot:"]
+        ]
+      , snapshots
+      ]
   ]
 
 
