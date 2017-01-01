@@ -58,22 +58,6 @@ blank id width height color =
 putImageData : ImageData -> Position -> Canvas -> Canvas
 putImageData imageData position canvas =
   Native.Canvas.putImageData imageData position canvas
-    --{ canvas 
-    --| imageData =
-    --  { imageData 
-    --  | data = 
-    --      Array.foldr 
-    --        (putDatum (getIndex (4 * imageData.width) position)) 
-    --        imageData.data
-    --        (Array.indexedMap (,) imageData.data)
-    --  }  
-    --}
-
-
-putDatum : Int -> (Int, Int) -> Array Int -> Array Int
-putDatum indexShift (index, datum) data =
-  Array.set (index + indexShift) datum data
-
 
 
 -- putPixels

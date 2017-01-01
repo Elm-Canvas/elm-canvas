@@ -1,12 +1,10 @@
 import Html exposing (..)
 import Html.Attributes exposing (id, style, type_, value)
-import Html.Events exposing (..)
+import Html.Events exposing (onClick)
 import Canvas exposing (Canvas, Pixel)
-import List exposing (repeat, concat)
 import Mouse exposing (Position)
-import Array exposing (fromList)
-import Color exposing (rgb, Color)
-import Debug exposing (log)
+import Array
+import Color
 
 
 main = 
@@ -18,7 +16,9 @@ main =
   }
 
 
+
 -- MODEL
+
 
 
 type alias Model = 
@@ -27,17 +27,14 @@ type alias Model =
   }
 
 
-
 type Msg
   = Draw Position
   | TakeSnapshot
 
 
-
 initCanvas : String -> Canvas
 initCanvas id =
   Canvas.blank id 500 400 Color.black
-
 
 
 init : Model
@@ -49,7 +46,10 @@ init =
 
 origin = Position 0 0
 
+
+
 -- UPDATE
+
 
 
 update :  Msg -> Model -> (Model, Cmd Msg)
@@ -57,14 +57,14 @@ update message model =
   case message of 
 
     Draw position ->
-      let 
-        bluePixel = [ Pixel Color.blue position ] 
-
-        {canvas} = model
-      in
-        (,)
-        { model | canvas = Canvas.putPixels bluePixel canvas }
-        Cmd.none
+      (,)
+      { model 
+      | canvas = 
+          Canvas.putPixels 
+            [ Pixel Color.white position ] 
+            model.canvas 
+      }
+      Cmd.none
 
     TakeSnapshot ->
       (,)
@@ -73,7 +73,7 @@ update message model =
           Canvas.putImageData 
             model.canvas.imageData 
             origin 
-            model.snapshot
+            model.snapshot 
       }
       Cmd.none
 
@@ -90,7 +90,6 @@ view {canvas, snapshot} =
   [ p 
     [] 
     [ text "Elm-Canvas" ]
-
   , input 
     [ type_ "submit"
     , value "take snapshot" 
@@ -98,8 +97,7 @@ view {canvas, snapshot} =
     ] []
   , div 
     []
-    [ p [] [ text "draw here" ]
-    , Canvas.toHtml canvas [ Canvas.onMouseDown Draw ]
+    [ Canvas.toHtml canvas [ Canvas.onMouseDown Draw ]
     , p [] [ text "snap shot:"]
     , Canvas.toHtml snapshot []
     ]
