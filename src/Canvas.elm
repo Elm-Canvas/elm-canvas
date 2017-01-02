@@ -12,6 +12,7 @@ import Json.Decode as Json
 import Color exposing (toRgb)
 import Debug exposing (log)
 
+
 -- TYPES
 
 
@@ -109,6 +110,13 @@ onMouseDown : (Position -> msg) -> Attribute msg
 onMouseDown message =
   on "mousedown" <| Json.map (positionInCanvas >> message) positionDecoder
 
+onMouseUp : (Position -> msg) -> Attribute msg
+onMouseUp message =
+  on "mouseup" <| Json.map (positionInCanvas >> message) positionDecoder
+
+onMouseMove : (Position -> msg) -> Attribute msg
+onMouseMove message =
+  on "mousemove" <| Json.map (positionInCanvas >> message) positionDecoder
 
 positionInCanvas : (Position, Position) -> Position
 positionInCanvas (client, offset) =
