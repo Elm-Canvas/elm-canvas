@@ -7,10 +7,12 @@ type Msg
   = CanvasClick Position
   | MouseUp Position
   | MouseMove Position
+  | ShowSwitch
 
 type alias Model =
   { canvas : Canvas
   , mouseDown : Bool
   , mousePosition : Position
   , pixelsToChange : List Pixel
+  , show : Bool
   }

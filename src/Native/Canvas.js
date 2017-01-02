@@ -61,7 +61,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
         newData = newData._1;
       }
     }
-    
+
     return canvas;
   }
 
@@ -90,6 +90,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
   var implementation = {
     render: renderCanvas,
     diff:   diff,
+    removeNode: function(){console.log("REMOVE?")}
   };
 
 
