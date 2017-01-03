@@ -49,7 +49,7 @@ type alias Model =
 
 init : Model
 init =
-  { canvas = Canvas.blank "canvas" 400 300 Color.black
+  { canvas = Canvas.blank "canvas" 800 800 Color.black
   , mouseDown = False
   , pixelsToChange = []
   , mousePosition = Position 0 0
