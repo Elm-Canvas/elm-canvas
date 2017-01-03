@@ -193,16 +193,16 @@ line p q =
       (if dx > dy then dx else -dy) / 2
 
     statics = 
-      BresenhamStatics q sx sy dx dy 
+      LineStatics q sx sy dx dy 
   in
   lineHelp statics error p []
 
 
-type alias BresenhamStatics = 
+type alias LineStatics = 
   { finish : Position, sx : Int, sy : Int, dx : Float, dy : Float }
 
 
-lineHelp : BresenhamStatics -> Float -> Position -> List Position -> List Position
+lineHelp : LineStatics -> Float -> Position -> List Position -> List Position
 lineHelp statics error p positions =
   let 
     positions_ = p :: positions 
