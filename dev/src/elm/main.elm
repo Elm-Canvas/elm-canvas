@@ -1,10 +1,11 @@
 import Html exposing (..)
 import Html.Attributes exposing (id, style, type_, value)
 import Html.Events exposing (onClick)
-import Canvas exposing (Canvas, Pixel)
+import Canvas exposing (ImageData, Pixel)
 import Mouse exposing (Position)
+import Dict exposing (Dict)
+import Array
 import Color
-
 
 
 main = 
@@ -12,132 +13,95 @@ main =
   { init  = (init, Cmd.none) 
   , view   = view 
   , update = update
-  , subscriptions = subscriptions
+  , subscriptions = always Sub.none
   }
 
 
 
--- SUBSCRIPTIONS
+-- TYPES
 
 
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-  Mouse.ups MouseUp
+type alias Model = 
+  Dict String ImageData
 
 
-
--- MODEL
-
-
-
-type Msg 
-  = CanvasClick Position
-  | MouseUp Position
-  | MouseMove Position
-  | ShowSwitch
+type Msg
+  = Draw String Position
+  | TakeSnapshot
 
 
-type alias Model =
-  { canvas : Canvas
-  , mouseDown : Bool
-  , mousePosition : Position
-  , pixelsToChange : List Pixel
-  , show : Bool
-  }
+blankCanvas : ImageData
+blankCanvas =
+  Canvas.blank 500 400 Color.black
 
 
 init : Model
 init =
-  { canvas = Canvas.blank "canvas" 800 800 Color.black
-  , mouseDown = False
-  , pixelsToChange = []
-  , mousePosition = Position 0 0
-  , show = True
-  }
+  Dict.fromList
+  [ ("main", blankCanvas)
+  , ("snapshot", blankCanvas)
+  ]
 
 
 
 -- UPDATE
 
 
-
-update : Msg -> Model -> (Model, Cmd Msg)
+update :  Msg -> Model -> (Model, Cmd Msg)
 update message model =
   case message of 
 
-    CanvasClick position ->
-      (,)
-      { model 
-      | mouseDown      = True
-      , mousePosition  = position
-      , pixelsToChange =
-          (bluePixel position) :: model.pixelsToChange
-      }
-      Cmd.none
+    Draw id position ->
+      let 
+        imageData = 
+          Pixel Color.blue position
+          |>Canvas.setPixel id
+          |>Maybe.withDefault blankCanvas
+      in
+      (Dict.insert id imageData model, Cmd.none)
 
-    MouseUp position ->
-      ({ model | mouseDown = False }, Cmd.none)
-
-    MouseMove position ->
-      if model.mouseDown then
-        (,)
-        { model
-        | pixelsToChange = [] 
-        , mousePosition = position
-        , canvas =
-            let
-              pixels =
-                Canvas.line position model.mousePosition
-                |>List.map bluePixel
-                |>List.append model.pixelsToChange 
-            in
-            Canvas.putPixels pixels model.canvas 
-        }
-        Cmd.none
-      else
-        (model, Cmd.none)
-
-    ShowSwitch ->
-      ({ model | show = not model.show}, Cmd.none)
-
-
-bluePixel : Position -> Pixel
-bluePixel =
-  Pixel Color.blue
+    TakeSnapshot ->
+      let
+        setSnapshot =
+          let
+            putMainCanvas =
+              Canvas.get "main" 
+              |>Maybe.withDefault blankCanvas
+              |>Canvas.put
+          in 
+            putMainCanvas Canvas.origin "snapshot"
+            |>Maybe.withDefault blankCanvas
+            |>Dict.insert "snapshot"
+      in
+        (setSnapshot model, Cmd.none)
 
 
 
 -- VIEW
 
 
-
 view : Model -> Html Msg
 view model =
-  let
-    (canvas, inputLabel) = 
-      if model.show then
-        (,)
-        [ Canvas.toHtml 
-            model.canvas 
-            [ Canvas.onMouseDown CanvasClick 
-            , Canvas.onMouseMove MouseMove
-            ] 
-        ]
-        "hide"
-      else
-        ([],"show")
-  in
   div 
   [] 
-  [ p [ ] [ text "Elm-Canvas" ]
-  , input
-    [ onClick ShowSwitch
-    , value   inputLabel
-    , type_   "submit"
-    ]
-    []
-  , div [] canvas
+  [ input 
+    [ type_ "submit"
+    , value "take snapshot" 
+    , onClick TakeSnapshot
+    ] []
+  , div [] <| List.map canvasView (Dict.toList model)
   ]
+
+canvasView : (String, ImageData) -> Html Msg
+canvasView (id, imageData) =
+  div
+  []
+  [ p [] [ text id ] 
+  , Canvas.toHtml id imageData [ onMouseDown id ]
+  ]
+
+onMouseDown : String -> Attribute Msg
+onMouseDown id =
+  Canvas.onMouseDown (Draw id)
 
 

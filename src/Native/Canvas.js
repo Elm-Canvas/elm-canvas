@@ -4,78 +4,104 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     // console.log(msg);
   }
 
-  function putImageData(imageData, position, canvas) {
+  function get(id) {
+    var canvas = document.getElementById(id);
 
-    var el = document.getElementById(canvas.id)  
-
-    if (el === null) {
-
-      return canvas;
-    
+    if (canvas === null) {
+      return _elm_lang$core$Maybe$Nothing;
     } else {
+      var ctx = canvas.getContext('2d');
 
-      var ctx        = el.getContext('2d');
-      var data       = _elm_lang$core$Native_Array.toJSArray(imageData.data);
-      var imageData_ = ctx.createImageData(imageData.width, imageData.height);
-      var data_      = imageData_.data;
+      var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      return _elm_lang$core$Maybe$Just({
+        ctor: "ImageData",
+        width: canvas.width,
+        height: canvas.height,
+        data: _elm_lang$core$Native_Array.fromJSArray(imageData.data)
+      })
+    }
+  }
+
+  function cropGet(id, origin, width, height) {
+    var canvas = document.getElementById(id);
+
+    if (canvas === null) {
+      return _elm_lang$core$Maybe$Nothing;
+    } else {
+      var ctx = canvas.getContext('2d');
+
+      var imageData = ctx.getImageData(origin.x, origin.y, width, height);
+
+      return _elm_lang$core$Maybe$Just({
+        ctor: "ImageData",
+        width: imageData.width,
+        height: imageData.height,
+        data: _elm_lang$core$Native_Array.fromJSArray(imageData.data)
+      });
+    }
+  }
+
+  function put(imageData, position, id) {
+
+    var canvas = document.getElementById(id);
+
+    if (canvas === null) {
+      return _elm_lang$core$Maybe$Nothing;
+    } else {
+      var ctx = canvas.getContext('2d');
+
+      var data = _elm_lang$core$Native_Array.toJSArray(imageData.data);
+      var drawing = ctx.createImageData(imageData.width, imageData.height);
 
       var i = 0;
       while (i < data.length) {
-        data_[i] = data[i];
+        drawing.data[i] = data[i];
         i++;
       }
 
-      ctx.putImageData(imageData_, position.x, position.y);
-      canvas.imageData.data = _elm_lang$core$Native_Array.fromJSArray(data_);
+      ctx.putImageData(drawing, position.x, position.y);
+      var canvasImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
+      return _elm_lang$core$Maybe$Just({
+        ctor: "ImageData",
+        width: canvas.width,
+        height: canvas.height,
+        data: _elm_lang$core$Native_Array.fromJSArray(canvasImageData.data)
+      });
     }
-
-    return canvas;
-
   }
 
-  function putPixels(newData, canvas) {
-    LOG("PUT PIXELS");
+  function setPixel(pixel, id) {
+    var canvas = document.getElementById(id);
 
-    var el = document.getElementById(canvas.id)  
-
-    if (el === null) {
-      return canvas;
+    if (canvas === null) {
+      return _elm_lang$core$Maybe$Nothing;
     } else {
 
-      var ctx = el.getContext('2d');
+      var ctx = canvas.getContext('2d');
 
-      while (newData.ctor == "::") {
-        var pixel = formatPixel(newData._0);
+      var imageData = ctx.createImageData(1, 1);
+      var data = imageData.data;
 
-        var imageData = ctx.createImageData(1, 1);
-        var data = imageData.data;
+      data[0] = pixel.color._0;
+      data[1] = pixel.color._1;
+      data[2] = pixel.color._2;
+      data[3] = Math.floor(pixel.color._3 * 255);
 
-        data[0] = pixel.r;
-        data[1] = pixel.g;
-        data[2] = pixel.b;
-        data[3] = pixel.a;
+      ctx.putImageData(imageData, pixel.position.x, pixel.position.y);
 
-        ctx.putImageData(imageData, pixel.x, pixel.y);
+      var canvasImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-        newData = newData._1;
-      }
-    }
-
-    return canvas;
-  }
-
-
-  function formatPixel(pixel) {
-    return {
-      r: pixel.color._0,
-      g: pixel.color._1,
-      b: pixel.color._2,
-      a: Math.floor(pixel.color._3 * 255),
-      x: pixel.position.x,
-      y: pixel.position.y,
+      return _elm_lang$core$Maybe$Just({
+        ctor: "ImageData",
+        width: canvas.width,
+        height: canvas.height,
+        data: _elm_lang$core$Native_Array.fromJSArray(canvasImageData.data)
+      });
     }
   }
+
 
   function canvas(factList, width, height, data) {
     LOG("CANVAS")
@@ -133,8 +159,10 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
 
   return {
-    putPixels: F2(putPixels),
-    putImageData: F3(putImageData),
+    get: get,
+    cropGet: F4(cropGet),
+    setPixel: F2(setPixel),
+    put: F3(put),
     canvas: F4(canvas)
   };
 }();
