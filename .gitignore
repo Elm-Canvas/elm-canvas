@@ -4,5 +4,5 @@ dev/elm-stuff
 dev/node_modules
 examples/elm-stuff
 
-# This is dev, something used in the development branch
+# Do development work in a folder called dev
 dev

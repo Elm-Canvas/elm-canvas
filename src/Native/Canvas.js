@@ -118,12 +118,15 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     diff:   diff,
   };
 
+  function renderCanvas(model) {
+    LOG('RENDER CANVAS');
 
-  function drawCanvas(canvas, model) {
+    var canvas = document.createElement("canvas");
+
     canvas.width        = model.width;
     canvas.height       = model.height;
     canvas.style.width  = model.width;
-    canvas.style.height = model.height
+    canvas.style.height = model.height;
 
     var ctx       = canvas.getContext('2d');
     var imageData = ctx.getImageData(0, 0, model.width, model.height);
@@ -134,14 +137,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
     ctx.putImageData(imageData, 0, 0);
 
-    return canvas;
-  }
-
-
-  function renderCanvas(model) {
-    LOG('RENDER CANVAS');
-    return drawCanvas(document.createElement('canvas'), model);
-  }
+    return canvas;  }
 
 
   function diff(oldModel, newModel) {
