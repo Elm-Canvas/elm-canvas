@@ -116,7 +116,6 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
   var implementation = {
     render: renderCanvas,
     diff:   diff,
-    removeNode: function(){console.log("REMOVE?")}
   };
 
 
