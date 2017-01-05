@@ -1,4 +1,5 @@
-import Html exposing (p, text, div, Html)
+import Html exposing (p, text, div, Html, Attribute)
+import Html.Attributes exposing (style, width, height)
 import Canvas exposing (ImageData)
 import Color exposing (Color)
 
@@ -32,11 +33,20 @@ prettyBlue =
 
 
 
-view : ImageData -> Html msg
-view canvas =
+view : ImageData -> Html a
+view imageData =
   div 
   [] 
   [ p [] [ text "Elm-Canvas" ] 
-  , Canvas.toHtml "canvas-id" canvas []
+  , Canvas.toHtml "canvas-id" imageData [ blackBorder ]
   ]
+
+
+blackBorder : Attribute
+blackBorder =
+  style [ ("border", "1px solid #000000") ]
+
+
+
+
 

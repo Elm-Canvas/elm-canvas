@@ -108,6 +108,19 @@ field_ key =
   Json.field key Json.int
 
 
+
+-- Html Attributes
+
+
+size : (Int, Int) -> Attribute a
+size (width, height) =
+  style 
+  [ ("width", toString width)
+  , ("height", toString height)
+  ]
+
+
+
 -- toHtml
 
 
