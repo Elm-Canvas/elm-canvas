@@ -42,7 +42,7 @@ Because the data is a one dimensional format of a two dimensional arrangement of
 ((50 + (20 * 116)) * 4) + 4
 
 
-((x + (y * width)) * 4) + (color-index)
+((x + (y * width)) * 4) + (colorIndex)
 ```
 
 ## When should you use Canvas?
