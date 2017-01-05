@@ -4,7 +4,5 @@ dev/elm-stuff
 dev/node_modules
 examples/elm-stuff
 
-# These are made from the command 'gulp'
-dev/public/app.js
-dev/public/elm.js
-dev/public/style.css
+# This is dev, something used in the development branch
+dev
