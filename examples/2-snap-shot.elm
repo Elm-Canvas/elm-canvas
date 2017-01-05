@@ -1,5 +1,5 @@
 import Html exposing (..)
-import Html.Attributes exposing (id, style, type_, value)
+import Html.Attributes exposing (id, style, type_, value, width, height)
 import Html.Events exposing (onClick)
 import Canvas exposing (ImageData, Pixel)
 import Mouse exposing (Position)
@@ -32,7 +32,7 @@ type Msg
 
 blankCanvas : ImageData
 blankCanvas =
-  Canvas.blank 500 400 Color.black
+  Canvas.blank 200 200 Color.black
 
 
 init : Model
@@ -94,10 +94,14 @@ view model =
 
 canvasView : (String, ImageData) -> Html Msg
 canvasView (id, imageData) =
+  let {width, height} = imageData in
   div
   []
   [ p [] [ text id ] 
-  , Canvas.toHtml id imageData [ onMouseDown id ]
+  , Canvas.toHtml id imageData 
+    [ onMouseDown id 
+    , Canvas.size (width, height)
+    ]
   ]
 
 onMouseDown : String -> Attribute Msg

@@ -123,10 +123,8 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
     var canvas = document.createElement("canvas");
 
-    canvas.width        = model.width;
-    canvas.height       = model.height;
-    canvas.style.width  = model.width;
-    canvas.style.height = model.height;
+    canvas.width  = model.width;
+    canvas.height = model.height;
 
     var ctx       = canvas.getContext('2d');
     var imageData = ctx.getImageData(0, 0, model.width, model.height);

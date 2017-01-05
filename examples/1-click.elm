@@ -32,7 +32,8 @@ canvasId = "canvas-id"
 -- UPDATE
 
 
-update :  Msg -> ImageData -> (ImageData, Cmd Msg)
+
+update : Msg -> ImageData -> (ImageData, Cmd Msg)
 update message imageData =
   case message of 
 
@@ -54,5 +55,15 @@ view imageData =
   div 
   [] 
   [ p [] [ text "Elm-Canvas" ]
-  , Canvas.toHtml canvasId imageData [ Canvas.onMouseDown Draw ]
+  , Canvas.toHtml 
+      canvasId 
+      imageData 
+      [ Canvas.onMouseDown Draw
+      , Canvas.size 
+          (imageData.width, imageData.height)
+      ]
   ]
+
+
+
+
