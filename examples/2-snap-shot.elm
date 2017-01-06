@@ -1,8 +1,7 @@
 import Html exposing (..)
-import Html.Attributes exposing (id, style, type_, value, width, height)
+import Html.Attributes exposing (id, style, type_, value)
 import Html.Events exposing (onClick)
-import Canvas exposing (ImageData, Pixel)
-import Mouse exposing (Position)
+import Canvas exposing (ImageData, Pixel, Position)
 import Dict exposing (Dict)
 import Array
 import Color
@@ -21,6 +20,7 @@ main =
 -- TYPES
 
 
+
 type alias Model = 
   Dict String ImageData
 
@@ -32,7 +32,7 @@ type Msg
 
 blankCanvas : ImageData
 blankCanvas =
-  Canvas.blank 200 200 Color.black
+  Canvas.blank 400 300 Color.black
 
 
 init : Model
@@ -45,6 +45,7 @@ init =
 
 
 -- UPDATE
+
 
 
 update :  Msg -> Model -> (Model, Cmd Msg)
@@ -80,6 +81,7 @@ update message model =
 -- VIEW
 
 
+
 view : Model -> Html Msg
 view model =
   div 
@@ -92,6 +94,7 @@ view model =
   , div [] <| List.map canvasView (Dict.toList model)
   ]
 
+
 canvasView : (String, ImageData) -> Html Msg
 canvasView (id, imageData) =
   let {width, height} = imageData in
@@ -103,6 +106,7 @@ canvasView (id, imageData) =
     , Canvas.size (width, height)
     ]
   ]
+
 
 onMouseDown : String -> Attribute Msg
 onMouseDown id =
