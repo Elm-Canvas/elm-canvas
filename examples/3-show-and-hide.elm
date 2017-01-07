@@ -2,8 +2,6 @@ import Html exposing (..)
 import Html.Attributes exposing (type_, value)
 import Html.Events exposing (onClick)
 import Canvas exposing (ImageData, Position)
-import Dict exposing (Dict)
-import Array
 import Color
 
 
@@ -68,7 +66,7 @@ update message model =
       ({ model | show = not model.show }, Cmd.none)
 
 
-putBlueSquare : Position -> String -> Maybe ImageData
+putBlueSquare : Position -> String -> ImageData
 putBlueSquare position id =
   Canvas.put blueSquare position id
   |>Maybe.withDefault blankCanvas

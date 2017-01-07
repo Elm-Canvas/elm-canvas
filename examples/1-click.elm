@@ -1,7 +1,6 @@
 import Html exposing (p, text, div, Html)
 import Html.Events exposing (..)
-import Canvas exposing (ImageData, Pixel)
-import Mouse exposing (Position)
+import Canvas exposing (ImageData, Pixel, Position)
 import Color exposing (Color)
 
 
