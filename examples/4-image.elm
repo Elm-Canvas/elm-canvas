@@ -3,7 +3,6 @@ import Html.Attributes exposing (type_, value)
 import Html.Events exposing (onClick)
 import Canvas exposing (ImageData, Position, Image, Error)
 import Task
-import Array
 import Color
 
 

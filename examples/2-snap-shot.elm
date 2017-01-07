@@ -1,9 +1,8 @@
 import Html exposing (..)
-import Html.Attributes exposing (id, style, type_, value)
+import Html.Attributes exposing (style, type_, value)
 import Html.Events exposing (onClick)
 import Canvas exposing (ImageData, Pixel, Position)
 import Dict exposing (Dict)
-import Array
 import Color
 
 
