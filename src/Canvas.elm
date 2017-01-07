@@ -10,6 +10,7 @@ import Array exposing (Array)
 import Native.Canvas
 import Json.Decode as Json
 import Color exposing (toRgb)
+import Task exposing (Task)
 import Debug exposing (log)
 
 
@@ -33,7 +34,13 @@ type alias Pixel =
   , position : Position
   }
 
+type Image
+  = Image
 
+type Error 
+  = Error
+
+-- blank
 
 blank : Int -> Int -> Color -> ImageData
 blank width height color =
@@ -43,6 +50,22 @@ blank width height color =
   |>List.concat
   |>Array.fromList
   |>ImageData width height 
+
+
+-- loadImage
+
+
+loadImage : String -> Task Error Image
+loadImage =
+    Native.Canvas.loadImage
+
+
+-- drawImage 
+
+
+drawImage : Image -> Position -> String -> Maybe (ImageData)
+drawImage id image =
+  Native.Canvas.drawImage id image
 
 
 -- get

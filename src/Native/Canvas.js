@@ -4,6 +4,57 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     // console.log(msg);
   }
 
+  function loadImage(source) {
+    var Scheduler = _elm_lang$core$Native_Scheduler;
+    return Scheduler.nativeBinding(function (callback) {
+      var img = new Image();
+
+      function getImage() {
+        return img;
+      }
+
+      img.onload = function () {
+        callback(Scheduler.succeed({
+          ctor: 'Image',
+          img: getImage,
+          width: img.width,
+          height: img.height
+        }));
+      };
+
+      img.onerror = function () {
+        callback(Scheduler.fail({ ctor: 'Error' }));
+      };
+
+      img.crossOrigin = "Anonymous";
+      img.src = source;
+    });
+  }
+
+
+  function drawImage(image, position, id) {
+
+    var canvas = document.getElementById(id);
+
+    if (canvas === null) {
+      return _elm_lang$core$Maybe$Nothing;
+    } else {
+      var ctx = canvas.getContext('2d');
+
+      ctx.drawImage(image.img(), position.x, position.y);
+
+      var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      return _elm_lang$core$Maybe$Just({
+        ctor: "ImageData",
+        width: canvas.width,
+        height: canvas.height,
+        data: _elm_lang$core$Native_Array.fromJSArray(imageData.data)
+      })
+    }
+
+  }
+
   function get(id) {
     var canvas = document.getElementById(id);
 
@@ -152,6 +203,8 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
 
   return {
+    loadImage: loadImage,
+    drawImage: F3(drawImage),
     get: get,
     cropGet: F4(cropGet),
     setPixel: F2(setPixel),
