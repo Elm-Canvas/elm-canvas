@@ -34,11 +34,19 @@ type alias Pixel =
   , position : Position
   }
 
+type Canvas
+  = Canvas
+
 type Image
   = Image
 
 type Error 
   = Error
+
+
+initialize : Int -> Int -> Canvas
+initialize width height =
+  Native.Canvas.initialize width height
 
 -- blank
 

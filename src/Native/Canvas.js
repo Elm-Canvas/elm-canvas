@@ -4,6 +4,20 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     // console.log(msg);
   }
 
+  function initialize(width, height) {
+    var canvas = document.createElement("canvas");
+
+    canvas.width = width;
+    canvas.height = height;
+
+    return {
+      ctor: 'Canvas',
+      canvas: canvas,
+      width: width,
+      height: height,
+    }
+  }
+
   function loadImage(source) {
     var Scheduler = _elm_lang$core$Native_Scheduler;
     return Scheduler.nativeBinding(function (callback) {
@@ -203,6 +217,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
 
   return {
+    initialize: F2(initialize),
     loadImage: loadImage,
     drawImage: F3(drawImage),
     get: get,
