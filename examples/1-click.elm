@@ -29,6 +29,7 @@ canvas =
 canvasId = "canvas-id"
 
 
+
 -- UPDATE
 
 
@@ -44,6 +45,7 @@ update message imageData =
 addBluePixel : Position -> ImageData
 addBluePixel =
   Pixel Color.blue >> Canvas.setPixel canvasId >> Maybe.withDefault canvas
+
 
 
 -- VIEW

@@ -53,7 +53,7 @@ get id =
   Native.Canvas.get id
 
 
-cropGet : Position -> Int -> Int -> String -> Maybe (ImageData)
+cropGet : Position -> Int -> Int -> String -> Maybe ImageData
 cropGet origin width height id =
   Native.Canvas.cropGet id origin width height 
 
@@ -61,7 +61,7 @@ cropGet origin width height id =
 -- put 
 
 
-put : ImageData -> Position -> String -> Maybe (ImageData)
+put : ImageData -> Position -> String -> Maybe ImageData
 put imageData position id =
   Native.Canvas.put imageData position id
 
@@ -69,7 +69,7 @@ put imageData position id =
 -- setPixel
 
 
-setPixel : String -> Pixel -> Maybe (ImageData)
+setPixel : String -> Pixel -> Maybe ImageData
 setPixel id pixel =
   Native.Canvas.setPixel pixel id 
 
