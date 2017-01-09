@@ -81,5 +81,21 @@ Because the data is a one dimensional format of a two dimensional arrangement of
 
 Think hard before choosing to use the Elm Canvas library! For most use cases, there are probably better tools than Canvas. If you have image assets you want to move around the screen (like in a video game), then [evancz/elm-graphics](https://github.com/evancz/elm-graphics) and [elm-community/webgl](https://github.com/elm-community/webgl) are better options. If you want to render vector graphics use [elm-svg](http://package.elm-lang.org/packages/elm-lang/svg/latest). You should use the canvas when you absolutely need to change pixel values in a very low level way, which is an unusual project requirement. Generally speaking, the canvas element should be used when you need to render raster graphics that are not defined until run time. Making a paint app is an example of a project that needs a canvas element, because the purpose of a drawing app is to make graphics that do not yet exist.
 
+## Contributing
+
+Pull requests, and general feedback welcome. I am in the `#elm-community` and `#canvas` channels in the [Elm Slack](https://elmlang.slack.com).
+
+## Maintainer
+
+This package is maintained by [Chadtech](https://github.com/chadtech).
+
+## Thanks
+
+Thanks to the authors of the [Elm Web-Gl package](https://github.com/elm-community/webgl) for writing really readable code, which I found very educational on how to make native Elm packages. Thanks to all the helpful and insightful people in the Elm slack channel, including [Alex Spurling](https://github.com/alexspurling), the maker of [this elm app called 'quick draw'](https://github.com/alexspurling).
+
+## License
+
+The source code for this package is released under the terms of the BSD3 license. See the `LICENSE` file.
+
 
 
