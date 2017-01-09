@@ -1,7 +1,7 @@
 import Html exposing (..)
 import Html.Attributes exposing (type_, value)
 import Html.Events exposing (onClick)
-import Canvas exposing (ImageData, Position, Image, Error)
+import Canvas exposing (Canvas, Position, Image, Error)
 import Task
 import Color
 
@@ -20,24 +20,14 @@ main =
 
 
 
-type alias Model = 
-  (String, ImageData)
-
-
 type Msg
   = Draw Position
   | ImageLoaded (Result Error Image)
 
 
-blankCanvas : ImageData
-blankCanvas =
-  Canvas.blank 600 600 Color.black
-
-
-
-initModel : Model
+initModel : Canvas
 initModel =
-  ("the-canvas", blankCanvas)
+  Canvas.initialize 600 600 |> Canvas.fill Color.black
 
 
 initCmd : Cmd Msg
@@ -45,9 +35,10 @@ initCmd =
   Task.attempt ImageLoaded (Canvas.loadImage "./steelix.png")
 
 
-redSquare : ImageData
+
+redSquare : Canvas
 redSquare =
-  Canvas.blank 20 20 Color.red
+  Canvas.initialize 30 30 |> Canvas.fill Color.red
 
 
 
@@ -55,38 +46,29 @@ redSquare =
 
 
 
-update :  Msg -> Model -> (Model, Cmd Msg)
-update message (id, imageData) =
+update :  Msg -> Canvas -> (Canvas, Cmd Msg)
+update message canvas =
   case message of 
 
     Draw position ->
-      let 
-        canvas =
-          putRedSquare position id
-          |>Maybe.withDefault blankCanvas
-          |>(,) id
-      in
-      (canvas, Cmd.none)
+      (putRedSquare position canvas, Cmd.none)
 
 
     ImageLoaded imageResult ->
       case Result.toMaybe imageResult of
         Just image ->
-          let
-            canvas =
-              Canvas.drawImage image Canvas.origin id
-              |>Maybe.withDefault blankCanvas
-              |>(,) id
+          let 
+            origin = Position 0 0 
           in
-          (canvas, Cmd.none)
+            (Canvas.drawImage image origin canvas, Cmd.none)
         
         Nothing ->
-          ((id, imageData), Cmd.none)
+          (canvas, Cmd.none)
 
 
-putRedSquare : Position -> String -> Maybe ImageData
-putRedSquare =
-  Canvas.put redSquare
+putRedSquare : Position -> Canvas -> Canvas
+putRedSquare position =
+  Canvas.drawCanvas redSquare position
 
 
 
@@ -94,17 +76,12 @@ putRedSquare =
 
 
 
-view : Model -> Html Msg
-view (id, imageData) =
-  let {width, height} = imageData in
+view : Canvas -> Html Msg
+view canvas =
   div []
   [ p [] [ text "Elm-Canvas" ]
-  , Canvas.toHtml id imageData 
-    [ Canvas.size (width, height)
-    , Canvas.onMouseDown Draw
-    ] 
+  , Canvas.toHtml [ Canvas.onMouseDown Draw ] canvas
   ]
-
 
 
 

@@ -72,7 +72,8 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
   }
 
 
-  function fromImageData(array, width, height) {
+  function fromImageData(width, height, array) {
+    LOG("FROM IMAGE DATA")
 
     var canvas = document.createElement("canvas");
 
@@ -87,7 +88,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     var dataToPut = _elm_lang$core$Native_Array.toJSArray(array);
 
     var i = 0;
-    while (i < dataToPut) {
+    while (i < dataToPut.length) {
       data[i] = dataToPut[i];
       i++;
     }
@@ -159,6 +160,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
   }
 
   function drawCanvas(modelToDraw, position, model) {
+    LOG("DRAW CANVAS")
 
     var canvas = model.canvas;
     var ctx = canvas.getContext('2d');
