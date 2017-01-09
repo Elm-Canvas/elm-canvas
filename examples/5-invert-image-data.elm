@@ -42,7 +42,7 @@ initCmd =
 
 
 
-update :  Msg -> Canvas -> (Canvas, Cmd Msg)
+update : Msg -> Canvas -> (Canvas, Cmd Msg)
 update message canvas =
   case message of 
 
@@ -96,7 +96,7 @@ invertColor index colorValue =
 view : Canvas -> Html Msg
 view canvas =
   div []
-  [ p [] [ text "Elm-Canvas" ]
+  [ h1 [] [ text "Click on the canvas to invert its colors" ]
   , Canvas.toHtml [ onClick Invert ] canvas
   ]
 
