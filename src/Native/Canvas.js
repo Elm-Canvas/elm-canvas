@@ -46,136 +46,96 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
   }
 
 
-  function drawImage(image, position, id) {
+  function drawImage(image, position, model) {
 
-    var canvas = document.getElementById(id);
+    var canvas = model.canvas;
 
-    if (canvas === null) {
-      return _elm_lang$core$Maybe$Nothing;
-    } else {
-      var ctx = canvas.getContext('2d');
+    var ctx = canvas.getContext('2d');
 
-      ctx.drawImage(image.img(), position.x, position.y);
+    ctx.drawImage(image.img(), position.x, position.y);
 
-      var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-      return _elm_lang$core$Maybe$Just({
-        ctor: "ImageData",
-        width: canvas.width,
-        height: canvas.height,
-        data: _elm_lang$core$Native_Array.fromJSArray(imageData.data)
-      })
-    }
+    return model
 
   }
 
-  function get(id) {
-    var canvas = document.getElementById(id);
 
-    if (canvas === null) {
-      return _elm_lang$core$Maybe$Nothing;
-    } else {
-      var ctx = canvas.getContext('2d');
+  function getImageData(model) {
+    var canvas = model.canvas;
 
-      var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    var ctx = canvas.getContext('2d');
 
-      return _elm_lang$core$Maybe$Just({
-        ctor: "ImageData",
-        width: canvas.width,
-        height: canvas.height,
-        data: _elm_lang$core$Native_Array.fromJSArray(imageData.data)
-      })
-    }
-  }
+    var imageData = ctx.getImageData(0, 0, model.width, model.height);
 
-  function cropGet(id, origin, width, height) {
-    var canvas = document.getElementById(id);
-
-    if (canvas === null) {
-      return _elm_lang$core$Maybe$Nothing;
-    } else {
-      var ctx = canvas.getContext('2d');
-
-      var imageData = ctx.getImageData(origin.x, origin.y, width, height);
-
-      return _elm_lang$core$Maybe$Just({
-        ctor: "ImageData",
-        width: imageData.width,
-        height: imageData.height,
-        data: _elm_lang$core$Native_Array.fromJSArray(imageData.data)
-      });
-    }
-  }
-
-  function put(imageData, position, id) {
-
-    var canvas = document.getElementById(id);
-
-    if (canvas === null) {
-      return _elm_lang$core$Maybe$Nothing;
-    } else {
-      var ctx = canvas.getContext('2d');
-
-      var data = _elm_lang$core$Native_Array.toJSArray(imageData.data);
-      var drawing = ctx.createImageData(imageData.width, imageData.height);
-
-      var i = 0;
-      while (i < data.length) {
-        drawing.data[i] = data[i];
-        i++;
-      }
-
-      ctx.putImageData(drawing, position.x, position.y);
-      var canvasImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-      return _elm_lang$core$Maybe$Just({
-        ctor: "ImageData",
-        width: canvas.width,
-        height: canvas.height,
-        data: _elm_lang$core$Native_Array.fromJSArray(canvasImageData.data)
-      });
-    }
-  }
-
-  function setPixel(pixel, id) {
-    var canvas = document.getElementById(id);
-
-    if (canvas === null) {
-      return _elm_lang$core$Maybe$Nothing;
-    } else {
-
-      var ctx = canvas.getContext('2d');
-
-      var imageData = ctx.createImageData(1, 1);
-      var data = imageData.data;
-
-      data[0] = pixel.color._0;
-      data[1] = pixel.color._1;
-      data[2] = pixel.color._2;
-      data[3] = Math.floor(pixel.color._3 * 255);
-
-      ctx.putImageData(imageData, pixel.position.x, pixel.position.y);
-
-      var canvasImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-      return _elm_lang$core$Maybe$Just({
-        ctor: "ImageData",
-        width: canvas.width,
-        height: canvas.height,
-        data: _elm_lang$core$Native_Array.fromJSArray(canvasImageData.data)
-      });
-    }
+    return _elm_lang$core$Native_Array.fromJSArray(imageData.data);
   }
 
 
-  function canvas(factList, width, height, data) {
-    LOG("CANVAS")
-    var model = {
-      width:  width,
-      height: height,
-      data: _elm_lang$core$Native_Array.toJSArray(data)
-    };
-    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation);
+  function setPixel(color, position, model) {
+    var canvas = model.canvas;
+
+    var ctx = canvas.getContext('2d');
+
+    var imageData = ctx.createImageData(1, 1);
+    var data = imageData.data;
+
+    data[0] = color._0;
+    data[1] = color._1;
+    data[2] = color._2;
+    data[3] = Math.floor(color._3 * 255);
+
+    ctx.putImageData(imageData, position.x, position.y);
+
+    return model;
+  }
+
+
+  function toHtml(factList, canvas) {
+    LOG("TO HTML")
+
+    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, canvas, implementation);
+
+  }
+
+  function fill(color, model) {
+    var canvas = model.canvas;
+
+    var ctx = canvas.getContext('2d');
+
+    var imageData = ctx.createImageData(canvas.width, canvas.height);
+    var data = imageData.data;
+
+    var numberOfPixels = canvas.width * canvas.height
+
+    var i = 0;
+    while (i < numberOfPixels) {
+      var pixelIndex = i * 4
+      data[ pixelIndex     ] = color._0;
+      data[ pixelIndex + 1 ] = color._1;
+      data[ pixelIndex + 2 ] = color._2;
+      data[ pixelIndex + 3 ] = Math.floor(color._3 * 255);
+      i++;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+
+    return model;
+
+  }
+
+  function getSize(model) {
+    return _elm_lang$core$Native_Utils.Tuple2(model.width, model.height);
+  }
+
+  function drawCanvas(modelToDraw, position, model) {
+
+    var canvas = model.canvas;
+    var ctx = canvas.getContext('2d');
+
+    ctx.drawImage(modelToDraw.canvas, position.x, position.y);
+
+    return model;
   }
 
   var implementation = {
@@ -186,21 +146,8 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
   function renderCanvas(model) {
     LOG('RENDER CANVAS');
 
-    var canvas = document.createElement("canvas");
-
-    canvas.width  = model.width;
-    canvas.height = model.height;
-
-    var ctx       = canvas.getContext('2d');
-    var imageData = ctx.getImageData(0, 0, model.width, model.height);
-
-    for (var i = 0; i < imageData.data.length; i++) {
-      imageData.data[i] = model.data[i];
-    }
-
-    ctx.putImageData(imageData, 0, 0);
-
-    return canvas;  }
+    return model.canvas;  
+  }
 
 
   function diff(oldModel, newModel) {
@@ -218,12 +165,12 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
   return {
     initialize: F2(initialize),
+    fill: F2(fill),
+    getSize: getSize,
+    drawCanvas: F3(drawCanvas),
     loadImage: loadImage,
     drawImage: F3(drawImage),
-    get: get,
-    cropGet: F4(cropGet),
-    setPixel: F2(setPixel),
-    put: F3(put),
-    canvas: F4(canvas)
+    setPixel: F3(setPixel),
+    toHtml: F2(toHtml)
   };
 }();

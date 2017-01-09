@@ -1,7 +1,7 @@
 import Html exposing (..)
-import Html.Attributes exposing (type_, value)
+import Html.Attributes exposing (type_, value, style)
 import Html.Events exposing (onClick)
-import Canvas exposing (ImageData, Position)
+import Canvas exposing (Canvas, Position)
 import Color
 
 
@@ -20,9 +20,7 @@ main =
 
 
 type alias Model = 
-  { show : Bool
-  , imageData : (String, ImageData)
-  }
+  { show : Bool, canvas : Canvas }
 
 
 type Msg
@@ -30,19 +28,21 @@ type Msg
   | ShowSwitch
 
 
-blankCanvas : ImageData
-blankCanvas =
-  Canvas.blank 400 300 Color.black
+initializeBlack : Int -> Int -> Canvas
+initializeBlack width height =
+  Canvas.initialize width height |> Canvas.fill Color.black
 
 
 init : Model
 init =
-  Model True ("the-canvas", blankCanvas)
+  Canvas.initialize 400 300 
+  |>Canvas.fill Color.black
+  |>Model True
 
 
-blueSquare : ImageData
+blueSquare : Canvas
 blueSquare =
-  Canvas.blank 20 20 Color.blue
+  Canvas.initialize 30 30 |> Canvas.fill Color.blue
 
 
 
@@ -51,26 +51,23 @@ blueSquare =
 
 
 update :  Msg -> Model -> (Model, Cmd Msg)
-update message model =
+update message {show, canvas} =
   case message of 
 
     Draw position ->
       let 
-        newImageData =
-          let (id, imageData) = model.imageData in
-          (id, (putBlueSquare position id))
+        updatedCanvas =
+          putBlueSquare position canvas         
       in
-      ({ model | imageData = newImageData}, Cmd.none)
+       (Model show updatedCanvas, Cmd.none)
 
     ShowSwitch ->
-      ({ model | show = not model.show }, Cmd.none)
+      (Model (not show) canvas, Cmd.none)
 
 
-putBlueSquare : Position -> String -> ImageData
-putBlueSquare position id =
-  Canvas.put blueSquare position id
-  |>Maybe.withDefault blankCanvas
-
+putBlueSquare : Position -> Canvas -> Canvas
+putBlueSquare position =
+  Canvas.drawCanvas blueSquare position
 
 
 
@@ -79,16 +76,26 @@ putBlueSquare position id =
 
 
 view : Model -> Html Msg
-view model =
-  let (id, imageData) = model.imageData in
-  if model.show then
-    let {width, height} = imageData in
-    container
-    [ Canvas.toHtml id imageData 
-      [ Canvas.onMouseDown Draw
-      , Canvas.size (width, height)
+view {canvas, show} =
+  if show then
+    let 
+
+      (width, height) = 
+        Canvas.getSize canvas
+    
+    in
+      container
+      [ Canvas.toHtml
+        [ Canvas.onMouseDown Draw
+        , style
+          [ ("width", toString width)
+          , ("height", toString height)
+          , ("border", "1px solid #000000")
+          , ("cursor", "crosshair")
+          ]
+        ]
+        canvas
       ]
-    ]
   else
     container []
 
@@ -97,7 +104,8 @@ container : List (Html Msg) -> Html Msg
 container canvas =
   div
   []
-  [ input 
+  [ p [] [ text "Elm-Canvas" ]
+  , input 
     [ type_ "submit"
     , value "show / hide" 
     , onClick ShowSwitch
