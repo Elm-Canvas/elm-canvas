@@ -20,6 +20,10 @@ main =
   |> Canvas.fill (Color.rgb 23 92 254)
   |> Canvas.toHtml []
 
+--Canvas.initialize : Int -> Int -> Canvas
+--Canvas.fill : Color -> Canvas -> Canvas
+--Canvas.toHtml : List (Attribute a) -> Canvas -> Html a
+
 
 ```
 
