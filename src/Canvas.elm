@@ -9,30 +9,19 @@ import List
 import Array exposing (Array)
 import Native.Canvas
 import Json.Decode as Json
-import Color exposing (toRgb)
+import Color exposing (Color)
 import Task exposing (Task)
-import Debug exposing (log)
+
 
 
 -- TYPES
 
 
-type alias ImageData =
-  { width  : Int
-  , height : Int
-  , data   : Array Int
-  }
-
-
 type alias Position = 
   { x : Int, y : Int }
 
-origin = Position 0 0
-
-type alias Pixel = 
-  { color    : Color
-  , position : Position
-  }
+type Canvas
+  = Canvas
 
 type Image
   = Image
@@ -40,16 +29,38 @@ type Image
 type Error 
   = Error
 
--- blank
 
-blank : Int -> Int -> Color -> ImageData
-blank width height color =
-  let {red, green, blue, alpha} = toRgb color in
-  [ red, green, blue, round (alpha * 255) ]
-  |>List.repeat (width * height)
-  |>List.concat
-  |>Array.fromList
-  |>ImageData width height 
+
+-- initialize
+
+
+initialize : Int -> Int -> Canvas
+initialize width height =
+  Native.Canvas.initialize width height
+
+
+-- fill
+
+
+fill : Color -> Canvas -> Canvas
+fill = 
+  Native.Canvas.fill 
+
+
+-- getSize
+
+
+getSize : Canvas -> (Int, Int)
+getSize =
+  Native.Canvas.getSize
+
+
+-- drawCanvas
+
+
+drawCanvas : Canvas -> Position -> Canvas -> Canvas
+drawCanvas =
+  Native.Canvas.drawCanvas
 
 
 -- loadImage
@@ -63,38 +74,33 @@ loadImage =
 -- drawImage 
 
 
-drawImage : Image -> Position -> String -> Maybe (ImageData)
-drawImage id image =
-  Native.Canvas.drawImage id image
+drawImage : Image -> Position -> Canvas -> Canvas
+drawImage =
+  Native.Canvas.drawImage
 
 
--- get
+---- getImageData
 
 
-get : String -> Maybe (ImageData)
-get id = 
-  Native.Canvas.get id
+--getImageData : Canvas -> Array Int
+--getImageData =
+--  Native.Canvas.getImageData 
 
 
-cropGet : Position -> Int -> Int -> String -> Maybe ImageData
-cropGet origin width height id =
-  Native.Canvas.cropGet id origin width height 
+---- fromImageData
 
 
--- put 
-
-
-put : ImageData -> Position -> String -> Maybe ImageData
-put imageData position id =
-  Native.Canvas.put imageData position id
+--fromImageData : Array Int -> Int -> Int -> Canvas
+--fromImageData =
+--  Native.Canvas.fromImageData
 
 
 -- setPixel
 
 
-setPixel : String -> Pixel -> Maybe ImageData
-setPixel id pixel =
-  Native.Canvas.setPixel pixel id 
+setPixel : Color -> Position -> Canvas -> Canvas
+setPixel =
+  Native.Canvas.setPixel 
 
 
 -- Html Events
@@ -131,29 +137,13 @@ field_ key =
   Json.field key Json.int
 
 
-
--- Html Attributes
-
-
-size : (Int, Int) -> Attribute a
-size (width, height) =
-  style 
-  [ ("width", toString width)
-  , ("height", toString height)
-  ]
-
-
-
 -- toHtml
 
 
-toHtml : String -> ImageData -> List (Attribute msg) -> Html msg
-toHtml id_ imageData attr =
-  Native.Canvas.canvas
-  (List.concat [ attr, [ id id_ ] ])
-  imageData.width
-  imageData.height
-  imageData.data
+toHtml : List (Attribute msg) -> Canvas -> Html msg
+toHtml =
+  Native.Canvas.toHtml
+
 
 
 

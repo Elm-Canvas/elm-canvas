@@ -1,52 +1,31 @@
-import Html exposing (p, text, div, Html, Attribute)
-import Html.Attributes exposing (style, width, height)
-import Canvas exposing (ImageData)
+import Html exposing (p, text, div, Html)
+import Html.Attributes exposing (style)
+import Canvas exposing (Canvas)
 import Color exposing (Color)
 
 
-
-
 main =
-  Html.beginnerProgram
-  { model  = canvas
-  , view   = view
-  , update = identity
-  }
+  let
+  
+    width = 400
 
+    height = 300
 
+    canvasStyle = 
+      style 
+      [ ("width", toString width) 
+      , ("height", toString height)
+      , ("border", "1px solid #000000")
+      ]
 
--- MODEL
-
-
-canvas : ImageData
-canvas =
-  Canvas.blank 500 400 prettyBlue
-
-
-prettyBlue : Color
-prettyBlue =
-  Color.rgb 23 92 256
-
-
-
--- VIEW
-
-
-
-view : ImageData -> Html a
-view imageData =
-  div 
-  [] 
-  [ p [] [ text "Elm-Canvas" ] 
-  , Canvas.toHtml "canvas-id" imageData [ blackBorder ]
-  ]
-
-
-blackBorder : Attribute
-blackBorder =
-  style [ ("border", "1px solid #000000") ]
-
-
+  in
+    div 
+    [] 
+    [ p [] [ text "Elm-Canvas" ] 
+    , Canvas.initialize width height
+      |>Canvas.fill (Color.rgb 23 92 254)
+      |>Canvas.toHtml [ canvasStyle ]
+    ]
 
 
 

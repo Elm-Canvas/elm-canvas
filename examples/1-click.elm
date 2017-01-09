@@ -1,31 +1,30 @@
 import Html exposing (p, text, div, Html)
+import Html.Attributes exposing (style)
 import Html.Events exposing (..)
-import Canvas exposing (ImageData, Pixel, Position)
+import Canvas exposing (Canvas, Position)
 import Color exposing (Color)
 
 
 main = 
   Html.program
-  { init  = (canvas, Cmd.none) 
+  { init  = (init, Cmd.none) 
   , view   = view 
   , update = update
   , subscriptions = always Sub.none
   }
 
 
--- MODEL
+init : Canvas
+init = 
+  Canvas.fill Color.black <| Canvas.initialize 500 400
+
+
+
+-- TYPES
 
 
 type Msg
   = Draw Position
-
-
-canvas : ImageData
-canvas = 
-  Canvas.blank 500 400 Color.black
-
-
-canvasId = "canvas-id"
 
 
 
@@ -33,17 +32,17 @@ canvasId = "canvas-id"
 
 
 
-update : Msg -> ImageData -> (ImageData, Cmd Msg)
-update message imageData =
+update : Msg -> Canvas -> (Canvas, Cmd Msg)
+update message canvas =
   case message of 
 
     Draw position ->
-      (addBluePixel position, Cmd.none)
+      (addWhitePixel position canvas, Cmd.none)
 
 
-addBluePixel : Position -> ImageData
-addBluePixel =
-  Pixel Color.blue >> Canvas.setPixel canvasId >> Maybe.withDefault canvas
+addWhitePixel : Position -> Canvas -> Canvas
+addWhitePixel =
+  Canvas.setPixel Color.white
 
 
 
@@ -51,18 +50,24 @@ addBluePixel =
 
 
 
-view : ImageData -> Html Msg
-view imageData =
+view : Canvas -> Html Msg
+view canvas =
+  let 
+    (width, height) =
+      Canvas.getSize canvas
+  in
   div 
   [] 
   [ p [] [ text "Elm-Canvas" ]
   , Canvas.toHtml 
-      canvasId 
-      imageData 
-      [ Canvas.onMouseDown Draw
-      , Canvas.size 
-          (imageData.width, imageData.height)
+    [ Canvas.onMouseDown Draw
+    , style 
+      [ ("width", toString width)
+      , ("height", toString height)
+      , ("cursor", "crosshair")
       ]
+    ]
+    canvas
   ]
 
 

@@ -1,7 +1,7 @@
 import Html exposing (..)
 import Html.Attributes exposing (style, type_, value)
 import Html.Events exposing (onClick)
-import Canvas exposing (ImageData, Pixel, Position)
+import Canvas exposing (Canvas, Position)
 import Dict exposing (Dict)
 import Color
 
@@ -21,25 +21,22 @@ main =
 
 
 type alias Model = 
-  Dict String ImageData
+  (Canvas, Canvas)
 
 
 type Msg
-  = Draw String Position
+  = Draw Position
   | TakeSnapshot
-
-
-blankCanvas : ImageData
-blankCanvas =
-  Canvas.blank 400 300 Color.black
 
 
 init : Model
 init =
-  Dict.fromList
-  [ ("main", blankCanvas)
-  , ("snapshot", blankCanvas)
-  ]
+  (initializeBlack 400 300, initializeBlack 400 300)
+
+
+initializeBlack : Int -> Int -> Canvas
+initializeBlack width height =
+  Canvas.initialize width height |> Canvas.fill Color.black
 
 
 
@@ -48,32 +45,31 @@ init =
 
 
 update :  Msg -> Model -> (Model, Cmd Msg)
-update message model =
+update message (main, snapshot) =
   case message of 
 
-    Draw id position ->
+    Draw position ->
       let 
-        imageData = 
-          Pixel Color.blue position
-          |>Canvas.setPixel id
-          |>Maybe.withDefault blankCanvas
+
+        updatedMain =
+          putWhitePixel position main
+
       in
-      (Dict.insert id imageData model, Cmd.none)
+        ((updatedMain, snapshot), Cmd.none)
 
     TakeSnapshot ->
       let
-        setSnapshot =
-          let
-            putMainCanvas =
-              Canvas.get "main" 
-              |>Maybe.withDefault blankCanvas
-              |>Canvas.put
-          in 
-            putMainCanvas Canvas.origin "snapshot"
-            |>Maybe.withDefault blankCanvas
-            |>Dict.insert "snapshot"
+
+        newSnapshot =
+          Canvas.drawCanvas main (Position 0 0) snapshot
+
       in
-        (setSnapshot model, Cmd.none)
+        ((main, newSnapshot), Cmd.none)
+
+
+putWhitePixel : Position -> Canvas -> Canvas
+putWhitePixel =
+  Canvas.setPixel Color.white
 
 
 
@@ -82,33 +78,34 @@ update message model =
 
 
 view : Model -> Html Msg
-view model =
-  div 
-  [] 
+view (main, snapshot) =
+  div [] 
   [ input 
     [ type_ "submit"
     , value "take snapshot" 
     , onClick TakeSnapshot
     ] []
-  , div [] <| List.map canvasView (Dict.toList model)
+  , canvasView [ Canvas.onMouseDown Draw ] main
+  , p [] [ text "snapshot : "]
+  , canvasView [] snapshot
   ]
 
 
-canvasView : (String, ImageData) -> Html Msg
-canvasView (id, imageData) =
-  let {width, height} = imageData in
-  div
-  []
-  [ p [] [ text id ] 
-  , Canvas.toHtml id imageData 
-    [ onMouseDown id 
-    , Canvas.size (width, height)
-    ]
-  ]
+canvasView : List (Attribute Msg) -> Canvas -> Html Msg
+canvasView attr canvas =
+  let 
+    (width, height) = Canvas.getSize canvas
+
+    styleAttr =
+      style
+      [ ("width", toString width)
+      , ("height", toString height)
+      , ("cursor", "crosshair")
+      ]
+
+  in
+    div [] [ Canvas.toHtml (styleAttr :: attr) canvas ]
 
 
-onMouseDown : String -> Attribute Msg
-onMouseDown id =
-  Canvas.onMouseDown (Draw id)
 
 
