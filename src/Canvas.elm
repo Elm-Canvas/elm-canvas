@@ -79,20 +79,20 @@ drawImage =
   Native.Canvas.drawImage
 
 
----- getImageData
+-- getImageData
 
 
---getImageData : Canvas -> Array Int
---getImageData =
---  Native.Canvas.getImageData 
+getImageData : Canvas -> Array Int
+getImageData =
+  Native.Canvas.getImageData 
 
 
----- fromImageData
+-- fromImageData
 
 
---fromImageData : Array Int -> Int -> Int -> Canvas
---fromImageData =
---  Native.Canvas.fromImageData
+fromImageData : Int -> Int -> Array Int -> Canvas
+fromImageData =
+  Native.Canvas.fromImageData
 
 
 -- setPixel
