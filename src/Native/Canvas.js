@@ -56,7 +56,7 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
 
     var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-    return model
+    return model;
 
   }
 
@@ -71,6 +71,36 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     return _elm_lang$core$Native_Array.fromJSArray(imageData.data);
   }
 
+
+  function fromImageData(array, width, height) {
+
+    var canvas = document.createElement("canvas");
+
+    canvas.width = width;
+    canvas.height = height;
+
+    var ctx = canvas.getContext("2d");
+
+    var imageData = ctx.createImageData(width, height);
+    var data = imageData.data;
+
+    var dataToPut = _elm_lang$core$Native_Array.toJSArray(array);
+
+    var i = 0;
+    while (i < dataToPut) {
+      data[i] = dataToPut[i];
+      i++;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+
+    return {
+      ctor: 'Canvas',
+      canvas: canvas,
+      width: width,
+      height: height,
+    }
+  }
 
   function setPixel(color, position, model) {
     var canvas = model.canvas;
@@ -171,6 +201,8 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     loadImage: loadImage,
     drawImage: F3(drawImage),
     setPixel: F3(setPixel),
-    toHtml: F2(toHtml)
+    toHtml: F2(toHtml),
+    getImageData: getImageData,
+    fromImageData: F3(fromImageData),
   };
 }();

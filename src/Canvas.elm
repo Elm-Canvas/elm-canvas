@@ -30,6 +30,10 @@ type Error
   = Error
 
 
+
+-- initialize
+
+
 initialize : Int -> Int -> Canvas
 initialize width height =
   Native.Canvas.initialize width height
@@ -75,12 +79,20 @@ drawImage =
   Native.Canvas.drawImage
 
 
--- getImageData
+---- getImageData
 
 
-getImageData : Canvas -> Array Int
-getImageData =
-  Native.getImageData 
+--getImageData : Canvas -> Array Int
+--getImageData =
+--  Native.Canvas.getImageData 
+
+
+---- fromImageData
+
+
+--fromImageData : Array Int -> Int -> Int -> Canvas
+--fromImageData =
+--  Native.Canvas.fromImageData
 
 
 -- setPixel
