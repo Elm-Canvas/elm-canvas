@@ -1,4 +1,3 @@
-import Html.Attributes exposing (style)
 import Canvas exposing (Canvas)
 import Color
 
