@@ -28,11 +28,6 @@ type Msg
   | ShowSwitch
 
 
-initializeBlack : Int -> Int -> Canvas
-initializeBlack width height =
-  Canvas.initialize width height |> Canvas.fill Color.black
-
-
 init : Model
 init =
   Canvas.initialize 400 300 
