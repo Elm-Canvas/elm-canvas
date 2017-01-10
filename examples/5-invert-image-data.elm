@@ -47,14 +47,7 @@ update message canvas =
   case message of 
 
     Invert ->
-      let
-        invertedCanvas =
-          Canvas.drawCanvas 
-            (invertCanvas canvas) 
-            (Position 0 0) 
-            canvas
-      in
-        (invertedCanvas, Cmd.none)
+      (invertCanvas canvas, Cmd.none)
 
     ImageLoaded imageResult ->
       case Result.toMaybe imageResult of

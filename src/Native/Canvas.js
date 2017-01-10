@@ -1,4 +1,4 @@
-var _Chadtech$elm_canvas$Native_Canvas = function () {
+var _elm_community$canvas$Native_Canvas = function () {
 
   function LOG(msg) {
     // console.log(msg);
@@ -121,14 +121,6 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     return model;
   }
 
-
-  function toHtml(factList, canvas) {
-    LOG("TO HTML")
-
-    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, canvas, implementation);
-
-  }
-
   function fill(color, model) {
     var canvas = model.canvas;
 
@@ -170,10 +162,37 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
     return model;
   }
 
-  var implementation = {
-    render: renderCanvas,
-    diff:   diff,
-  };
+
+  function toHtml(factList, canvas) {
+    LOG("TO HTML")
+
+
+    // this is some trickery..
+
+    // by defining implementation in this scope, I am making
+    // a new object. The Elm virtual dom checks to see if
+    // implementation has changed between re-renders. If it
+    // is different, the virtual dom chooses to redraw
+    // the element entirely using renderCanvas. This isnt
+    // a problem in elm-canvas, because its just handing off
+    // an already existing html element stored in the model.
+    // In other contexts, or if does for every dom element,
+    // this would be greatly un-performant.
+
+    // A more normal way of doing this, would be to define
+    // implementation outside of toHtml, on the same level as
+    // toHtml and every other function. That way its literally
+    // the same object being passed into virtualDom.custom, rather
+    // than new - however identical - objects.
+    var implementation = 
+      {
+        render: renderCanvas,
+        diff: diff
+      }
+
+    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, canvas, implementation);
+
+  }
 
   function renderCanvas(model) {
     LOG('RENDER CANVAS');
@@ -185,15 +204,15 @@ var _Chadtech$elm_canvas$Native_Canvas = function () {
   function diff(oldModel, newModel) {
     LOG("DIFF")
 
-    newModel.model.cache = oldModel.model.cache;
-
     return {
-      applyPatch: function(domElement) { return domElement },
-      data: oldModel
+      applyPatch: function(domNode, data) {
+        LOG("APPLY PATCH");
+        return data.model.canvas;
+      },
+      data: newModel
     };
 
   }
-
 
   return {
     initialize: F2(initialize),
