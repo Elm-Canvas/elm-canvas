@@ -103,6 +103,7 @@ var _elm_community$canvas$Native_Canvas = function () {
     }
   }
 
+
   function setPixel(color, position, model) {
     var canvas = model.canvas;
 
@@ -121,6 +122,37 @@ var _elm_community$canvas$Native_Canvas = function () {
     return model;
   }
 
+
+  function setPixels(pixels, model) {
+    LOG("SET PIXELS")
+    var canvas = model.canvas;
+
+    var ctx = canvas.getContext('2d');
+
+    while (pixels.ctor == "::") {
+      var color = pixels._0._0;
+      var position = pixels._0._1;
+      var imageData = ctx.createImageData(1,1);
+      var data = imageData.data;
+
+      data[0] = color._0;
+      data[1] = color._1;
+      data[2] = color._2;
+      data[3] = Math.floor(color._3 * 255);
+
+      ctx.putImageData(imageData, position.x, position.y);
+
+      pixels = pixels._1;
+    }
+
+    return model;
+
+  }
+
+  function calculateIndex(width, x, y) {
+    return ((x + (y * width)) * 4);
+  }
+
   function fill(color, model) {
     var canvas = model.canvas;
 
@@ -129,11 +161,11 @@ var _elm_community$canvas$Native_Canvas = function () {
     var imageData = ctx.createImageData(canvas.width, canvas.height);
     var data = imageData.data;
 
-    var numberOfPixels = canvas.width * canvas.height
+    var numberOfPixels = canvas.width * canvas.height;
 
     var i = 0;
     while (i < numberOfPixels) {
-      var pixelIndex = i * 4
+      var pixelIndex = i * 4;
       data[ pixelIndex     ] = color._0;
       data[ pixelIndex + 1 ] = color._1;
       data[ pixelIndex + 2 ] = color._2;
@@ -145,6 +177,17 @@ var _elm_community$canvas$Native_Canvas = function () {
 
     return model;
 
+  }
+
+
+  function drawLine(p0, p1, color, model) {
+
+    var canvas = model.canvas;
+    var ctx = canvas.getContext('2d');
+
+
+
+    return model;
   }
 
   function getSize(model) {
@@ -165,7 +208,6 @@ var _elm_community$canvas$Native_Canvas = function () {
 
   function toHtml(factList, canvas) {
     LOG("TO HTML")
-
 
     // this is some trickery..
 
@@ -222,6 +264,8 @@ var _elm_community$canvas$Native_Canvas = function () {
     loadImage: loadImage,
     drawImage: F3(drawImage),
     setPixel: F3(setPixel),
+    setPixels: F4(setPixels),
+    drawLine: F4(drawLine),
     toHtml: F2(toHtml),
     getImageData: getImageData,
     fromImageData: F3(fromImageData),
