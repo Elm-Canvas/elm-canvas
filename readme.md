@@ -5,15 +5,15 @@ Making the canvas API accessible within Elm. The canvas element is a very simple
 # Getting started
 
 Checkout these examples..
-* [Simple Render](elm-canvas-examples.surge.sh/0-simple-render.html)
-* [Click](elm-canvas-examples.surge.sh/1-click.html)
-* [Snap Shot](elm-canvas-examples.surge.sh/2-snap-shot.html)
-* [Show and Hide](elm-canvas-examples.surge.sh/3-show-and-hide.html)
+* [Simple Render](https://elm-canvas-examples.surge.sh/0-simple-render.html)
+* [Click](https://elm-canvas-examples.surge.sh/1-click.html)
+* [Snap Shot](https://elm-canvas-examples.surge.sh/2-snap-shot.html)
+* [Show and Hide](https://elm-canvas-examples.surge.sh/3-show-and-hide.html)
 * [Image](elm-canvas-examples.surge.sh/4-image.html)
-* [Invert Image Data](elm-canvas-examples.surge.sh/5-invert-image-data.html)
-* [Draw Line](elm-canvas-examples.surge.sh/6-draw-line.html)
-* [Crop](elm-canvas-examples.surge.sh/7-crop.html)
-* [Request Animation Frame](elm-canvas-examples.surge.sh/8-request-animation-frame.html)
+* [Invert Image Data](https://elm-canvas-examples.surge.sh/5-invert-image-data.html)
+* [Draw Line](https://elm-canvas-examples.surge.sh/6-draw-line.html)
+* [Crop](https://elm-canvas-examples.surge.sh/7-crop.html)
+* [Request Animation Frame](https://elm-canvas-examples.surge.sh/8-request-animation-frame.html)
 
 Or, clone this repo, and run them locally from `./examples`. They will live reload so you can toy around with them yourself.
 
