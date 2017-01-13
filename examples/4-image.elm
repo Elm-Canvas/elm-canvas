@@ -58,9 +58,17 @@ update message canvas =
       case Result.toMaybe imageResult of
         Just image ->
           let 
-            origin = Position 0 0 
+
+            newCanvas =
+              let
+                (width, height) =
+                  Canvas.getImageSize image
+              in
+                Canvas.initialize width height
+                |>Canvas.drawImage image (Position 0 0)
+          
           in
-            (Canvas.drawImage image origin canvas, Cmd.none)
+            (newCanvas, Cmd.none)
         
         Nothing ->
           (canvas, Cmd.none)

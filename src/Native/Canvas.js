@@ -18,6 +18,7 @@ var _elm_community$canvas$Native_Canvas = function () {
     }
   }
 
+
   function loadImage(source) {
     var Scheduler = _elm_lang$core$Native_Scheduler;
     return Scheduler.nativeBinding(function (callback) {
@@ -46,7 +47,26 @@ var _elm_community$canvas$Native_Canvas = function () {
   }
 
 
+  function copyCanvas(model) {
+    var canvas = document.createElement("canvas");
+    canvas.width = model.canvas.width;
+    canvas.height = model.canvas.height;
+
+    var ctx = canvas.getContext('2d')
+    ctx = ctx.drawImage(model.canvas, 0, 0);
+
+    return {
+      ctor: 'Canvas',
+      canvas: canvas,
+      width: model.canvas.width,
+      height: model.canvas.height
+    };
+  }
+
+
   function drawImage(image, position, model) {
+
+    var model = copyCanvas(model);
 
     var canvas = model.canvas;
 
@@ -62,6 +82,7 @@ var _elm_community$canvas$Native_Canvas = function () {
 
 
   function getImageData(model) {
+
     var canvas = model.canvas;
 
     var ctx = canvas.getContext('2d');
@@ -103,7 +124,11 @@ var _elm_community$canvas$Native_Canvas = function () {
     }
   }
 
+
   function setPixel(color, position, model) {
+
+    var model = copyCanvas(model);
+
     var canvas = model.canvas;
 
     var ctx = canvas.getContext('2d');
@@ -121,19 +146,94 @@ var _elm_community$canvas$Native_Canvas = function () {
     return model;
   }
 
-  function fill(color, model) {
+
+  function setPixels(pixels, model) {
+    LOG("SET PIXELS")
+
+    var model = copyCanvas(model);
+
     var canvas = model.canvas;
+
+    var ctx = canvas.getContext('2d');
+
+    while (pixels.ctor == "::") {
+      var color = pixels._0._0;
+      var position = pixels._0._1;
+      var imageData = ctx.createImageData(1,1);
+      var data = imageData.data;
+
+      data[0] = color._0;
+      data[1] = color._1;
+      data[2] = color._2;
+      data[3] = Math.floor(color._3 * 255);
+
+      ctx.putImageData(imageData, position.x, position.y);
+
+      pixels = pixels._1;
+    }
+
+    return model;
+
+  }
+
+
+  function calculateIndex(width, x, y) {
+    return ((x + (y * width)) * 4);
+  }
+
+
+  function crop(position, width, height, model) {
+
+    var canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+
+    var ctx = canvas.getContext("2d");
+
+    ctx.drawImage(
+      model.canvas, 
+      position.x, 
+      position.y,
+      width,
+      height,
+      0,
+      0,
+      width,
+      height
+    );
+
+    return {
+      ctor: 'Canvas',
+      width: width,
+      height: height,
+      canvas: canvas
+    };
+  }
+
+
+  function fill(color, model) {
+
+    var canvas = document.createElement("canvas");
+    canvas.width = model.width;
+    canvas.height = model.height;
+
+    var model = {
+      ctor: 'Canvas',
+      canvas: canvas,
+      width: model.width,
+      height: model.height
+    };
 
     var ctx = canvas.getContext('2d');
 
     var imageData = ctx.createImageData(canvas.width, canvas.height);
     var data = imageData.data;
 
-    var numberOfPixels = canvas.width * canvas.height
+    var numberOfPixels = canvas.width * canvas.height;
 
     var i = 0;
     while (i < numberOfPixels) {
-      var pixelIndex = i * 4
+      var pixelIndex = i * 4;
       data[ pixelIndex     ] = color._0;
       data[ pixelIndex + 1 ] = color._1;
       data[ pixelIndex + 2 ] = color._2;
@@ -147,9 +247,11 @@ var _elm_community$canvas$Native_Canvas = function () {
 
   }
 
+
   function getSize(model) {
     return _elm_lang$core$Native_Utils.Tuple2(model.width, model.height);
   }
+
 
   function drawCanvas(modelToDraw, position, model) {
     LOG("DRAW CANVAS")
@@ -165,7 +267,6 @@ var _elm_community$canvas$Native_Canvas = function () {
 
   function toHtml(factList, canvas) {
     LOG("TO HTML")
-
 
     // this is some trickery..
 
@@ -197,7 +298,7 @@ var _elm_community$canvas$Native_Canvas = function () {
   function renderCanvas(model) {
     LOG('RENDER CANVAS');
 
-    return model.canvas;  
+    return copyCanvas(model).canvas;  
   }
 
 
@@ -221,7 +322,9 @@ var _elm_community$canvas$Native_Canvas = function () {
     drawCanvas: F3(drawCanvas),
     loadImage: loadImage,
     drawImage: F3(drawImage),
+    crop: F4(crop),
     setPixel: F3(setPixel),
+    setPixels: F2(setPixels),
     toHtml: F2(toHtml),
     getImageData: getImageData,
     fromImageData: F3(fromImageData),
