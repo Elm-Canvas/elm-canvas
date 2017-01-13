@@ -3,6 +3,8 @@ elm-stuff
 dev/elm-stuff
 dev/node_modules
 examples/elm-stuff
+examples/*.html
+examples/node_modules
 
 # Do development work in a folder called dev
 dev
