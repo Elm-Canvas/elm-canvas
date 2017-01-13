@@ -51,7 +51,7 @@ fill =
 -- getSize
 
 
-getSize : Canvas -> (Int, Int)
+getSize : a -> (Int, Int)
 getSize =
   Native.Canvas.getSize
 
@@ -111,37 +111,48 @@ setPixels : List (Color, Position) -> Canvas -> Canvas
 setPixels =
   Native.Canvas.setPixels
 
-getHighest : List Position -> Int
-getHighest =
-  List.map (.y) >> List.minimum >> Maybe.withDefault 0
-
-
-getLeftest : List Position -> Int
-getLeftest =
-  List.map (.x) >> List.minimum >> Maybe.withDefault 0
-
-
-getRightest : List Position -> Int
-getRightest =
-  List.map (.x) >> List.maximum >> Maybe.withDefault 0
-
-
-getLowest : List Position -> Int
-getLowest =
-  List.map (.y) >> List.maximum >> Maybe.withDefault 0
-
-
-relativize : Position -> (Color, Position) -> (Color, Position)
-relativize {x, y} (color, p) =
-  (color, Position (p.x - x) (p.y - y))
-
 
 -- drawLine
 
 
 drawLine : Position -> Position -> Color -> Canvas -> Canvas
-drawLine =
-  Native.Canvas.drawLine
+drawLine p0 p1 color =
+  let
+    pixels =
+      List.map 
+        ((,) color) 
+        (line p0 p1)
+  in
+    Native.Canvas.setPixels pixels
+
+
+-- drawRect
+
+
+drawRectangle : Position -> Int -> Int -> Color -> Canvas -> Canvas
+drawRectangle {x, y} width height color =
+  let
+    pixels =
+      let 
+        x1 = x + width
+        y1 = y + height
+      in
+      List.map ((,) color)
+      <|List.concat
+        [ line (Position x y) (Position (x1 - 1) y) 
+        , line (Position x y) (Position x (y1 - 1))
+        , line (Position x1 y1) (Position x y1)
+        , line (Position x1 y1) (Position x1 y)
+        ]
+  in
+    Native.Canvas.setPixels pixels
+
+-- crop
+
+
+crop : Position -> Int -> Int -> Canvas -> Canvas
+crop position width height canvas =
+  Native.Canvas.crop position width height canvas
 
 
 -- Html Events
