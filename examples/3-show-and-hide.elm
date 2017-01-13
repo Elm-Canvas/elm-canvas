@@ -28,11 +28,6 @@ type Msg
   | ShowSwitch
 
 
-initializeBlack : Int -> Int -> Canvas
-initializeBlack width height =
-  Canvas.initialize width height |> Canvas.fill Color.black
-
-
 init : Model
 init =
   Canvas.initialize 400 300 
@@ -78,24 +73,16 @@ putBlueSquare position =
 view : Model -> Html Msg
 view {canvas, show} =
   if show then
-    let 
-
-      (width, height) = 
-        Canvas.getSize canvas
-    
-    in
-      container
-      [ Canvas.toHtml
-        [ Canvas.onMouseDown Draw
-        , style
-          [ ("width", toString width)
-          , ("height", toString height)
-          , ("border", "1px solid #000000")
-          , ("cursor", "crosshair")
-          ]
+    container
+    [ Canvas.toHtml
+      [ Canvas.onMouseDown Draw
+      , style
+        [ ("border", "1px solid #000000")
+        , ("cursor", "crosshair")
         ]
-        canvas
       ]
+      canvas
+    ]
   else
     container []
 

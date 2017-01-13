@@ -54,7 +54,7 @@ view : Canvas -> Html Msg
 view canvas =
   let 
     (width, height) =
-      Canvas.getSize canvas
+      Canvas.getCanvasSize canvas
   in
   div 
   [] 
