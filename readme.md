@@ -15,7 +15,7 @@ Checkout these examples..
 * [Crop](https://elm-canvas-examples.surge.sh/7-crop.html)
 * [Request Animation Frame](https://elm-canvas-examples.surge.sh/8-request-animation-frame.html)
 
-Or, clone this repo, and run them locally from `./examples`. They will live reload so you can toy around with them yourself.
+Or, clone this repo, and run them locally from `./examples`. They will live reload so you can toy around with them yourself. Just follow the instructions in `examples/readme.md`.
 
 # Whats this all this about?
 
