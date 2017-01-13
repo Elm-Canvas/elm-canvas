@@ -94,14 +94,9 @@ view (main, snapshot) =
 canvasView : List (Attribute Msg) -> Canvas -> Html Msg
 canvasView attr canvas =
   let 
-    (width, height) = Canvas.getSize canvas
 
     styleAttr =
-      style
-      [ ("width", toString width)
-      , ("height", toString height)
-      , ("cursor", "crosshair")
-      ]
+      style [ ("cursor", "crosshair") ]
 
   in
     div [] [ Canvas.toHtml (styleAttr :: attr) canvas ]

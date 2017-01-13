@@ -51,8 +51,13 @@ fill =
 -- getSize
 
 
-getSize : a -> (Int, Int)
-getSize =
+getImageSize : Image -> (Int, Int)
+getImageSize =
+  Native.Canvas.getSize
+
+
+getCanvasSize : Canvas -> (Int, Int)
+getCanvasSize =
   Native.Canvas.getSize
 
 

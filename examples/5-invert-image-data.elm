@@ -52,8 +52,19 @@ update message canvas =
     ImageLoaded imageResult ->
       case Result.toMaybe imageResult of
         Just image ->
-          (Canvas.drawImage image (Position 0 0) canvas, Cmd.none)
-        
+          let 
+
+            newCanvas =
+              let
+                (width, height) =
+                  Canvas.getImageSize image
+              in
+                Canvas.initialize width height
+                |>Canvas.drawImage image (Position 0 0)
+          
+          in
+            (newCanvas, Cmd.none)
+
         Nothing ->
           (canvas, Cmd.none)
 
@@ -61,7 +72,8 @@ update message canvas =
 invertCanvas : Canvas -> Canvas
 invertCanvas canvas = 
   let
-    (width, height) = Canvas.getSize canvas
+    (width, height) = 
+      Canvas.getCanvasSize canvas
   in
     Canvas.getImageData canvas
     |>invertColors
