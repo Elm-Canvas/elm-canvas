@@ -7,3 +7,5 @@ Here is how to run these examples..
 ```
 
 Then you should find the examples at `localhost:2993/<exampleName>.html`
+
+Or, you can just go to elm-canvas-examples.surge.sh/<exampleName>.html, but it wont live reload for ya.

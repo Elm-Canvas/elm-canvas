@@ -11,11 +11,6 @@ PORT = Number process.env.PORT or 2993
 
 app.use express.static __dirname
 
-# app.get '/', (req, res, next) ->
-#   indexPage = join __dirname, 'public/index.html'
-#   res.status 200
-#     .sendFile indexPage
-
 httpServer = http.createServer app
 httpServer.listen PORT, ->
   console.log 'SERVER RUNNING ON ' + PORT
