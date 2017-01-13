@@ -17,7 +17,7 @@ Checkout these examples..
 
 Or, clone this repo, and run them locally from `./examples`. They will live reload so you can toy around with them yourself.
 
-# Whats all this about?
+# Whats this all this about?
 
 This code ..
 
