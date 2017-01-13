@@ -1,4 +1,4 @@
-How to run these examples!
+Here is how to run these examples..
 
 ```
 > npm install
