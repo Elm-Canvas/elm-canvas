@@ -11,10 +11,11 @@ elmExamples = [
     '4-image',
     '5-invert-image-data',
     '6-draw-line',
-    '7-crop'
+    '7-crop',
+    '8-request-animation-frame'
   ]
 
-gulp.task 'elm', (a, b, c) ->  
+gulp.task 'elm', ->  
 
   _.forEach elmExamples, (example) ->
     cmd  = 'elm-make ./' + example 

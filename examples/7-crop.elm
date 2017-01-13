@@ -2,7 +2,6 @@ import Html exposing (..)
 import Html.Attributes exposing (style, type_, value)
 import Html.Events exposing (onClick)
 import Canvas exposing (Canvas, Position, Image, Error)
-import Dict exposing (Dict)
 import Color
 import Task
 
