@@ -5,6 +5,7 @@ dev/node_modules
 examples/elm-stuff
 examples/*.html
 examples/node_modules
+examples/.surgeignore
 
 # Do development work in a folder called dev
 dev
