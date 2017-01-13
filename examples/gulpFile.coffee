@@ -21,14 +21,7 @@ gulp.task 'elm', ->
     cmd  = 'elm-make ./' + example 
     cmd += '.elm --output=' + example + '.html'
 
-    cp.exec cmd, (error, stdout) ->
-
-      if error
-        console.log "Elm error :^( "
-        console.log error
-      else
-        console.log 'Elm says .. '
-        console.log (stdout.slice 0, stdout.length - 1)
+    console.log (cp.execSync cmd, (encoding: 'utf-8'))
 
 
 gulp.task 'watch', ->
