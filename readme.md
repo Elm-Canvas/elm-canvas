@@ -67,7 +67,7 @@ The `data` property of the canvas element is the color information in the canvas
 
   -- ..has the following data..
 
-  data == fromList
+  getImageData canvas == fromList
     [ 255, 0, 0, 255,    255, 255, 255, 255,    255, 0, 0, 255
     , 255, 0, 0, 255,    0, 0, 0, 255,          0, 0, 0, 0
     ] 

@@ -70,7 +70,7 @@ update message model =
           ({ model | clickPosition = Just position0 }, Cmd.none)
 
     MouseMove position ->
-      ({ model | movePosition = (Just position) }, Cmd.none)
+      ({ model | movePosition = Just position }, Cmd.none)
 
 
 

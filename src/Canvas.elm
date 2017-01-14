@@ -172,7 +172,7 @@ drawImage =
     --   Black | White
     --         |
 
-    getImageData twoBytwoCanvas ==
+    getImageData twoBytwoCanvas == fromList
       [ 0, 0, 0, 255,      255, 0, 0, 255
       , 0, 0, 0, 255,      255, 255, 255, 255
       ]
