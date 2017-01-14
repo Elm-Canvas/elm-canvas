@@ -136,10 +136,10 @@ var _elm_community$canvas$Native_Canvas = function () {
     var imageData = ctx.createImageData(1, 1);
     var data = imageData.data;
 
-    data[0] = color._0;
-    data[1] = color._1;
-    data[2] = color._2;
-    data[3] = Math.floor(color._3 * 255);
+    data[0] = color.red;
+    data[1] = color.green;
+    data[2] = color.blue;
+    data[3] = Math.floor(color.alpha * 255);
 
     ctx.putImageData(imageData, position.x, position.y);
 
@@ -162,10 +162,10 @@ var _elm_community$canvas$Native_Canvas = function () {
       var imageData = ctx.createImageData(1,1);
       var data = imageData.data;
 
-      data[0] = color._0;
-      data[1] = color._1;
-      data[2] = color._2;
-      data[3] = Math.floor(color._3 * 255);
+      data[0] = color.red;
+      data[1] = color.green;
+      data[2] = color.blue;
+      data[3] = Math.floor(color.alpha * 255);
 
       ctx.putImageData(imageData, position.x, position.y);
 
@@ -234,10 +234,11 @@ var _elm_community$canvas$Native_Canvas = function () {
     var i = 0;
     while (i < numberOfPixels) {
       var pixelIndex = i * 4;
-      data[ pixelIndex     ] = color._0;
-      data[ pixelIndex + 1 ] = color._1;
-      data[ pixelIndex + 2 ] = color._2;
-      data[ pixelIndex + 3 ] = Math.floor(color._3 * 255);
+
+      data[ pixelIndex     ] = color.red;
+      data[ pixelIndex + 1 ] = color.green;
+      data[ pixelIndex + 2 ] = color.blue;
+      data[ pixelIndex + 3 ] = Math.floor(color.alpha * 255);
       i++;
     }
 

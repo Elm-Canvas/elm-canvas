@@ -1,9 +1,53 @@
-module Canvas exposing (..)
+module Canvas 
+  exposing 
+    ( Canvas
+    , Image
+    , Position
+    , Error
+    , initialize
+    , fill
+    , toHtml
+    , drawCanvas
+    , drawImage
+    , setPixel
+    , setPixels
+    , drawLine
+    , drawRectangle
+    , crop
+    , getImageData
+    , loadImage
+    , fromImageData
+    , onMouseDown
+    , onMouseUp
+    , onMouseMove
+    , getCanvasSize
+    , getImageSize
+    )
 
+{-| The canvas html element is a very simple way to render 2D graphics. Check out these examples, and get an explanation of the canvas element [here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first, because its probably what you need. Elm-Canvas is for when you need unusually direct and low level access to the canvas element.
+
+# Main Types
+@docs Canvas, Image, Position, Error
+
+# Basics
+@docs initialize, fill, toHtml
+
+# Drawing
+@docs drawCanvas, drawImage, setPixel, setPixels, drawLine, drawRectangle, crop, loadImage
+
+# Image Data
+@docs getImageData, fromImageData
+
+# Size
+@docs getCanvasSize, getImageSize
+
+# Html Helpers
+@docs onMouseDown, onMouseUp, onMouseMove
+
+-}
 
 import Html exposing (Html, Attribute)
 import Html.Events exposing (on)
-import Color exposing (Color)
 import List
 import Array exposing (Array)
 import Json.Decode as Json
@@ -12,27 +56,12 @@ import Task exposing (Task)
 import Native.Canvas
 
 
-{-| The canvas html element is a very simple way to render 2D graphics. [Check out these examples, and get an explanation of the canvas element here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first. Elm-Graphics is probably what you need. Elm-Canvas is for when you need direct and low level access to the canvas element.)
-
-# Main Types
-@docs Canvas, Image, Position, Error
-
-# Simple Stuff
-@docs initialize, fill, toHtml
-
-# Drawing
-@docs drawCanvas, drawImage, setPixel, setPixels, drawLine, drawRectangle
-
--}
-
--- TYPES
-
-{-| A `Canvas` contains image data, and can be render as html with `toHtml`. There are a number of graphics operations in this package, they all operate on `Canvas`s. 
+{-| A `Canvas` contains image data, and can be rendered as html with `toHtml`. There are a many drawing functions in this package, they all operate on `Canvas`. 
 -}
 type Canvas
   = Canvas
 
-{-| Images loaded in from a url come in type `Image`. `Image`s cant be rendered like `Canvas` can, but they can be drawn onto a `Canvas` using `drawImage`.
+{-| Images loaded in from a url come in type `Image`. `Image` cant be rendered to html like `Canvas` can, but they can be drawn onto a `Canvas` using `drawImage`.
 -}
 type Image
   = Image
@@ -42,13 +71,13 @@ type Image
 type Error 
   = Error
 
-{-| A `Position` contains x and y coordinates. Many functions will take a `Position` to indicate where a rendering operation should occur on a canvas. This type alias is identical to the one found in `elm-lang/mouse`.
+{-| A `Position` contains x and y coordinates. Many functions will take a `Position` to indicate where a drawing should occur on a `Canvas`. This type alias is identical to the one found in `elm-lang/mouse`.
 -}
 type alias Position = 
   { x : Int, y : Int }
 
 
-{-| `initialize` takes in a width and a height (both type `Int), and returns a `Canvas` with that width and height. A freshly initialized `Canvas` is entirely transparent (its data is an array of 0s, that has a length of width * height * 4)
+{-| `initialize` takes in a width and a height (both type `Int`), and returns a `Canvas` with that width and height. A freshly initialized `Canvas` is entirely transparent (its data is an array of 0s, that has a length of width x height x 4)
 
     squareCanvas : Int -> Canvas
     squareCanvas length =
@@ -59,26 +88,26 @@ initialize width height =
   Native.Canvas.initialize width height
 
 
-{-| `fill` takes a canvas and gives you one with the same dimensions, except entirely solid in its color. Giving `fill` the color blue and a canvas 400 x 300 pixels in dimensions will return a blue square 400 x 300 pixels.
+{-| `fill` takes a `Canvas` and gives you a `Canvas` with the same dimensions, except entirely solid in its color.
 
     blueSquare : Int -> Canvas
-    blueSuqare length =
+    blueSquare length =
       initialize length length
       |>fill Color.blue
 -}
 fill : Color -> Canvas -> Canvas
-fill = 
-  Native.Canvas.fill 
+fill color = 
+  Native.Canvas.fill (Color.toRgb color)
 
 
--- getSize
-
-
+{-|Get the width and height of the `Image`. 
+-}
 getImageSize : Image -> (Int, Int)
 getImageSize =
   Native.Canvas.getSize
 
-
+{-|Get the width and height of the `Canvas`.
+-}
 getCanvasSize : Canvas -> (Int, Int)
 getCanvasSize =
   Native.Canvas.getSize
@@ -86,22 +115,38 @@ getCanvasSize =
 
 {-|`drawCanvas` takes a `Canvas`, and draws into onto another `Canvas` at a `Position`.
 
-    div []
-    [ p [] [ text "Sword Fighter II" ]
-    , drawCanvas
-        player.sprite
-        player.position
-        environment
-      |>toHtml []
-    ]
+    view : Model -> Html Msg
+    view {player, environment} =
+      div []
+      [ p [] [ text "Sword Fighter II" ]
+      , drawCanvas
+          player.sprite
+          player.position
+          environment
+        |>toHtml []
+      ]
 -}
 drawCanvas : Canvas -> Position -> Canvas -> Canvas
 drawCanvas =
   Native.Canvas.drawCanvas
 
+{-|Load up an `Image` from a url. 
 
--- loadImage
+    loadSteelix : Cmd Msg
+    loadSteelix =
+      Task.attempt ImageLoaded (loadImage "./steelix.png")
 
+    update : Msg -> Model -> (Model, Cmd Msg)
+    update message model =
+      case message of
+        ImageLoaded -> result of
+          case Result.toMaybe result of
+            Just image ->
+              -- ..
+            Nothing ->
+              -- ..
+        -- ..
+-}
 loadImage : String -> Task Error Image
 loadImage =
   Native.Canvas.loadImage
@@ -114,11 +159,11 @@ drawImage =
   Native.Canvas.drawImage
 
 
--- getImageData
 
-{-|`Canvas`s have image data. Image data is an array of integers all between 0 and 255. They represent the RGBA values of every pixel in the image, where the first four `Int`s are the first pixel, the next four `Int`s the second pixels, etc.
+{-|`Canvas` have image data. Image data is an array of integers all between 0 and 255. They represent the RGBA values of every pixel in the image, where the first four `Int` are the first pixel, the next four `Int` the second pixels, etc.
 
     -- twoByTwoCanvas =
+
     --         |
     --   Black | Red
     --         |
@@ -137,8 +182,6 @@ getImageData =
   Native.Canvas.getImageData 
 
 
--- fromImageData
-
 {-|Make a new `Canvas` with given dimensions and image data. 
 
     invertColors : Canvas -> Canvas
@@ -147,9 +190,9 @@ getImageData =
         (width, height) =
           Canvas.getCanvasSize canvas
       in
-      getImageData canvas
-      |>Array.indexedMap invertHelp
-      |>fromImageData width height
+        getImageData canvas
+        |>Array.indexedMap invertHelp
+        |>fromImageData width height
 
     invertHelp : Int -> Int -> Int 
     invertHelp index colorValue =
@@ -163,8 +206,6 @@ fromImageData =
   Native.Canvas.fromImageData
 
 
--- setPixel
-
 {-|set the pixel at a specific position to a specific color in a given canvas.
     
     setUpperLeftCornerBlue : Canvas -> Canvas
@@ -172,24 +213,38 @@ fromImageData =
       setPixel Color.blue (Position 0 0)
 -}
 setPixel : Color -> Position -> Canvas -> Canvas
-setPixel =
-  Native.Canvas.setPixel 
+setPixel color =
+  Native.Canvas.setPixel (Color.toRgb color)
 
 
 {-|A more performant way to set many pixels. 
 
+    calculateCircle : Position -> Int -> List Position
+    calculateCircle center radius =
+      -- math stuff goes here
+
     drawRedCircle : Position -> Int -> Canvas -> Canvas
-    drawCirlce center radius =
+    drawRedCircle center radius =
       calculateCircle center radius
       |>List.map ((,) Color.red)
       |>setPixels
 -}
 setPixels : List (Color, Position) -> Canvas -> Canvas
-setPixels =
-  Native.Canvas.setPixels
+setPixels pixels =
+  Native.Canvas.setPixels (List.map setPixelsHelp pixels)
 
 
--- drawLine
+type alias ColorHelp =
+  { red : Int
+  , green : Int
+  , blue : Int
+  , alpha : Float
+  }
+
+setPixelsHelp : (Color, Position) -> (ColorHelp, Position)
+setPixelsHelp (color, position) =
+  ((Color.toRgb color), position)
+
 
 {-|Takes a starting and ending `Position`, a `Color`, and draws a line from the start to the finish in that color. It uses the bresenham line algorithm to compute the pixels in the line.
 -}
@@ -201,12 +256,10 @@ drawLine p0 p1 color =
         ((,) color) 
         (line p0 p1)
   in
-    Native.Canvas.setPixels pixels
+    Native.Canvas.setPixels (List.map setPixelsHelp pixels)
 
 
--- drawRect
-
-{-|Draws a rectangle from the upper left `Position`, with a width and a height (both `Int`s).
+{-|Draws a rectangle from the upper left `Position`, with `Int` width and `Int` height.
 
     drawSquare : Position -> Int -> Color -> Canvas -> Canvas
     drawSquare position length =
@@ -232,7 +285,20 @@ drawRectangle {x, y} width height color =
 
 -- crop
 
+{-|Cut out a rectangle from an input `Canvas`.
 
+    cutOutUpperLeftQuadrant : Canvas -> Canvas
+    cutOutUpperLeftQuadrant canvas =
+      let
+        (width, height) =
+          getCanvasSize canvas
+      in
+        crop 
+          (Position 0 0) 
+          (width // 2) 
+          (height // 2)
+          canvas
+-}
 crop : Position -> Int -> Int -> Canvas -> Canvas
 crop position width height canvas =
   Native.Canvas.crop position width height canvas
@@ -240,15 +306,21 @@ crop position width height canvas =
 
 -- Html Events
 
-
+{-|Just like the `onMouseDown` in `Html.Events`, but this one passes along a `Position` that is relative to the `Canvas`, not the entire window. So clicking right in the middle of a 200x200 `Canvas` will return a `Position` == `{x = 100, y = 100}`.
+-}
 onMouseDown : (Position -> msg) -> Attribute msg
 onMouseDown message =
   on "mousedown" <| Json.map (positionInCanvas >> message) positionDecoder
 
+
+{-|Just like the `onMouseUp` in `Html.Events`, except this one passed along a `Position` that is relative to the `Canvas`, not the entire window.
+-}
 onMouseUp : (Position -> msg) -> Attribute msg
 onMouseUp message =
   on "mouseup" <| Json.map (positionInCanvas >> message) positionDecoder
 
+{-|Just like the `onMouseMove` in `Html.Events`, except this one passed along a `Position` that is relative to the `Canvas`, not the entire window.
+-}
 onMouseMove : (Position -> msg) -> Attribute msg
 onMouseMove message =
   on "mousemove" <| Json.map (positionInCanvas >> message) positionDecoder
@@ -276,21 +348,16 @@ field_ key =
 
     pixelatedRender : Canvas -> Html Msg
     pixelatedRender canvas =
-      toHtml 
-        [ style
-          [ ("image-rendering", "pixelated") ]
-        ]
-        canvas
+      toHtml [ class "pixelated" ] canvas
 -}
-
-
 toHtml : List (Attribute msg) -> Canvas -> Html msg
 toHtml =
   Native.Canvas.toHtml
 
 
--- Brensenham Line Algorithm
 
+
+-- Brensenham Line Algorithm
 
 type alias BresenhamStatics = 
   { finish : Position, sx : Int, sy : Int, dx : Float, dy : Float }
