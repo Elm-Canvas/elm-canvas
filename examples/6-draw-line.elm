@@ -70,7 +70,7 @@ update message model =
           ({ model | clickPosition = Just position0 }, Cmd.none)
 
     MouseMove position ->
-      ({ model | movePosition = (Just position) }, Cmd.none)
+      ({ model | movePosition = Just position }, Cmd.none)
 
 
 
@@ -96,7 +96,7 @@ view model =
               Canvas.drawLine
                 position0
                 position1
-                Color.blue
+                (Color.hsl 0 0.5 0.5)
                 model.canvas
   in
   div 
