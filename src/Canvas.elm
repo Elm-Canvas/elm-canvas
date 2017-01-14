@@ -20,6 +20,8 @@ module Canvas
     , onMouseDown
     , onMouseUp
     , onMouseMove
+    , onClick
+    , onDoubleClick
     , getCanvasSize
     , getImageSize
     )
@@ -42,7 +44,7 @@ module Canvas
 @docs getCanvasSize, getImageSize
 
 # Html Helpers
-@docs onMouseDown, onMouseUp, onMouseMove
+@docs onMouseDown, onMouseUp, onMouseMove, onClick, onDoubleClick
 
 -}
 
@@ -56,12 +58,12 @@ import Task exposing (Task)
 import Native.Canvas
 
 
-{-| A `Canvas` contains image data, and can be rendered as html with `toHtml`. There are a many drawing functions in this package, they all operate on `Canvas`. 
+{-| A `Canvas` contains image data, and can be rendered as html with `toHtml`. There are many drawing functions in this package, and they all operate on `Canvas`. 
 -}
 type Canvas
   = Canvas
 
-{-| Images loaded in from a url come in type `Image`. `Image` cant be rendered to html like `Canvas` can, but they can be drawn onto a `Canvas` using `drawImage`.
+{-| Images loaded in from a url come as type `Image`. `Image` cant be rendered to html like `Canvas` can, but they can be drawn onto a `Canvas` using `drawImage`.
 -}
 type Image
   = Image
@@ -88,7 +90,7 @@ initialize width height =
   Native.Canvas.initialize width height
 
 
-{-| `fill` takes a `Canvas` and gives you a `Canvas` with the same dimensions, except entirely solid in its color.
+{-| `fill` takes a `Canvas` and gives you a `Canvas` with the same dimensions, except filled in with a uniform color.
 
     blueSquare : Int -> Canvas
     blueSquare length =
@@ -100,13 +102,13 @@ fill color =
   Native.Canvas.fill (Color.toRgb color)
 
 
-{-|Get the width and height of the `Image`. 
+{-|Get the width and height of an `Image`. 
 -}
 getImageSize : Image -> (Int, Int)
 getImageSize =
   Native.Canvas.getSize
 
-{-|Get the width and height of the `Canvas`.
+{-|Get the width and height of a `Canvas`.
 -}
 getCanvasSize : Canvas -> (Int, Int)
 getCanvasSize =
@@ -152,7 +154,7 @@ loadImage =
   Native.Canvas.loadImage
 
 
-{-|Just like `drawCanvas` except it draws an `Image`. 
+{-|Just like `drawCanvas`, except it draws an `Image`. 
 -}
 drawImage : Image -> Position -> Canvas -> Canvas
 drawImage =
@@ -160,7 +162,7 @@ drawImage =
 
 
 
-{-|`Canvas` have image data. Image data is an array of integers all between 0 and 255. They represent the RGBA values of every pixel in the image, where the first four `Int` are the first pixel, the next four `Int` the second pixels, etc.
+{-|`Canvas` have image data. Image data is an array of `Int`, all of which are between 0 and 255. They represent the RGBA values of every pixel in the image, where the first four `Int` are the color values of the first pixel, the next four `Int` the second pixels, etc.
 
     -- twoByTwoCanvas =
 
@@ -241,6 +243,7 @@ type alias ColorHelp =
   , alpha : Float
   }
 
+
 setPixelsHelp : (Color, Position) -> (ColorHelp, Position)
 setPixelsHelp (color, position) =
   ((Color.toRgb color), position)
@@ -281,7 +284,7 @@ drawRectangle {x, y} width height color =
         , line (Position x1 y1) (Position x1 y)
         ]
   in
-    Native.Canvas.setPixels pixels
+    Native.Canvas.setPixels (List.map setPixelsHelp pixels)
 
 -- crop
 
@@ -304,31 +307,40 @@ crop position width height canvas =
   Native.Canvas.crop position width height canvas
 
 
--- Html Events
+{-|Just like the `onMouseDown` in `Html.Events`, but this one passes along a `Position` that is relative to the `Canvas`. So clicking right in the middle of a 200x200 `Canvas` will return a `Position` == `{x = 100, y = 100}`.
 
-{-|Just like the `onMouseDown` in `Html.Events`, but this one passes along a `Position` that is relative to the `Canvas`, not the entire window. So clicking right in the middle of a 200x200 `Canvas` will return a `Position` == `{x = 100, y = 100}`.
+    case message of 
+      CanvasClick position ->
+        -- ..
 -}
 onMouseDown : (Position -> msg) -> Attribute msg
 onMouseDown message =
   on "mousedown" <| Json.map (positionInCanvas >> message) positionDecoder
 
 
-{-|Just like the `onMouseUp` in `Html.Events`, except this one passed along a `Position` that is relative to the `Canvas`, not the entire window.
--}
 onMouseUp : (Position -> msg) -> Attribute msg
 onMouseUp message =
   on "mouseup" <| Json.map (positionInCanvas >> message) positionDecoder
 
-{-|Just like the `onMouseMove` in `Html.Events`, except this one passed along a `Position` that is relative to the `Canvas`, not the entire window.
--}
+
 onMouseMove : (Position -> msg) -> Attribute msg
 onMouseMove message =
   on "mousemove" <| Json.map (positionInCanvas >> message) positionDecoder
 
+
+onClick : (Position -> msg) -> Attribute msg
+onClick message =
+  on "click" <| Json.map (positionInCanvas >> message) positionDecoder
+
+
+onDoubleClick : (Position -> msg) -> Attribute msg
+onDoubleClick message =
+  on "dblclick" <| Json.map (positionInCanvas >> message) positionDecoder
+
+
 positionInCanvas : (Position, Position) -> Position
 positionInCanvas (client, offset) =
   Position (client.x - offset.x) (client.y - offset.y)
-
 
 positionDecoder : Json.Decoder (Position, Position)
 positionDecoder = 
@@ -359,16 +371,23 @@ toHtml =
 
 -- Brensenham Line Algorithm
 
+
 type alias BresenhamStatics = 
-  { finish : Position, sx : Int, sy : Int, dx : Float, dy : Float }
+  { finish : Position
+  , sx : Int
+  , sy : Int
+  , dx : Float
+  , dy : Float 
+  }
 
 
 line : Position -> Position -> List Position
 line p q =
   let
     dx = (toFloat << abs) (q.x - p.x)
-    sx = if p.x < q.x then 1 else -1
     dy = (toFloat << abs) (q.y - p.y)
+
+    sx = if p.x < q.x then 1 else -1
     sy = if p.y < q.y then 1 else -1
 
     error =
@@ -386,7 +405,8 @@ bresenhamLineLoop statics error p positions =
     positions_ = p :: positions 
     {sx, sy, dx, dy, finish} = statics
   in
-  if (p.x == finish.x) && (p.y == finish.y) then positions_
+  if (p.x == finish.x) && (p.y == finish.y) then 
+    positions_
   else
     let
       (dErrX, x) =
@@ -399,7 +419,7 @@ bresenhamLineLoop statics error p positions =
 
       error_ = error + dErrX + dErrY
     in
-    bresenhamLineLoop statics error_ (Position x y) positions_
+      bresenhamLineLoop statics error_ (Position x y) positions_
 
 
 
