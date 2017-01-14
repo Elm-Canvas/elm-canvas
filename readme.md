@@ -4,9 +4,20 @@ Making the canvas API accessible within Elm. The canvas element is a very simple
 
 # Getting started
 
-Check out the examples in this repo. As of January 8th 2017, they dont work in elm-reactor, sorry, but they work fine in compiled Elm.
+Checkout these examples..
+* [Simple Render](https://elm-canvas-examples.surge.sh/0-simple-render.html)
+* [Click](https://elm-canvas-examples.surge.sh/1-click.html)
+* [Snap Shot](https://elm-canvas-examples.surge.sh/2-snap-shot.html)
+* [Show and Hide](https://elm-canvas-examples.surge.sh/3-show-and-hide.html)
+* [Image](https://elm-canvas-examples.surge.sh/4-image.html)
+* [Invert Image Data](https://elm-canvas-examples.surge.sh/5-invert-image-data.html)
+* [Draw Line](https://elm-canvas-examples.surge.sh/6-draw-line.html)
+* [Crop](https://elm-canvas-examples.surge.sh/7-crop.html)
+* [Request Animation Frame](https://elm-canvas-examples.surge.sh/8-request-animation-frame.html)
 
-# How does this work?
+Or, clone this repo, and run them locally from `./examples`. They will live reload so you can toy around with them yourself. Just follow the instructions in `examples/readme.md`.
+
+# Whats this all this about?
 
 This code ..
 
@@ -35,7 +46,7 @@ main =
 The Elm-Canvas library provides the type `Canvas`, which can be passed around, modified, drawn on, pasted, and ultimately passed into `toHtml` where they are rendered.
 
 
-## What is the canvas element?
+## What is the Canvas Element?
 
 The canvas element is a unique html element that contains something called image data. The canvas element renders its image data, and by modification of its image data you can change what is rendered. This library provides an API to modify and set canvas image data.
 
@@ -56,7 +67,7 @@ The `data` property of the canvas element is the color information in the canvas
 
   -- ..has the following data..
 
-  data == fromList
+  getImageData canvas == fromList
     [ 255, 0, 0, 255,    255, 255, 255, 255,    255, 0, 0, 255
     , 255, 0, 0, 255,    0, 0, 0, 255,          0, 0, 0, 0
     ] 
