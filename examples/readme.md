@@ -1,12 +1,4 @@
-Here is how to run these examples..
-
-```
-> npm install
-> elm package install
-> gulp
-```
-
-Then you should find the examples at `localhost:2993/<exampleName>.html`
+Run these examples in Elm-Reactor. You might need to install the packages in this directory too.
 
 Or, you can check them out here..
 
@@ -19,5 +11,3 @@ Or, you can check them out here..
 * [Draw Line](https://elm-canvas-examples.surge.sh/6-draw-line.html)
 * [Crop](https://elm-canvas-examples.surge.sh/7-crop.html)
 * [Request Animation Frame](https://elm-canvas-examples.surge.sh/8-request-animation-frame.html)
-
-(note, I have a gulp file set up here for you, because elm-canvas doesnt work well with elm-reactor right now, sorry.)
