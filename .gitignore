@@ -6,6 +6,9 @@ examples/elm-stuff
 examples/*.html
 examples/node_modules
 examples/.surgeignore
+examples/gulpFile.coffee
+examples/server.coffee
+examples/package.json
 
 # Do development work in a folder called dev
 dev
