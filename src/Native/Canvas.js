@@ -6,6 +6,10 @@ var _elm_community$canvas$Native_Canvas = function () {
 
   function makeModel(canvas) {
 
+    // The elm debugger crashes when it tries to
+    // traverse an html object. So instead
+    // of passing along a canvas element, we
+    // pass along a function that returns it
     function getCanvas() {
       return canvas;
     }
@@ -17,6 +21,24 @@ var _elm_community$canvas$Native_Canvas = function () {
       height: canvas.height
     }
   }
+
+  // This is how we ensure immutability
+  // Canvas elements are never modified
+  // and passed along. They are copied,
+  // and the copy is passed along.
+  function copyModel(model) {
+
+    var canvas = document.createElement("canvas");
+    canvas.width = model.width;
+    canvas.height = model.height;
+
+    var ctx = canvas.getContext('2d')
+    ctx.drawImage(model.canvas(), 0, 0);
+
+    return makeModel(canvas);
+
+  }
+
 
   function initialize(width, height) {
 
@@ -55,20 +77,6 @@ var _elm_community$canvas$Native_Canvas = function () {
       img.crossOrigin = "Anonymous";
       img.src = source;
     });
-  }
-
-
-  function copyCanvas(model) {
-
-    var canvas = document.createElement("canvas");
-    canvas.width = model.width;
-    canvas.height = model.height;
-
-    var ctx = canvas.getContext('2d')
-    ctx.drawImage(model.canvas(), 0, 0);
-
-    return makeModel(canvas);
-
   }
 
 
@@ -116,7 +124,7 @@ var _elm_community$canvas$Native_Canvas = function () {
   function setPixel(color, position, model) {
     LOG("SET PIXEL");
 
-    var model = copyCanvas(model);
+    var model = copyModel(model);
 
     var canvas = model.canvas();
 
@@ -139,7 +147,7 @@ var _elm_community$canvas$Native_Canvas = function () {
   function setPixels(pixels, model) {
     LOG("SET PIXELS")
 
-    var model = copyCanvas(model);
+    var model = copyModel(model);
 
     var canvas = model.canvas();
 
@@ -235,7 +243,7 @@ var _elm_community$canvas$Native_Canvas = function () {
   function drawImage(image, position, model) {
     LOG("DRAW IMAGE");
 
-    var model = copyCanvas(model);
+    var model = copyModel(model);
 
     var canvas = model.canvas();
 
@@ -251,7 +259,7 @@ var _elm_community$canvas$Native_Canvas = function () {
   function drawCanvas(modelToDraw, position, model) {
     LOG("DRAW CANVAS")
 
-    var model = copyCanvas(model);
+    var model = copyModel(model);
 
     var canvas = model.canvas();
 
@@ -296,7 +304,7 @@ var _elm_community$canvas$Native_Canvas = function () {
   function renderCanvas(model) {
     LOG('RENDER CANVAS');
 
-    return copyCanvas(model).canvas();  
+    return copyModel(model).canvas();  
   }
 
 
