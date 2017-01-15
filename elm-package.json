@@ -1,5 +1,5 @@
 {
-    "version": "0.0.1",
+    "version": "1.0.0",
     "summary": "The canvas API in Elm",
     "repository": "https://github.com/elm-community/canvas.git",
     "license": "BSD3",
