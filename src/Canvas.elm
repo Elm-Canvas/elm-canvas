@@ -18,6 +18,7 @@ module Canvas
     , getImageData
     , loadImage
     , fromImageData
+    , fromImage
     , onMouseDown
     , onMouseUp
     , onMouseMove
@@ -213,6 +214,18 @@ getImageData =
 fromImageData : Size -> Array Int -> Canvas
 fromImageData =
   Native.Canvas.fromImageData
+
+
+{-|Make a `Canvas` from an `Image`.
+-}
+fromImage : Image -> Canvas
+fromImage image =
+  let
+    size =
+      getImageSize image
+  in
+    initialize size
+    |>drawImage image (Position 0 0)
 
 
 {-|set the pixel at a specific position to a specific color in a given canvas.
