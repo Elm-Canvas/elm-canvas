@@ -1,14 +1,14 @@
 import Html exposing (..)
 import Html.Attributes exposing (type_, value)
 import Html.Events exposing (onClick)
-import Canvas exposing (Canvas, Position, Image, Error)
+import Canvas exposing (Canvas, Position, Image, Error, Size)
 import Task
 import Color
 
 
 main = 
   Html.program
-  { init   = (initModel, initCmd) 
+  { init   = (Loading, loadImage) 
   , view   = view 
   , update = update
   , subscriptions = always Sub.none
@@ -25,20 +25,21 @@ type Msg
   | ImageLoaded (Result Error Image)
 
 
-initModel : Canvas
-initModel =
-  Canvas.initialize 600 600 |> Canvas.fill Color.black
+type Model
+  = GotCanvas Canvas
+  | Loading
 
 
-initCmd : Cmd Msg
-initCmd =
+loadImage : Cmd Msg
+loadImage =
   Task.attempt ImageLoaded (Canvas.loadImage "./steelix.png")
-
 
 
 redSquare : Canvas
 redSquare =
-  Canvas.initialize 30 30 |> Canvas.fill Color.red
+  Size 30 30
+  |>Canvas.initialize
+  |>Canvas.fill Color.red
 
 
 
@@ -46,37 +47,51 @@ redSquare =
 
 
 
-update :  Msg -> Canvas -> (Canvas, Cmd Msg)
-update message canvas =
-  case message of 
+update :  Msg -> Model -> (Model, Cmd Msg)
+update message model =
+  case model of 
 
-    Draw position ->
-      (putRedSquare position canvas, Cmd.none)
+    Loading ->
+      case message of 
 
-
-    ImageLoaded imageResult ->
-      case Result.toMaybe imageResult of
-        Just image ->
-          let 
-
-            newCanvas =
-              let
-                (width, height) =
-                  Canvas.getImageSize image
-              in
-                Canvas.initialize width height
-                |>Canvas.drawImage image (Position 0 0)
+        ImageLoaded result ->
+          case Result.toMaybe result of
           
+            Just image ->
+              let
+                canvas =
+                  Canvas.fromImage image
+              in
+                (GotCanvas canvas, Cmd.none)
+          
+          
+            Nothing ->
+
+              (Loading, loadImage)
+
+
+        _ ->
+
+          (model, Cmd.none)
+
+
+    GotCanvas canvas ->
+      case message of
+
+        Draw position ->
+          let
+            newCanvas =
+              Canvas.drawCanvas 
+                redSquare 
+                position 
+                canvas
           in
-            (newCanvas, Cmd.none)
-        
-        Nothing ->
-          (canvas, Cmd.none)
+            (GotCanvas newCanvas, Cmd.none)
 
 
-putRedSquare : Position -> Canvas -> Canvas
-putRedSquare position =
-  Canvas.drawCanvas redSquare position
+        _ ->
+
+          (model, Cmd.none)
 
 
 
@@ -84,12 +99,28 @@ putRedSquare position =
 
 
 
-view : Canvas -> Html Msg
-view canvas =
-  div []
-  [ p [] [ text "Elm-Canvas" ]
-  , Canvas.toHtml [ Canvas.onMouseDown Draw ] canvas
-  ]
+view : Model -> Html Msg
+view model =
+  let
+
+    body =
+      case model of
+
+        Loading ->
+          p [] [ text "Loading image" ]
+
+
+        GotCanvas canvas ->
+          Canvas.toHtml 
+            [ Canvas.onMouseDown Draw ] 
+            canvas
+  
+  in
+    div []
+    [ p [] [ text "Elm-Canvas" ] 
+    , body
+    ]
+
 
 
 

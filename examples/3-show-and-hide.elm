@@ -1,7 +1,7 @@
 import Html exposing (..)
 import Html.Attributes exposing (type_, value, style)
 import Html.Events exposing (onClick)
-import Canvas exposing (Canvas, Position)
+import Canvas exposing (Canvas, Position, Size)
 import Color
 
 
@@ -30,14 +30,17 @@ type Msg
 
 init : Model
 init =
-  Canvas.initialize 400 300 
+  Size 400 300
+  |>Canvas.initialize
   |>Canvas.fill Color.black
   |>Model True
 
 
 blueSquare : Canvas
 blueSquare =
-  Canvas.initialize 30 30 |> Canvas.fill Color.blue
+  Size 30 30
+  |>Canvas.initialize
+  |>Canvas.fill Color.blue
 
 
 

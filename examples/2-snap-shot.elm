@@ -1,7 +1,7 @@
 import Html exposing (..)
 import Html.Attributes exposing (style, type_, value)
 import Html.Events exposing (onClick)
-import Canvas exposing (Canvas, Position)
+import Canvas exposing (Canvas, Position, Size)
 import Dict exposing (Dict)
 import Color
 
@@ -31,12 +31,16 @@ type Msg
 
 init : Model
 init =
-  (initializeBlack 400 300, initializeBlack 400 300)
+  let
+    size =
+      Size 400 300
+  in
+    (initializeBlack size, initializeBlack size)
 
 
-initializeBlack : Int -> Int -> Canvas
-initializeBlack width height =
-  Canvas.initialize width height |> Canvas.fill Color.black
+initializeBlack : Size -> Canvas
+initializeBlack =
+  Canvas.initialize >> Canvas.fill Color.black
 
 
 

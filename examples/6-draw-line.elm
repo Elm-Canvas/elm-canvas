@@ -1,7 +1,7 @@
 import Html exposing (p, text, div, Html)
 import Html.Attributes exposing (style)
 import Html.Events exposing (..)
-import Canvas exposing (Canvas, Position)
+import Canvas exposing (Canvas, Position, Size)
 import Color exposing (Color)
 
 
@@ -27,7 +27,8 @@ type alias Model =
 
 init : Model
 init =
-  Canvas.initialize 500 400
+  Size 500 400
+  |>Canvas.initialize
   |>Canvas.fill Color.black
   |>Model Nothing Nothing
 
@@ -93,6 +94,7 @@ view model =
             Nothing -> model.canvas
             
             Just position1 ->
+              
               Canvas.drawLine
                 position0
                 position1

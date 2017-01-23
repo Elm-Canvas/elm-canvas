@@ -27,9 +27,9 @@ import Color
 
 
 main =
-  Canvas.initialize 400 300
-  |> Canvas.fill (Color.rgb 23 92 254)
-  |> Canvas.toHtml []
+  Canvas.initialize (Canvas.Size 400 300)
+  |>Canvas.fill (Color.rgb 23 92 254)
+  |>Canvas.toHtml []
 
 -- Canvas.initialize : Int -> Int -> Canvas
 -- Canvas.fill : Color -> Canvas -> Canvas
