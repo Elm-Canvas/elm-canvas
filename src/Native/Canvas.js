@@ -40,12 +40,12 @@ var _elm_community$canvas$Native_Canvas = function () {
   }
 
 
-  function initialize(width, height) {
+  function initialize(size) {
 
     var canvas = document.createElement("canvas");
 
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = size.width;
+    canvas.height = size.height;
 
     return makeModel(canvas);
 
@@ -93,17 +93,17 @@ var _elm_community$canvas$Native_Canvas = function () {
   }
 
 
-  function fromImageData(width, height, array) {
+  function fromImageData(size, array) {
     LOG("FROM IMAGE DATA")
 
     var canvas = document.createElement("canvas");
 
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = size.width;
+    canvas.height = size.height;
 
     var ctx = canvas.getContext("2d");
 
-    var imageData = ctx.createImageData(width, height);
+    var imageData = ctx.createImageData(size.width, size.height);
     var data = imageData.data;
 
     var dataToPut = _elm_lang$core$Native_Array.toJSArray(array);
@@ -179,11 +179,11 @@ var _elm_community$canvas$Native_Canvas = function () {
   }
 
 
-  function crop(position, width, height, model) {
+  function crop(position, size, model) {
 
     var canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = size.width;
+    canvas.height = size.height;
 
     var ctx = canvas.getContext("2d");
 
@@ -191,12 +191,12 @@ var _elm_community$canvas$Native_Canvas = function () {
       model.canvas(), 
       position.x, 
       position.y,
-      width,
-      height,
+      size.width,
+      size.height,
       0,
       0,
-      width,
-      height
+      size.width,
+      size.height
     );
 
     return makeModel(canvas);
@@ -236,7 +236,10 @@ var _elm_community$canvas$Native_Canvas = function () {
 
 
   function getSize(model) {
-    return _elm_lang$core$Native_Utils.Tuple2(model.width, model.height);
+    return {
+      width: model.width,
+      height: model.height
+    };
   }
 
 
@@ -322,17 +325,17 @@ var _elm_community$canvas$Native_Canvas = function () {
   }
 
   return {
-    initialize: F2(initialize),
+    initialize: initialize,
     fill: F2(fill),
     getSize: getSize,
     drawCanvas: F3(drawCanvas),
     loadImage: loadImage,
     drawImage: F3(drawImage),
-    crop: F4(crop),
+    crop: F3(crop),
     setPixel: F3(setPixel),
     setPixels: F2(setPixels),
     toHtml: F2(toHtml),
     getImageData: getImageData,
-    fromImageData: F3(fromImageData),
+    fromImageData: F2(fromImageData),
   };
 }();

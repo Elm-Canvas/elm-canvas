@@ -3,6 +3,7 @@ module Canvas
     ( Canvas
     , Image
     , Position
+    , Size
     , Error
     , initialize
     , fill
@@ -79,15 +80,21 @@ type alias Position =
   { x : Int, y : Int }
 
 
+{-| A `Size` contains a width and a height`, both of which are `Int`. Many functions will take a `Size` to indicate the size of a canvas region. This type alias is identical to the one found in `elm-lang/window`.
+  -}
+type alias Size =
+  { width : Int, height : Int }
+
+
 {-| `initialize` takes in a width and a height (both type `Int`), and returns a `Canvas` with that width and height. A freshly initialized `Canvas` is entirely transparent (its data is an array of 0s, that has a length of width x height x 4)
 
     squareCanvas : Int -> Canvas
     squareCanvas length =
-      initialize length length
+      initialize (Size length length)
 -}
-initialize : Int -> Int -> Canvas
-initialize width height =
-  Native.Canvas.initialize width height
+initialize : Size -> Canvas
+initialize =
+  Native.Canvas.initialize
 
 
 {-| `fill` takes a `Canvas` and gives you a `Canvas` with the same dimensions, except filled in with a uniform color.
@@ -102,15 +109,15 @@ fill color =
   Native.Canvas.fill (Color.toRgb color)
 
 
-{-|Get the width and height of an `Image`. 
+{-|Get the `Size` of an `Image`. 
 -}
-getImageSize : Image -> (Int, Int)
+getImageSize : Image -> Size
 getImageSize =
   Native.Canvas.getSize
 
-{-|Get the width and height of a `Canvas`.
+{-|Get the `Size` of a `Canvas`.
 -}
-getCanvasSize : Canvas -> (Int, Int)
+getCanvasSize : Canvas -> Size
 getCanvasSize =
   Native.Canvas.getSize
 
@@ -184,17 +191,17 @@ getImageData =
   Native.Canvas.getImageData 
 
 
-{-|Make a new `Canvas` with given dimensions and image data. 
+{-|Make a new `Canvas` with given size and image data. 
 
     invertColors : Canvas -> Canvas
     invertColors canvas =
       let
-        (width, height) =
+        size =
           Canvas.getCanvasSize canvas
       in
         getImageData canvas
         |>Array.indexedMap invertHelp
-        |>fromImageData width height
+        |>fromImageData size
 
     invertHelp : Int -> Int -> Int 
     invertHelp index colorValue =
@@ -203,7 +210,7 @@ getImageData =
       else
         255 - colorValue
 -}
-fromImageData : Int -> Int -> Array Int -> Canvas
+fromImageData : Size -> Array Int -> Canvas
 fromImageData =
   Native.Canvas.fromImageData
 
@@ -262,14 +269,14 @@ drawLine p0 p1 color =
     Native.Canvas.setPixels (List.map setPixelsHelp pixels)
 
 
-{-|Draws a rectangle from the upper left `Position`, with `Int` width and `Int` height.
+{-|Draws a rectangle from the upper left `Position`, with `Size` dimensions.
 
     drawSquare : Position -> Int -> Color -> Canvas -> Canvas
     drawSquare position length =
-      drawRectangle position length length
+      drawRectangle position (Size length length)
 -}
-drawRectangle : Position -> Int -> Int -> Color -> Canvas -> Canvas
-drawRectangle {x, y} width height color =
+drawRectangle : Position -> Size -> Color -> Canvas -> Canvas
+drawRectangle {x, y} {width, height} color =
   let
     pixels =
       let 
@@ -293,7 +300,7 @@ drawRectangle {x, y} width height color =
     cutOutUpperLeftQuadrant : Canvas -> Canvas
     cutOutUpperLeftQuadrant canvas =
       let
-        (width, height) =
+        {width, height} =
           getCanvasSize canvas
       in
         crop 
@@ -302,9 +309,9 @@ drawRectangle {x, y} width height color =
           (height // 2)
           canvas
 -}
-crop : Position -> Int -> Int -> Canvas -> Canvas
-crop position width height canvas =
-  Native.Canvas.crop position width height canvas
+crop : Position -> Size -> Canvas -> Canvas
+crop position size canvas =
+  Native.Canvas.crop position size canvas
 
 
 {-|Just like the `onMouseDown` in `Html.Events`, but this one passes along a `Position` that is relative to the `Canvas`. So clicking right in the middle of a 200x200 `Canvas` will return a `Position` == `{x = 100, y = 100}`.

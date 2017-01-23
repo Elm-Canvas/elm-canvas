@@ -1,7 +1,7 @@
 import Html exposing (..)
 import Html.Attributes exposing (type_, value)
 import Html.Events exposing (onClick)
-import Canvas exposing (Canvas, Position, Image, Error)
+import Canvas exposing (Canvas, Position, Image, Error, Size)
 import Color
 import Array exposing (Array)
 import Task
@@ -28,7 +28,9 @@ type Msg
 
 initModel : Canvas
 initModel =
-  Canvas.initialize 770 770 |> Canvas.fill Color.black
+  Size 770 770
+  |>Canvas.initialize
+  |>Canvas.fill Color.black
 
 
 initCmd : Cmd Msg
@@ -55,12 +57,9 @@ update message canvas =
           let 
 
             newCanvas =
-              let
-                (width, height) =
-                  Canvas.getImageSize image
-              in
-                Canvas.initialize width height
-                |>Canvas.drawImage image (Position 0 0)
+              Canvas.getImageSize image
+              |>Canvas.initialize
+              |>Canvas.drawImage image (Position 0 0)
           
           in
             (newCanvas, Cmd.none)
@@ -72,12 +71,15 @@ update message canvas =
 invertCanvas : Canvas -> Canvas
 invertCanvas canvas = 
   let
-    (width, height) = 
+
+    imageData =
+      Canvas.getImageData canvas
+
+    size = 
       Canvas.getCanvasSize canvas
+  
   in
-    Canvas.getImageData canvas
-    |>invertColors
-    |>Canvas.fromImageData width height
+    Canvas.fromImageData size (invertColors imageData)
 
 
 invertColors : Array Int -> Array Int

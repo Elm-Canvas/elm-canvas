@@ -1,7 +1,7 @@
 import Html exposing (..)
 import Html.Attributes exposing (type_, value)
 import Html.Events exposing (onClick)
-import Canvas exposing (Canvas, Position, Image, Error)
+import Canvas exposing (Canvas, Position, Image, Error, Size)
 import Task
 import Color
 
@@ -27,7 +27,9 @@ type Msg
 
 initModel : Canvas
 initModel =
-  Canvas.initialize 600 600 |> Canvas.fill Color.black
+  Size 600 600
+  |>Canvas.initialize
+  |>Canvas.fill Color.black
 
 
 initCmd : Cmd Msg
@@ -38,7 +40,9 @@ initCmd =
 
 redSquare : Canvas
 redSquare =
-  Canvas.initialize 30 30 |> Canvas.fill Color.red
+  Size 30 30
+  |>Canvas.initialize
+  |>Canvas.fill Color.red
 
 
 
@@ -60,12 +64,9 @@ update message canvas =
           let 
 
             newCanvas =
-              let
-                (width, height) =
-                  Canvas.getImageSize image
-              in
-                Canvas.initialize width height
-                |>Canvas.drawImage image (Position 0 0)
+              Canvas.getImageSize image
+              |>Canvas.initialize
+              |>Canvas.drawImage image (Position 0 0)
           
           in
             (newCanvas, Cmd.none)

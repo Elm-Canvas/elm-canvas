@@ -1,9 +1,9 @@
-import Canvas exposing (Canvas)
+import Canvas exposing (Canvas, Size)
 import Color
 
 
 main =
-  Canvas.initialize 400 300
+  Canvas.initialize (Size 400 300)
   |>Canvas.fill (Color.rgb 23 92 254)
   |>Canvas.toHtml []
 

@@ -1,7 +1,7 @@
 import Html exposing (..)
 import Html.Attributes exposing (style, type_, value)
 import Html.Events exposing (onClick)
-import Canvas exposing (Canvas, Position, Image, Error)
+import Canvas exposing (Canvas, Position, Image, Error, Size)
 import AnimationFrame exposing (diffs)
 import Time exposing (Time)
 import Color
@@ -46,12 +46,12 @@ type Msg
 
 init : Model
 init =
-  Model (initializeBlack 700 550) Nothing []
+  Model (initializeBlack (Size 700 550)) Nothing []
 
 
-initializeBlack : Int -> Int -> Canvas
-initializeBlack width height =
-  Canvas.initialize width height |> Canvas.fill Color.black
+initializeBlack : Size -> Canvas
+initializeBlack =
+  Canvas.initialize >> Canvas.fill Color.black
 
 
 initCmd : Cmd Msg
@@ -84,12 +84,12 @@ update message model =
                         p =
                           let
                             {x, y} = position
-                            (w,h) = 
+                            {width, height} = 
                               Canvas.getImageSize img
                           in
                             Position 
-                              (x - (w // 2)) 
-                              (y - (h // 2))
+                              (x - (width // 2)) 
+                              (y - (height // 2))
                       in
                         Canvas.drawImage img p
                   in

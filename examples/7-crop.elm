@@ -1,7 +1,7 @@
 import Html exposing (..)
 import Html.Attributes exposing (style, type_, value)
 import Html.Events exposing (onClick)
-import Canvas exposing (Canvas, Position, Image, Error)
+import Canvas exposing (Canvas, Position, Image, Error, Size)
 import Color
 import Task
 
@@ -37,8 +37,8 @@ type Msg
 init : Model
 init =
   Model 
-    (initializeBlack 400 300)
-    (initializeBlack 100 100)
+    (initializeBlack (Size 400 300))
+    (initializeBlack (Size 100 100))
     Nothing
 
 
@@ -46,15 +46,14 @@ redSquare : Canvas
 redSquare =
   Canvas.drawRectangle 
     (Position 150 100) 
-    100 
-    100 
+    (Size 100 100)
     Color.red
-    (Canvas.initialize 400 300)
+    (Canvas.initialize (Size 400 300))
 
 
-initializeBlack : Int -> Int -> Canvas
-initializeBlack width height =
-  Canvas.initialize width height |> Canvas.fill Color.black
+initializeBlack : Size -> Canvas
+initializeBlack =
+  Canvas.initialize >> Canvas.fill Color.black
 
 
 initCmd : Cmd Msg
@@ -83,9 +82,13 @@ update message {main, snapshot, image} =
                  p =
                   let 
                     {x,y} = position 
-                    (w,h) = Canvas.getImageSize img
+
+                    {width, height} = 
+                      Canvas.getImageSize img
                   in
-                  Position (x - (w // 2)) (y - (h // 2))
+                    Position 
+                      (x - (width // 2)) 
+                      (y - (height // 2))
               in
               Canvas.drawImage img p main
           in
@@ -102,9 +105,8 @@ update message {main, snapshot, image} =
           let
             croppedMain =
               Canvas.crop 
-                (Position 150 100) 
-                100 
-                100 
+                (Position 150 100)
+                (Size 100 100) 
                 main
           in
             Canvas.drawCanvas 
