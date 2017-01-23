@@ -31,13 +31,16 @@ module Canvas
 {-| The canvas html element is a very simple way to render 2D graphics. Check out these examples, and get an explanation of the canvas element [here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first, because its probably what you need. Elm-Canvas is for when you need unusually direct and low level access to the canvas element.
 
 # Main Types
-@docs Canvas, Image, Position, Error
+@docs Canvas, Position, Size
 
 # Basics
 @docs initialize, fill, toHtml
 
+# Image
+@docs Image, loadImage, Error, fromImage
+
 # Drawing
-@docs drawCanvas, drawImage, setPixel, setPixels, drawLine, drawRectangle, crop, loadImage
+@docs drawCanvas, drawImage, setPixel, setPixels, drawLine, drawRectangle, crop
 
 # Image Data
 @docs getImageData, fromImageData
