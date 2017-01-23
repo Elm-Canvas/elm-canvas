@@ -318,12 +318,14 @@ drawRectangle {x, y} {width, height} color =
       let
         {width, height} =
           getCanvasSize canvas
+
+        size =
+          Size
+            (width // 2) 
+            (height // 2)
       in
-        crop 
-          (Position 0 0) 
-          (width // 2) 
-          (height // 2)
-          canvas
+        crop (Position 0 0) size canvas
+        
 -}
 crop : Position -> Size -> Canvas -> Canvas
 crop position size canvas =
