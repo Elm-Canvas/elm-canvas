@@ -9,7 +9,7 @@ import Task
 
 main = 
   Html.program
-  { init  = (initModel, initCmd) 
+  { init  = (Loading, loadImage) 
   , view   = view 
   , update = update
   , subscriptions = always Sub.none
@@ -26,15 +26,13 @@ type Msg
   | Invert
 
 
-initModel : Canvas
-initModel =
-  Size 770 770
-  |>Canvas.initialize
-  |>Canvas.fill Color.black
+type Model
+  = GotCanvas Canvas
+  | Loading
 
 
-initCmd : Cmd Msg
-initCmd =
+loadImage : Cmd Msg
+loadImage =
   Task.attempt ImageLoaded (Canvas.loadImage "./agnes-martin-piece.png")
 
 
@@ -44,28 +42,44 @@ initCmd =
 
 
 
-update : Msg -> Canvas -> (Canvas, Cmd Msg)
-update message canvas =
-  case message of 
+update : Msg -> Model -> (Model, Cmd Msg)
+update message model =
+  case model of 
 
-    Invert ->
-      (invertCanvas canvas, Cmd.none)
+    Loading ->
+      case message of 
 
-    ImageLoaded imageResult ->
-      case Result.toMaybe imageResult of
-        Just image ->
-          let 
+        ImageLoaded result ->
 
-            newCanvas =
-              Canvas.getImageSize image
-              |>Canvas.initialize
-              |>Canvas.drawImage image (Position 0 0)
+          case Result.toMaybe result of
           
-          in
-            (newCanvas, Cmd.none)
+            Just image ->
+              let 
+                canvas =
+                  Canvas.fromImage image
+              in
+                (GotCanvas canvas, Cmd.none)
 
-        Nothing ->
-          (canvas, Cmd.none)
+            Nothing ->
+
+              (Loading, loadImage)
+
+        _ ->
+
+          (model, Cmd.none)
+
+
+    GotCanvas canvas ->
+      case message of
+
+        Invert ->
+
+          (GotCanvas <| invertCanvas canvas, Cmd.none)
+
+
+        _ ->
+
+          (model, Cmd.none)
 
 
 invertCanvas : Canvas -> Canvas
@@ -100,12 +114,26 @@ invertColor index colorValue =
 
 
 
-view : Canvas -> Html Msg
-view canvas =
-  div []
-  [ h1 [] [ text "Click on the canvas to invert its colors" ]
-  , Canvas.toHtml [ onClick Invert ] canvas
-  ]
+view : Model -> Html Msg
+view model =
+  let
+
+    body =
+      case model of
+
+        Loading ->
+          p [] [ text "Loading image.."]
+
+        GotCanvas canvas ->
+          Canvas.toHtml
+            [ onClick Invert ]
+            canvas
+
+  in
+    div []
+    [ h1 [] [ text "Click on the canvas to invert its colors" ]
+    , body
+    ]
 
 
 
