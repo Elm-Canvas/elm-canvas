@@ -1,3 +1,5 @@
+module Main exposing (..)
+
 import Html exposing (..)
 import Html.Attributes exposing (style, type_, value)
 import Html.Events exposing (onClick)
@@ -8,14 +10,14 @@ import Color
 import Task
 
 
+main =
+    Html.program
+        { init = ( init, initCmd )
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
 
-main = 
-  Html.program
-  { init  = (init, initCmd) 
-  , view   = view 
-  , update = update
-  , subscriptions = subscriptions
-  }
 
 
 -- SUBSCRIPTIONS
@@ -23,120 +25,111 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-  diffs Tick
+    diffs Tick
 
 
 
 -- TYPES
 
 
-
-type alias Model = 
-  { main : Canvas
-  , image : Maybe Image
-  , pendingDraws : List (Canvas -> Canvas)
-  }
+type alias Model =
+    { canvas : Canvas
+    , image : Maybe Image
+    , pendingDraw : Canvas -> Canvas
+    }
 
 
 type Msg
-  = Draw Position
-  | ImageLoaded (Result Error Image)
-  | Tick Time
+    = Draw Position
+    | ImageLoaded (Result Error Image)
+    | Tick Time
 
 
 init : Model
 init =
-  Model (initializeBlack (Size 700 550)) Nothing []
+    Model
+        (initializeBlack (Size 700 550))
+        Nothing
+        identity
 
 
 initializeBlack : Size -> Canvas
 initializeBlack =
-  Canvas.initialize >> Canvas.fill Color.black
+    Canvas.initialize >> Canvas.fill Color.black
 
 
 initCmd : Cmd Msg
 initCmd =
-  Task.attempt 
-    ImageLoaded 
-    (Canvas.loadImage "elm-logo.png")
+    Task.attempt
+        ImageLoaded
+        (Canvas.loadImage "elm-logo.png")
 
 
 
 -- UPDATE
 
 
-
-update :  Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
-  case message of 
+    case message of
+        Draw pos ->
+            case model.image of
+                Just img ->
+                    ( addDraw (draw img pos) model, Cmd.none )
 
-    Draw position ->
-      case model.image of
+                Nothing ->
+                    ( model, Cmd.none )
 
-        Just img ->
-          let
-            newModel =
-              { model
-              | pendingDraws =
-                  let
-                    newDraw =
-                      let
-                        p =
-                          let
-                            {x, y} = position
-                            {width, height} = 
-                              Canvas.getImageSize img
-                          in
-                            Position 
-                              (x - (width // 2)) 
-                              (y - (height // 2))
-                      in
-                        Canvas.drawImage img p
-                  in
-                    newDraw :: model.pendingDraws
-              } 
-          in
-            (newModel, Cmd.none)
+        ImageLoaded result ->
+            ( { model | image = Result.toMaybe result }, Cmd.none )
 
-        Nothing ->
-          (model, Cmd.none)
+        Tick _ ->
+            ( applyDraw model, Cmd.none )
 
 
-    ImageLoaded result ->
-      ({ model | image = Result.toMaybe result }, Cmd.none)
+addDraw : (Canvas -> Canvas) -> Model -> Model
+addDraw draw model =
+    { model
+        | pendingDraw = model.pendingDraw >> draw
+    }
 
 
-    Tick _ ->
-      let 
-        newModel =
-          { model
-          | main =
-              List.foldr 
-                (<|) 
-                model.main 
-                model.pendingDraws
-          , pendingDraws = []
-          }
-      in
-        (newModel, Cmd.none)
+draw : Image -> Position -> Canvas -> Canvas
+draw image position =
+    Canvas.drawImage image (drawAt image position)
+
+
+drawAt : Image -> Position -> Position
+drawAt img position =
+    let
+        { width, height } =
+            Canvas.getImageSize img
+    in
+        Position
+            (position.x - (width // 2))
+            (position.y - (height // 2))
+
+
+applyDraw : Model -> Model
+applyDraw model =
+    { model
+        | canvas =
+            model.pendingDraw model.canvas
+        , pendingDraw = identity
+    }
 
 
 
 -- VIEW
 
 
-
 view : Model -> Html Msg
-view {main} = 
-  div 
-  [ ]
-  [ Canvas.toHtml
-    [ style [ ("cursor", "crosshair") ]
-    , Canvas.onMouseMove Draw
-    ]
-    main
-  ]
-
-
-
-
+view { canvas } =
+    div
+        []
+        [ Canvas.toHtml
+            [ style [ ( "cursor", "crosshair" ) ]
+            , Canvas.onMouseMove Draw
+            ]
+            canvas
+        ]

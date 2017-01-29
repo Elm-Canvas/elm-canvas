@@ -1,25 +1,25 @@
-import Html exposing (p, text, div, Html)
+module Main exposing (..)
+
+import Html exposing (p, text, div, Html, Attribute)
 import Html.Attributes exposing (style)
 import Html.Events exposing (..)
 import Canvas exposing (Canvas, Position, Size)
 import Color exposing (Color)
 
 
-main = 
-  Html.program
-  { init  = (init, Cmd.none) 
-  , view   = view 
-  , update = update
-  , subscriptions = always Sub.none
-  }
+main =
+    Html.program
+        { init = ( init, Cmd.none )
+        , view = view
+        , update = update
+        , subscriptions = always Sub.none
+        }
 
 
 init : Canvas
-init = 
-  Size 500 400 
-  |> Canvas.initialize
-  |> Canvas.fill Color.black
-
+init =
+    Canvas.initialize (Size 500 400)
+        |> Canvas.fill Color.black
 
 
 
@@ -27,52 +27,37 @@ init =
 
 
 type Msg
-  = Draw Position
+    = Draw Position
 
 
 
 -- UPDATE
 
 
-
-update : Msg -> Canvas -> (Canvas, Cmd Msg)
+update : Msg -> Canvas -> ( Canvas, Cmd Msg )
 update message canvas =
-  case message of 
-
-    Draw position ->
-      (addWhitePixel position canvas, Cmd.none)
+    case message of
+        Draw position ->
+            ( addWhitePixel position canvas, Cmd.none )
 
 
 addWhitePixel : Position -> Canvas -> Canvas
 addWhitePixel =
-  Canvas.setPixel Color.white
+    Canvas.setPixel Color.white
 
 
 
 -- VIEW
 
 
-
 view : Canvas -> Html Msg
 view canvas =
-  let 
-    {width, height} =
-      Canvas.getCanvasSize canvas
-  in
-  div 
-  [] 
-  [ p [] [ text "Elm-Canvas" ]
-  , Canvas.toHtml 
-    [ Canvas.onMouseDown Draw
-    , style 
-      [ ("width", toString width)
-      , ("height", toString height)
-      , ("cursor", "crosshair")
-      ]
-    ]
-    canvas
-  ]
-
-
-
-
+    div
+        []
+        [ p [] [ text "Elm-Canvas" ]
+        , Canvas.toHtml
+            [ Canvas.onMouseDown Draw
+            , style [ ( "cursor", "crosshair" ) ]
+            ]
+            canvas
+        ]
