@@ -110,7 +110,7 @@ elm-community/canvas is a native module, which means you cant install it from pa
 
 0 Download this repo
 
-1 Copy the content of `./src` into the source directory of your project. So if your `main.elm` file is in `./assets/elm/`, then put `Canvas.elm` and `Native/` in the same directory.
+1 Copy the content of `./src` into the source directory of your project. So that means copying `./src/Canvas.elm` and `./src/Native/` to the same directory as your `Main.elm` file.
 
 2 Open up `Native/Canvas.js`. The first line says `var _elm_community$canvas$Native_Canvas = function () {`. In your `elm-package.json` file, you have a repo field. In that first line of `Native/Canvas.js`, replace `elm_community` with the user name from the `elm-package.json`s repo, and replace `canvas` with the project name in your repo field. So if your elm package lists `"repository": "https://github.com/ludwig/art-project.git"`, change the first line of `Native/Canvas.js` to `var _ludwig$art_project$Native_Canvas = function () {`.
 
