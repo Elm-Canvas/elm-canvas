@@ -104,6 +104,18 @@ This package is maintained by [Chadtech](https://github.com/chadtech).
 
 Thanks to the authors of the [Elm Web-Gl package](https://github.com/elm-community/webgl) for writing really readable code, which I found very educational on how to make native Elm packages. Thanks to all the helpful and insightful people in the Elm slack channel, including [Alex Spurling](https://github.com/alexspurling), the maker of [this elm app called 'quick draw'](https://github.com/alexspurling).
 
+## How to use elm-community/canvas in your project
+
+elm-community/canvas is a native module, which means you cant install it from package.elm-lang.org. You can still use this module in your project, but it will take a little work. Here is how to do it..
+
+0 Download this repo
+
+1 Copy the content of `./src` into the source directory of your project. So if your `main.elm` file is in `./assets/elm/`, then put `Canvas.elm` and `Native/` in the same directory.
+
+2 Open up `Native/Canvas.js`. The first line says `var _elm_community$canvas$Native_Canvas = function () {`. In your `elm-package.json` file, you have a repo field. In that first line of `Native/Canvas.js`, replace `elm_community` with the user name from the `elm-package.json`s repo, and replace `canvas` with the project name in your repo field. So if your elm package lists `"repository": "https://github.com/ludwig/art-project.git"`, change the first line of `Native/Canvas.js` to `var _ludwig$art_project$Native_Canvas = function () {`.
+
+3 Add the line `"native-modules": true,` to your elm package file.
+
 ## License
 
 The source code for this package is released under the terms of the BSD3 license. See the `LICENSE` file.
