@@ -57,17 +57,17 @@ var _elm_community$canvas$Native_Canvas = function () {
     return Scheduler.nativeBinding(function (callback) {
       var img = new Image();
 
-      function getImage() {
-        return img;
-      }
-
       img.onload = function () {
-        callback(Scheduler.succeed({
-          ctor: 'Image',
-          img: getImage,
-          width: img.width,
-          height: img.height
-        }));
+        var canvas = document.createElement('canvas');
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        var ctx = canvas.getContext('2d');
+
+        ctx.drawImage(img, 0, 0);
+
+        callback(Scheduler.succeed(makeModel(canvas)));
       };
 
       img.onerror = function () {
