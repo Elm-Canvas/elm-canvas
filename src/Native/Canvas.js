@@ -44,7 +44,6 @@ var _elm_community$canvas$Native_Canvas = function () {
   function initialize(size) {
 
     var canvas = document.createElement("canvas");
-
     canvas.width = size.width;
     canvas.height = size.height;
 
@@ -133,6 +132,14 @@ var _elm_community$canvas$Native_Canvas = function () {
     return _elm_lang$core$Native_Array.fromJSArray(imageData.data);
   }
 
+  function setSize(size, model) {
+    model = cloneModel(model);
+    model.width = size.width;
+    model.height = size.height;
+
+    return model;
+  }
+
 
   function getSize(model) {
     return {
@@ -194,6 +201,7 @@ var _elm_community$canvas$Native_Canvas = function () {
 
   return {
     initialize: initialize,
+    setSize: F2(setSize),
     getSize: getSize,
     loadImage: loadImage,
     toHtml: F2(toHtml),

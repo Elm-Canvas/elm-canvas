@@ -11,6 +11,7 @@ module Canvas
     , loadImage
     , getImageData
     , getSize
+    , setSize
     )
 
 {-| The canvas html element is a very simple way to render 2D graphics. Check out these examples, and get an explanation of the canvas element [here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first, because its probably what you need. Elm-Canvas is for when you need unusually direct and low level access to the canvas element.
@@ -133,6 +134,12 @@ getImageData =
 getSize : Canvas -> Size
 getSize =
   Native.Canvas.getSize
+
+{-|Set the `Size` of a `Canvas`
+-}
+setSize : Size -> Canvas -> Canvas
+setSize =
+  Native.Canvas.setSize
 
 
 
