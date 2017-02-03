@@ -27,7 +27,6 @@ var _elm_community$canvas$Native_Canvas = function () {
   // and passed along. They are copied,
   // and the clone is passed along.
   function cloneModel(model) {
-    console.log("MODEL", model);
 
     var canvas = document.createElement("canvas");
     canvas.width = model.width;
