@@ -27,6 +27,7 @@ var _elm_community$canvas$Native_Canvas = function () {
   // and passed along. They are copied,
   // and the clone is passed along.
   function cloneModel(model) {
+    console.log("MODEL", model);
 
     var canvas = document.createElement("canvas");
     canvas.width = model.width;
@@ -49,6 +50,44 @@ var _elm_community$canvas$Native_Canvas = function () {
 
     return makeModel(canvas);
 
+  }
+
+
+  function batch(drawOps, model) {
+    model = cloneModel(model);
+
+    var ctx = model.canvas().getContext('2d');
+
+    while (drawOps.ctor !== "[]") {
+      handleDrawOp(ctx, drawOps._0);
+
+      drawOps = drawOps._1;
+    }
+
+    return model;
+  }
+
+  function handleDrawOp (ctx, drawOp) {
+    switch (drawOp.ctor) {
+      case "BeginPath" :
+        ctx.beginPath()
+        break;
+
+      case "Rect" :
+        var position = drawOp._0;
+        var size = drawOp._1;
+
+        ctx.rect(position.x, position.y, size.width, size.height);
+        break;
+
+      case "FillStyle" :
+        ctx.fillStyle = drawOp._0;
+        break;
+
+      case "Fill" :
+        ctx.fill();
+        break;
+    }
   }
 
 
@@ -160,5 +199,6 @@ var _elm_community$canvas$Native_Canvas = function () {
     toHtml: F2(toHtml),
     getImageData: getImageData,
     clone: cloneModel,
+    batch: F2(batch)
   };
 }();

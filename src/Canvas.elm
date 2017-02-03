@@ -4,7 +4,7 @@ module Canvas
     , Error
     , Position
     , Size
-    , DrawOp
+    , DrawOp(..)
     , initialize
     , toHtml
     , batch
@@ -53,6 +53,9 @@ type alias Size =
 
 type DrawOp
   = Fill
+  | Rect Position Size
+  | FillStyle String
+  | BeginPath
 
 
 {-| `initialize` takes in a width and a height (both type `Int`), and returns a `Canvas` with that width and height. A freshly initialized `Canvas` is entirely transparent (its data is an array of 0s, that has a length of width x height x 4)
@@ -77,9 +80,9 @@ toHtml =
   Native.Canvas.toHtml
 
 
-batch : Canvas -> List DrawOp -> Canvas
-batch canvas ops =
-  Native.Canvas.draw canvas ops
+batch : List DrawOp -> Canvas ->  Canvas
+batch =
+  Native.Canvas.batch
 
 {-|Load up an `Image` from a url. 
 
