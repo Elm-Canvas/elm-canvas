@@ -53,6 +53,8 @@ var _elm_community$canvas$Native_Canvas = function () {
 
 
   function loadImage(source) {
+    LOG("LOAD IMAGE");
+
     var Scheduler = _elm_lang$core$Native_Scheduler;
     return Scheduler.nativeBinding(function (callback) {
       var img = new Image();
@@ -157,5 +159,6 @@ var _elm_community$canvas$Native_Canvas = function () {
     loadImage: loadImage,
     toHtml: F2(toHtml),
     getImageData: getImageData,
+    clone: cloneModel,
   };
 }();

@@ -133,6 +133,11 @@ getSize =
 
 
 
+clone : Canvas -> Canvas
+clone =
+  Native.Canvas.clone
+
+
 
 
 
