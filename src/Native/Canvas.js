@@ -79,7 +79,17 @@ var _elm_community$canvas$Native_Canvas = function () {
         break;
 
       case "FillStyle" :
-        ctx.fillStyle = drawOp._0;
+
+        var color = _elm_lang$core$Color$toRgb(drawOp._0);
+
+        var cssString = 
+          'rgba(' + color.red + 
+          ',' + color.green + 
+          ',' + color.blue + 
+          ',' + color.alpha + 
+          ')';
+
+        ctx.fillStyle = cssString;
         break;
 
       case "Fill" :

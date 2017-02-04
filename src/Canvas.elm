@@ -27,6 +27,7 @@ module Canvas
 import Html exposing (Html, Attribute)
 import Array exposing (Array)
 import Task exposing (Task)
+import Color exposing (Color)
 import Native.Canvas
 
 
@@ -55,7 +56,7 @@ type alias Size =
 type DrawOp
   = Fill
   | Rect Position Size
-  | FillStyle String
+  | FillStyle Color
   | BeginPath
 
 
@@ -146,6 +147,7 @@ setSize =
 clone : Canvas -> Canvas
 clone =
   Native.Canvas.clone
+
 
 
 
