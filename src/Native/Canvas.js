@@ -106,7 +106,18 @@ var _elm_community$canvas$Native_Canvas = function () {
 
       case "LineTo" :
         var position = drawOp._0;
+
         ctx.lineTo(position.x, position.y);
+        break;
+
+      case "MoveTo" :
+        var position = drawOp._0;
+        
+        ctx.moveTo(position.x, position.y);
+        break;
+
+      case "Stroke" :
+        ctx.stroke();
         break;
 
       case "BeginPath" :

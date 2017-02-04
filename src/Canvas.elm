@@ -6,6 +6,7 @@ module Canvas
     , Size
     , DrawOp(..)
     , CompositeOp(..)
+    , Cap(..)
     , initialize
     , toHtml
     , batch
@@ -63,6 +64,8 @@ type DrawOp
   | LineCap Cap
   | LineWidth Float
   | LineTo Position
+  | MoveTo Position
+  | Stroke
   | Fill
   | Rect Position Size
   | FillStyle Color
