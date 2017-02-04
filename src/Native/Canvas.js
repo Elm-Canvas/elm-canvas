@@ -87,6 +87,28 @@ var _elm_community$canvas$Native_Canvas = function () {
         ctx.globalAlpha = drawOp._0;
         break;
 
+      case "GlobalCompositionOp" :
+        // This converts the type from camel case to dash case.
+        var op = drawOp._0.ctor.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+
+        ctx.globalCompositeOperation = op;
+        break;
+
+      case "LineCap" :
+        var cap = drawOp._0.ctor.toLowerCase();
+
+        ctx.lineCap = cap;
+        break;
+
+      case "LineWidth" :
+        ctx.lineWidth = drawOp._0;
+        break;
+
+      case "LineTo" :
+        var position = drawOp._0;
+        ctx.lineTo(position.x, position.y);
+        break;
+
       case "BeginPath" :
         ctx.beginPath()
         break;

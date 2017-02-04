@@ -5,6 +5,7 @@ module Canvas
     , Position
     , Size
     , DrawOp(..)
+    , CompositeOp(..)
     , initialize
     , toHtml
     , batch
@@ -58,10 +59,48 @@ type DrawOp
   | StrokeText String Position
   | FillText String Position
   | GlobalAlpha Float
+  | GlobalCompositionOp CompositeOp
+  | LineCap Cap
+  | LineWidth Float
+  | LineTo Position
   | Fill
   | Rect Position Size
   | FillStyle Color
   | BeginPath
+
+
+type CompositeOp
+  = SourceAtop
+  | SourceIn
+  | SourceOut
+  | SourceOver
+  | DestinationOver
+  | DestinationIn
+  | DestinationOut
+  | DestinationAtop
+  | Lighter
+  | Copy
+  | Xor
+  | Multiply
+  | Screen
+  | Overlay
+  | Darken
+  | ColorDodge
+  | ColorBurn
+  | HardLight
+  | SoftLight
+  | Difference
+  | Exclusion
+  | Hue
+  | Saturation
+  | Color
+  | Luminosity
+
+type Cap
+  = Butt
+  | Round
+  | Square
+
 
 
 {-| `initialize` takes in a width and a height (both type `Int`), and returns a `Canvas` with that width and height. A freshly initialized `Canvas` is entirely transparent (its data is an array of 0s, that has a length of width x height x 4)
