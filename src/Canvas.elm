@@ -54,7 +54,11 @@ type alias Size =
 
 
 type DrawOp
-  = Fill
+  = Font String
+  | StrokeText String Position
+  | FillText String Position
+  | GlobalAlpha Float
+  | Fill
   | Rect Position Size
   | FillStyle Color
   | BeginPath

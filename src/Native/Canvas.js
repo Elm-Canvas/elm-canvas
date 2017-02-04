@@ -67,6 +67,26 @@ var _elm_community$canvas$Native_Canvas = function () {
 
   function handleDrawOp (ctx, drawOp) {
     switch (drawOp.ctor) {
+      case "Font" :
+        ctx.font = drawOp._0;
+        break;
+
+      case "StrokeText" :
+        var position = drawOp._1;
+
+        ctx.strokeText(drawOp._0, position.x, position.y)
+        break;
+
+      case "FillText" :
+        var position = drawOp._1;
+
+        ctx.fillText(drawOp._0, position.x, position.y)
+        break;
+
+      case "GlobalAlpha" :
+        ctx.globalAlpha = drawOp._0;
+        break;
+
       case "BeginPath" :
         ctx.beginPath()
         break;
