@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Canvas exposing (Size, Position, DrawOp(..), CompositeOp(..))
+import Canvas exposing (Size, Position, DrawOp(..))
 import Color exposing (Color)
 
 
