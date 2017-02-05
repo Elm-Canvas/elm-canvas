@@ -70,6 +70,8 @@ type DrawOp
     | Stroke
     | Fill
     | Rect Position Size
+    | StrokeRect Position Size
+    | StrokeStyle Color
     | FillStyle Color
     | BeginPath
 

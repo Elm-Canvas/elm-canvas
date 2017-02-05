@@ -131,6 +131,28 @@ var _elm_community$canvas$Native_Canvas = function () {
         ctx.rect(position.x, position.y, size.width, size.height);
         break;
 
+      case "StrokeRect" :
+        var position = drawOp._0;
+        var size = drawOp._1;
+
+        ctx.strokeRect(position.x, position.y, size.width, size.height);
+        break;
+
+      case "StrokeStyle" :
+
+        var color = _elm_lang$core$Color$toRgb(drawOp._0);
+
+        var cssString = 
+          'rgba(' + color.red + 
+          ',' + color.green + 
+          ',' + color.blue + 
+          ',' + color.alpha + 
+          ')';
+
+        ctx.strokeStyle = cssString;
+        break;
+
+
       case "FillStyle" :
 
         var color = _elm_lang$core$Color$toRgb(drawOp._0);
