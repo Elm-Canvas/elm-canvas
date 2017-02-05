@@ -2,8 +2,6 @@
 
 Making the canvas API accessible within Elm. The canvas element is a very simple way to render 2D graphics.
 
-🚨 `elm-community/canvas` is not yet stable. This repo is currently on version 0.1.0, but we are working on 0.2.0, which will be very different. 🚨
-
 # Getting started
 
 Checkout these examples..
