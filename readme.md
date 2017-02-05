@@ -1,3 +1,7 @@
+
+🚨 `elm-community/canvas` is not yet stable. 🚨 
+This repo is currently on version 0.1.0. We are working on 0.2.0 which is gonna be pretty different.
+
 # Canvas for Elm
 
 Making the canvas API accessible within Elm. The canvas element is a very simple way to render 2D graphics.
