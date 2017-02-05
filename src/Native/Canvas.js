@@ -43,12 +43,112 @@ var _elm_community$canvas$Native_Canvas = function () {
   function initialize(size) {
 
     var canvas = document.createElement("canvas");
-
     canvas.width = size.width;
     canvas.height = size.height;
 
     return makeModel(canvas);
 
+  }
+
+
+  function batch(drawOps, model) {
+    model = cloneModel(model);
+
+    var ctx = model.canvas().getContext('2d');
+
+    while (drawOps.ctor !== "[]") {
+      handleDrawOp(ctx, drawOps._0);
+
+      drawOps = drawOps._1;
+    }
+
+    return model;
+  }
+
+  function handleDrawOp (ctx, drawOp) {
+    switch (drawOp.ctor) {
+      case "Font" :
+        ctx.font = drawOp._0;
+        break;
+
+      case "StrokeText" :
+        var position = drawOp._1;
+
+        ctx.strokeText(drawOp._0, position.x, position.y)
+        break;
+
+      case "FillText" :
+        var position = drawOp._1;
+
+        ctx.fillText(drawOp._0, position.x, position.y)
+        break;
+
+      case "GlobalAlpha" :
+        ctx.globalAlpha = drawOp._0;
+        break;
+
+      case "GlobalCompositionOp" :
+        // This converts the type from camel case to dash case.
+        var op = drawOp._0.ctor.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+
+        ctx.globalCompositeOperation = op;
+        break;
+
+      case "LineCap" :
+        var cap = drawOp._0.ctor.toLowerCase();
+
+        ctx.lineCap = cap;
+        break;
+
+      case "LineWidth" :
+        ctx.lineWidth = drawOp._0;
+        break;
+
+      case "LineTo" :
+        var position = drawOp._0;
+
+        ctx.lineTo(position.x, position.y);
+        break;
+
+      case "MoveTo" :
+        var position = drawOp._0;
+        
+        ctx.moveTo(position.x, position.y);
+        break;
+
+      case "Stroke" :
+        ctx.stroke();
+        break;
+
+      case "BeginPath" :
+        ctx.beginPath()
+        break;
+
+      case "Rect" :
+        var position = drawOp._0;
+        var size = drawOp._1;
+
+        ctx.rect(position.x, position.y, size.width, size.height);
+        break;
+
+      case "FillStyle" :
+
+        var color = _elm_lang$core$Color$toRgb(drawOp._0);
+
+        var cssString = 
+          'rgba(' + color.red + 
+          ',' + color.green + 
+          ',' + color.blue + 
+          ',' + color.alpha + 
+          ')';
+
+        ctx.fillStyle = cssString;
+        break;
+
+      case "Fill" :
+        ctx.fill();
+        break;
+    }
   }
 
 
@@ -92,6 +192,14 @@ var _elm_community$canvas$Native_Canvas = function () {
     var imageData = ctx.getImageData(0, 0, model.width, model.height);
 
     return _elm_lang$core$Native_Array.fromJSArray(imageData.data);
+  }
+
+  function setSize(size, model) {
+    model = cloneModel(model);
+    model.width = size.width;
+    model.height = size.height;
+
+    return model;
   }
 
 
@@ -155,10 +263,12 @@ var _elm_community$canvas$Native_Canvas = function () {
 
   return {
     initialize: initialize,
+    setSize: F2(setSize),
     getSize: getSize,
     loadImage: loadImage,
     toHtml: F2(toHtml),
     getImageData: getImageData,
     clone: cloneModel,
+    batch: F2(batch)
   };
 }();

@@ -1,17 +1,20 @@
-module Canvas 
-  exposing 
-    ( Canvas
-    , Error
-    , Position
-    , Size
-    , DrawOp
-    , initialize
-    , toHtml
-    , batch
-    , loadImage
-    , getImageData
-    , getSize
-    )
+module Canvas
+    exposing
+        ( Canvas
+        , Error
+        , Position
+        , Size
+        , DrawOp(..)
+        , CompositeOp(..)
+        , Cap(..)
+        , initialize
+        , toHtml
+        , batch
+        , loadImage
+        , getImageData
+        , getSize
+        , setSize
+        )
 
 {-| The canvas html element is a very simple way to render 2D graphics. Check out these examples, and get an explanation of the canvas element [here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first, because its probably what you need. Elm-Canvas is for when you need unusually direct and low level access to the canvas element.
 
@@ -26,33 +29,83 @@ module Canvas
 import Html exposing (Html, Attribute)
 import Array exposing (Array)
 import Task exposing (Task)
+import Color exposing (Color)
 import Native.Canvas
 
 
-{-| A `Canvas` contains image data, and can be rendered as html with `toHtml`. There are many drawing functions in this package, and they all operate on `Canvas`. 
+{-| A `Canvas` contains image data, and can be rendered as html with `toHtml`. There are many drawing functions in this package, and they all operate on `Canvas`.
 -}
 type Canvas
-  = Canvas
+    = Canvas
+
 
 {-| Sometimes loading an `Image` from a url wont work. When it doesnt, youll get an `Error` instead.
 -}
-type Error 
-  = Error
+type Error
+    = Error
+
 
 {-| A `Position` contains x and y coordinates. Many functions will take a `Position` to indicate where a drawing should occur on a `Canvas`. This type alias is identical to the one found in `elm-lang/mouse`.
 -}
-type alias Position = 
-  { x : Int, y : Int }
+type alias Position =
+    { x : Int, y : Int }
 
 
 {-| A `Size` contains a width and a height`, both of which are `Int`. Many functions will take a `Size` to indicate the size of a canvas region. This type alias is identical to the one found in `elm-lang/window`.
 -}
 type alias Size =
-  { width : Int, height : Int }
+    { width : Int, height : Int }
 
 
 type DrawOp
-  = Fill
+    = Font String
+    | StrokeText String Position
+    | FillText String Position
+    | GlobalAlpha Float
+    | GlobalCompositionOp CompositeOp
+    | LineCap Cap
+    | LineWidth Float
+    | LineTo Position
+    | MoveTo Position
+    | Stroke
+    | Fill
+    | Rect Position Size
+    | FillStyle Color
+    | BeginPath
+
+
+type CompositeOp
+    = SourceAtop
+    | SourceIn
+    | SourceOut
+    | SourceOver
+    | DestinationOver
+    | DestinationIn
+    | DestinationOut
+    | DestinationAtop
+    | Lighter
+    | Copy
+    | Xor
+    | Multiply
+    | Screen
+    | Overlay
+    | Darken
+    | ColorDodge
+    | ColorBurn
+    | HardLight
+    | SoftLight
+    | Difference
+    | Exclusion
+    | Hue
+    | Saturation
+    | Color
+    | Luminosity
+
+
+type Cap
+    = Butt
+    | Round
+    | Square
 
 
 {-| `initialize` takes in a width and a height (both type `Int`), and returns a `Canvas` with that width and height. A freshly initialized `Canvas` is entirely transparent (its data is an array of 0s, that has a length of width x height x 4)
@@ -63,10 +116,10 @@ type DrawOp
 -}
 initialize : Size -> Canvas
 initialize =
-  Native.Canvas.initialize
+    Native.Canvas.initialize
 
 
-{-|To turn a `Canvas` into `Html msg`, run it through `toHtml`. The first parameter of `toHtml` is a list of attributes just like node in `elm-lang/html`. 
+{-| To turn a `Canvas` into `Html msg`, run it through `toHtml`. The first parameter of `toHtml` is a list of attributes just like node in `elm-lang/html`.
 
     pixelatedRender : Canvas -> Html Msg
     pixelatedRender canvas =
@@ -74,14 +127,15 @@ initialize =
 -}
 toHtml : List (Attribute msg) -> Canvas -> Html msg
 toHtml =
-  Native.Canvas.toHtml
+    Native.Canvas.toHtml
 
 
-batch : Canvas -> List DrawOp -> Canvas
-batch canvas ops =
-  Native.Canvas.draw canvas ops
+batch : List DrawOp -> Canvas -> Canvas
+batch =
+    Native.Canvas.batch
 
-{-|Load up an `Image` from a url. 
+
+{-| Load up an `Image` from a url.
 
     loadSteelix : Cmd Msg
     loadSteelix =
@@ -100,10 +154,10 @@ batch canvas ops =
 -}
 loadImage : String -> Task Error Canvas
 loadImage =
-  Native.Canvas.loadImage
+    Native.Canvas.loadImage
 
 
-{-|`Canvas` have image data. Image data is an array of `Int`, all of which are between 0 and 255. They represent the RGBA values of every pixel in the image, where the first four `Int` are the color values of the first pixel, the next four `Int` the second pixels, etc.
+{-| `Canvas` have image data. Image data is an array of `Int`, all of which are between 0 and 255. They represent the RGBA values of every pixel in the image, where the first four `Int` are the color values of the first pixel, the next four `Int` the second pixels, etc.
 
     -- twoByTwoCanvas =
 
@@ -122,23 +176,23 @@ loadImage =
 -}
 getImageData : Canvas -> Array Int
 getImageData =
-  Native.Canvas.getImageData 
+    Native.Canvas.getImageData
 
 
-{-|Get the `Size` of a `Canvas`.
+{-| Get the `Size` of a `Canvas`.
 -}
 getSize : Canvas -> Size
 getSize =
-  Native.Canvas.getSize
+    Native.Canvas.getSize
 
+
+{-| Set the `Size` of a `Canvas`
+-}
+setSize : Size -> Canvas -> Canvas
+setSize =
+    Native.Canvas.setSize
 
 
 clone : Canvas -> Canvas
 clone =
-  Native.Canvas.clone
-
-
-
-
-
-
+    Native.Canvas.clone
