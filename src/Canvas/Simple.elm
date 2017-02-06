@@ -1,12 +1,10 @@
-module Canvas.Simple 
-    exposing 
+module Canvas.Simple
+    exposing
         ( fill
         )
 
-
 import Color exposing (Color)
-import Canvas exposing(Canvas, Position, DrawOp(..))
-
+import Canvas exposing (Canvas, Position, DrawOp(..))
 
 
 fill : Color -> Canvas -> Canvas
