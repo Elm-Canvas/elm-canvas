@@ -67,7 +67,7 @@ update message model =
 
 view : Model -> Html Msg
 view model =
-    div 
+    div
         []
         [ p [] [ text "Elm-Canvas" ]
         , presentIfReady model
