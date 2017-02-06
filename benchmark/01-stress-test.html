@@ -9871,9 +9871,9 @@ var _elm_community$canvas$Main$defaultRect = A3(
 	A2(_elm_community$canvas$Canvas$Position, 0, 0),
 	_elm_community$canvas$Main$rectSize,
 	A3(_elm_lang$core$Color$rgb, 0, 0, 0));
-var _elm_community$canvas$Main$TestResult = F4(
-	function (a, b, c, d) {
-		return {fastest: a, slowest: b, average: c, totalTime: d};
+var _elm_community$canvas$Main$TestResult = F5(
+	function (a, b, c, d, e) {
+		return {index: a, fastest: b, slowest: c, average: d, totalTime: e};
 	});
 var _elm_community$canvas$Main$RenderEnd = F3(
 	function (a, b, c) {
@@ -9966,7 +9966,14 @@ var _elm_community$canvas$Main$update = F2(
 						_elm_lang$core$Maybe$withDefault,
 						0,
 						_elm_lang$core$List$minimum(model.rectangleDrawTimes));
-					return {fastest: fastest, slowest: slowest, average: average, totalTime: totalTime};
+					return {
+						index: _elm_lang$core$Basics$toString(
+							_elm_lang$core$List$length(model.results) + 1),
+						fastest: fastest,
+						slowest: slowest,
+						average: average,
+						totalTime: totalTime
+					};
 				}();
 				var results = A2(
 					_elm_lang$core$List$append,
@@ -10068,6 +10075,57 @@ var _elm_community$canvas$Main$view = function (model) {
 		_elm_lang$core$List$length(model.rectangles),
 		_elm_community$canvas$Main$numberOfRects) < 0;
 	var buttonText = buttonDisabled ? 'Preloading rectangle data...' : 'Begin benchmark';
+	var averageResult = {
+		index: 'Average',
+		fastest: A2(
+			_elm_lang$core$Maybe$withDefault,
+			-1,
+			_elm_lang$core$List$minimum(
+				A2(
+					_elm_lang$core$List$map,
+					function (_) {
+						return _.fastest;
+					},
+					model.results))),
+		slowest: A2(
+			_elm_lang$core$Maybe$withDefault,
+			-1,
+			_elm_lang$core$List$maximum(
+				A2(
+					_elm_lang$core$List$map,
+					function (_) {
+						return _.slowest;
+					},
+					model.results))),
+		average: function (sum) {
+			return sum / _elm_lang$core$Basics$toFloat(
+				_elm_lang$core$List$length(model.results));
+		}(
+			_elm_lang$core$List$sum(
+				A2(
+					_elm_lang$core$List$map,
+					function (_) {
+						return _.average;
+					},
+					model.results))),
+		totalTime: _elm_lang$core$List$sum(
+			A2(
+				_elm_lang$core$List$map,
+				function (_) {
+					return _.totalTime;
+				},
+				model.results))
+	};
+	var allResults = (_elm_lang$core$Native_Utils.cmp(
+		_elm_lang$core$List$length(model.results),
+		1) > 0) ? A2(
+		_elm_lang$core$List$append,
+		model.results,
+		{
+			ctor: '::',
+			_0: averageResult,
+			_1: {ctor: '[]'}
+		}) : model.results;
 	var resultsHtml = function (results) {
 		var thStyle = {
 			ctor: '::',
@@ -10094,32 +10152,39 @@ var _elm_community$canvas$Main$view = function (model) {
 				_elm_lang$core$Basics$toString(milliseconds),
 				'ms');
 		};
-		var renderRow = F2(
-			function (resultIdx, result) {
-				return A2(
-					_elm_lang$html$Html$tr,
-					{ctor: '[]'},
-					{
+		var renderRow = function (result) {
+			return A2(
+				_elm_lang$html$Html$tr,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$td,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'border-top', _1: '1px black solid'},
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								A2(_elm_lang$core$Basics_ops['++'], result.index, '.')),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
 						ctor: '::',
 						_0: A2(
 							_elm_lang$html$Html$td,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$style(
-									{
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'border-top', _1: '1px black solid'},
-										_1: {ctor: '[]'}
-									}),
-								_1: {ctor: '[]'}
-							},
+							tdAttributes,
 							{
 								ctor: '::',
 								_0: _elm_lang$html$Html$text(
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										_elm_lang$core$Basics$toString(resultIdx + 1),
-										'.')),
+									msToString(result.fastest)),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -10130,7 +10195,7 @@ var _elm_community$canvas$Main$view = function (model) {
 								{
 									ctor: '::',
 									_0: _elm_lang$html$Html$text(
-										msToString(result.fastest)),
+										msToString(result.slowest)),
 									_1: {ctor: '[]'}
 								}),
 							_1: {
@@ -10141,7 +10206,7 @@ var _elm_community$canvas$Main$view = function (model) {
 									{
 										ctor: '::',
 										_0: _elm_lang$html$Html$text(
-											msToString(result.slowest)),
+											msToString(result.average)),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -10152,27 +10217,16 @@ var _elm_community$canvas$Main$view = function (model) {
 										{
 											ctor: '::',
 											_0: _elm_lang$html$Html$text(
-												msToString(result.average)),
+												msToString(result.totalTime)),
 											_1: {ctor: '[]'}
 										}),
-									_1: {
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$td,
-											tdAttributes,
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text(
-													msToString(result.totalTime)),
-												_1: {ctor: '[]'}
-											}),
-										_1: {ctor: '[]'}
-									}
+									_1: {ctor: '[]'}
 								}
 							}
 						}
-					});
-			});
+					}
+				});
+		};
 		return (_elm_lang$core$Native_Utils.cmp(
 			_elm_lang$core$List$length(results),
 			0) > 0) ? A2(
@@ -10280,7 +10334,7 @@ var _elm_community$canvas$Main$view = function (model) {
 					_0: A2(
 						_elm_lang$html$Html$tbody,
 						{ctor: '[]'},
-						A2(_elm_lang$core$List$indexedMap, renderRow, results)),
+						A2(_elm_lang$core$List$map, renderRow, results)),
 					_1: {ctor: '[]'}
 				}
 			}) : _elm_lang$html$Html$text('');
@@ -10350,7 +10404,7 @@ var _elm_community$canvas$Main$view = function (model) {
 						model.canvas),
 					_1: {
 						ctor: '::',
-						_0: resultsHtml(model.results),
+						_0: resultsHtml(allResults),
 						_1: {ctor: '[]'}
 					}
 				}

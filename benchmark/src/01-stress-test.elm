@@ -61,7 +61,8 @@ type alias Rectangle =
 
 
 type alias TestResult =
-  { fastest : Float
+  { index : String
+  , fastest : Float
   , slowest : Float
   , average : Float
   , totalTime : Float
@@ -160,7 +161,8 @@ update msg model =
             totalTime = timestamp - model.testStartedAt
 
           in
-            { fastest = fastest
+            { index = toString ((List.length model.results) + 1)
+            , fastest = fastest
             , slowest = slowest
             , average = average
             , totalTime = totalTime
@@ -285,13 +287,13 @@ view model =
           [ style tdStyles
           ]
 
-        renderRow : Int -> TestResult -> Html Msg
-        renderRow resultIdx result =
+        renderRow : TestResult -> Html Msg
+        renderRow result =
           tr
             []
             [ td
               [ style [( "border-top", "1px black solid" )] ]
-              [ text ((toString (resultIdx + 1)) ++ ".") ]
+              [ text (result.index ++ ".") ]
             , td tdAttributes [ text (msToString result.fastest) ]
             , td tdAttributes [ text (msToString result.slowest) ]
             , td tdAttributes [ text (msToString result.average) ]
@@ -323,11 +325,27 @@ view model =
               ]
             , tbody
               []
-              (List.indexedMap renderRow results)
+              (List.map renderRow results)
             ]
 
         else
           text ""
+
+    averageResult : TestResult
+    averageResult =
+      { index = "Average"
+      , fastest = Maybe.withDefault -1 <| List.minimum <| List.map .fastest model.results
+      , slowest = Maybe.withDefault -1 <| List.maximum <| List.map .slowest model.results
+      , average = (\sum -> sum / (toFloat <| List.length model.results)) <| List.sum <| List.map .average model.results
+      , totalTime = List.sum <| List.map .totalTime model.results
+      }
+
+    allResults : List TestResult
+    allResults =
+      if (List.length model.results) > 1 then
+        List.append model.results [averageResult]
+      else
+        model.results
 
     buttonDisabled : Bool
     buttonDisabled =
@@ -362,5 +380,5 @@ view model =
           [ text buttonText ]
         ]
       , Canvas.toHtml [] model.canvas
-      , resultsHtml model.results
+      , resultsHtml allResults
       ]
