@@ -4,6 +4,7 @@ module Main exposing (..)
 import Canvas exposing (Size, Position, Canvas)
 import Canvas.Simple exposing (Draw)
 import Canvas.Simple as Simple
+import Color
 
 
 main =
