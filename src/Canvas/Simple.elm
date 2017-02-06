@@ -1,12 +1,12 @@
-module Canvas.Simple exposing (..)
+module Canvas.Simple 
+    exposing 
+        ( fill
+        )
 
 
 import Color exposing (Color)
 import Canvas exposing(Canvas, Position, DrawOp(..))
 
-
---getPixel : Position -> Canvas -> Color
---getPixel position =
 
 
 fill : Color -> Canvas -> Canvas
