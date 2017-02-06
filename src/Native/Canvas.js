@@ -170,6 +170,22 @@ var _elm_community$canvas$Native_Canvas = function () {
       case "Fill" :
         ctx.fill();
         break;
+
+      case "PutImageData" :
+        var position = drawOp._2;
+        var size = drawOp._1;
+        var data = _elm_lang$core$Native_Array.toJSArray(drawOp._0);
+
+        var imageData = ctx.createImageData(size.width, size.height);
+
+        var i = 0;
+        while (i < data.length) {
+          imageData.data[i] = data[i];
+          i++;
+        }
+
+        ctx.putImageData(imageData, position.x, position.y);
+        break;
     }
   }
 

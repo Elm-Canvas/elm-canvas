@@ -74,6 +74,7 @@ type DrawOp
     | StrokeStyle Color
     | FillStyle Color
     | BeginPath
+    | PutImageData (Array Int) Size Position
 
 
 type CompositeOp
