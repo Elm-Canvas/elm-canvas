@@ -131,7 +131,14 @@ var _elm_community$canvas$Native_Canvas = function () {
         ctx.rect(position.x, position.y, size.width, size.height);
         break;
 
-      case "FillStyle" :
+      case "StrokeRect" :
+        var position = drawOp._0;
+        var size = drawOp._1;
+
+        ctx.strokeRect(position.x, position.y, size.width, size.height);
+        break;
+
+      case "StrokeStyle" :
 
         var color = _elm_lang$core$Color$toRgb(drawOp._0);
 
@@ -142,11 +149,37 @@ var _elm_community$canvas$Native_Canvas = function () {
           ',' + color.alpha + 
           ')';
 
+        ctx.strokeStyle = cssString;
+        break;
+
+
+      case "FillStyle" :
+
+        var color = _elm_lang$core$Color$toRgb(drawOp._0);
+
+        var cssString = 
+          'rgba(' + [ color.red, color.green, color.blue, color.alpha ].join(',') + ')';
+
+
         ctx.fillStyle = cssString;
         break;
 
       case "Fill" :
         ctx.fill();
+        break;
+
+      case "PutImageData" :
+        var position = drawOp._2;
+        var size = drawOp._1;
+        var data = _elm_lang$core$Native_Array.toJSArray(drawOp._0);
+
+        var imageData = ctx.createImageData(size.width, size.height);
+
+        for (var index = 0; index < data.length; index++) {
+          imageData.data[ index ] = data[ index ];
+        }
+
+        ctx.putImageData(imageData, position.x, position.y);
         break;
     }
   }
@@ -176,7 +209,9 @@ var _elm_community$canvas$Native_Canvas = function () {
         callback(Scheduler.fail({ ctor: 'Error' }));
       };
 
-      img.crossOrigin = "Anonymous";
+      if (source.slice(0,5) !== "data:") {
+        img.crossOrigin = "Anonymous";
+      }
       img.src = source;
     });
   }
