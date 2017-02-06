@@ -1,4 +1,11 @@
-module Canvas.Events exposing (..)
+module Canvas.Events 
+    exposing 
+        ( onMouseDown
+        , onMouseUp
+        , onMouseMove
+        , onClick
+        , onDoubleClick
+        )
 
 import Html exposing (Attribute)
 import Html.Events exposing (on)
