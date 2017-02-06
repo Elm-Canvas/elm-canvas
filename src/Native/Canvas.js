@@ -209,7 +209,9 @@ var _elm_community$canvas$Native_Canvas = function () {
         callback(Scheduler.fail({ ctor: 'Error' }));
       };
 
-      img.crossOrigin = "Anonymous";
+      if (source.slice(0,5) !== "data:") {
+        img.crossOrigin = "Anonymous";
+      }
       img.src = source;
     });
   }
