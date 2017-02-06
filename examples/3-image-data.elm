@@ -3,7 +3,6 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Events as Events
 import Canvas exposing (Size, Position, Error, DrawOp(..), Canvas)
-import Canvas.Events
 import Array exposing (Array)
 import Task
 
@@ -92,7 +91,8 @@ invertHelp index color =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div 
+        []
         [ p [] [ text "Elm-Canvas" ]
         , presentIfReady model
         ]

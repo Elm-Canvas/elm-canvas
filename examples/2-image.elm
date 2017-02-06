@@ -1,7 +1,6 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (style)
 import Canvas exposing (Size, Position, Error, DrawOp(..), Canvas)
 import Canvas.Events
 import Color exposing (Color)
@@ -68,7 +67,8 @@ update message model =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div 
+        []
         [ p [] [ text "Elm-Canvas" ]
         , presentIfReady model
         ]
