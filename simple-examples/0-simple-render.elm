@@ -1,6 +1,5 @@
 module Main exposing (..)
 
-
 import Canvas exposing (Size, Position, Canvas)
 import Canvas.Simple exposing (Draw)
 import Canvas.Simple as Simple
@@ -8,7 +7,7 @@ import Color
 
 
 main =
-    (Canvas.toHtml [] << draw) 
+    (Canvas.toHtml [] << draw)
         (Canvas.initialize (Size 600 400))
 
 
@@ -26,6 +25,6 @@ drawText : Draw
 drawText =
     Simple.filledText
         "Elm-Canvas"
-        "84px sans-serif" 
-        (Color.rgba 255 255 0 0.75) 
+        "84px sans-serif"
+        (Color.rgba 255 255 0 0.75)
         (Position 50 192)
