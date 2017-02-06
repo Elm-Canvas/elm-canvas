@@ -91,7 +91,7 @@ invertHelp index color =
 
 view : Model -> Html Msg
 view model =
-    div 
+    div
         []
         [ p [] [ text "Elm-Canvas" ]
         , presentIfReady model
