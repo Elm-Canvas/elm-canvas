@@ -9,9 +9,9 @@ import Color exposing (Color)
 
 main =
     Html.beginnerProgram
-        { model = 
+        { model =
             ( Canvas.initialize (Size 800 800)
-            , Nothing 
+            , Nothing
             )
         , view = view
         , update = update
