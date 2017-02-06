@@ -93,7 +93,7 @@ view : Model -> Html Msg
 view model =
     div
         []
-        [ p [] [ text "Elm-Canvas" ]
+        [ p [] [ text "Click to invert colors" ]
         , presentIfReady model
         ]
 

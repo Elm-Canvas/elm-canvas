@@ -158,11 +158,8 @@ var _elm_community$canvas$Native_Canvas = function () {
         var color = _elm_lang$core$Color$toRgb(drawOp._0);
 
         var cssString = 
-          'rgba(' + color.red + 
-          ',' + color.green + 
-          ',' + color.blue + 
-          ',' + color.alpha + 
-          ')';
+          'rgba(' + [ color.red, color.green, color.blue, color.alpha ].join(',') + ')';
+
 
         ctx.fillStyle = cssString;
         break;
@@ -178,10 +175,8 @@ var _elm_community$canvas$Native_Canvas = function () {
 
         var imageData = ctx.createImageData(size.width, size.height);
 
-        var i = 0;
-        while (i < data.length) {
-          imageData.data[i] = data[i];
-          i++;
+        for (var index = 0; index < data.length; index++) {
+          imageData.data[ index ] = data[ index ];
         }
 
         ctx.putImageData(imageData, position.x, position.y);
