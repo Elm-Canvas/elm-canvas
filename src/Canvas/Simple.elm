@@ -17,11 +17,7 @@ type alias Draw
 
 fill : Color -> Draw
 fill color canvas =
-    [ BeginPath
-    , Rect (Position 0 0) (Canvas.getSize canvas)
-    , FillStyle color
-    , Fill
-    ]
+    filledRectangle color (Position 0 0) (Canvas.getSize canvas)
 
 
 filledRectangle : Color -> Position -> Size -> Draw

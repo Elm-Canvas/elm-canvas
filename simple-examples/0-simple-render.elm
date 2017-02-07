@@ -7,8 +7,9 @@ import Color exposing (Color)
 
 
 main =
-    (Canvas.toHtml [] << (Draw.batch draws))
-        (Canvas.initialize (Size 600 400))
+    Canvas.initialize (Size 400 300)
+        |> Draw.batch draws
+        |> Canvas.toHtml []
 
 
 draws : List Draw
