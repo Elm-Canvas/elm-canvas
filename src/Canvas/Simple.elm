@@ -2,12 +2,13 @@ module Canvas.Simple
     exposing
         ( fill
         , filledText
+        , filledRectangle
         , batch
         , Draw
         )
 
 import Color exposing (Color)
-import Canvas exposing (Canvas, Position, DrawOp(..))
+import Canvas exposing (Canvas, Size, Position, DrawOp(..))
 
 
 type alias Draw 
@@ -21,6 +22,16 @@ fill color canvas =
     , FillStyle color
     , Fill
     ]
+
+
+filledRectangle : Color -> Position -> Size -> Draw
+filledRectangle color position size =
+    always
+        [ BeginPath
+        , Rect position size
+        , FillStyle color
+        , Fill 
+        ]
 
 
 filledText : String -> String -> Color -> Position -> Draw
