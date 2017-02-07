@@ -8,6 +8,7 @@ module Canvas
         , CompositeOp(..)
         , Cap(..)
         , initialize
+        , blank
         , toHtml
         , batch
         , loadImage
