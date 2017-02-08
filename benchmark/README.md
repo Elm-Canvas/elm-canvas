@@ -17,7 +17,14 @@ This isn't to discourage you from using elm-reactor, but for good data, make sur
 |                                              |Chrome 55 (OSX)|Firefox (OSX)|Safari (OSX)|
 |----------------------------------------------|---------------|-------------|------------|
 |01 Stress Test (500 at 800x600, 15 iterations)|3.805ms/rect   |6.899ms/rect |2.664ms/rect|
+
+
+### version 0.2.0
+
+|                                              |Chrome 55 (OSX)|Firefox (OSX)|Safari (OSX)|
 |----------------------------------------------|---------------|-------------|------------|
+|01 Stress Test (500 at 800x600, 15 iterations)|2.350ms/rect   |6.328ms/rect |2.161ms/rect|
+|02 Stress Test (500 at 800x600, 15 iterations)|7.4ms/500rect  |3.4ms/500rect|4.67/500rect|
 
 ### Contributing
 
