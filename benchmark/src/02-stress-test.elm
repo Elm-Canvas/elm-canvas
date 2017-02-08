@@ -49,7 +49,6 @@ main =
 type alias Model =
     { canvas : Canvas
     , testStartedAt : Float
-    , rectangleDrawTimes : List Float
     , rectangles : List Rectangle
     , results : List TestResult
     , positionGenerator : Random.Generator Position
@@ -66,8 +65,6 @@ type alias Rectangle =
 
 type alias TestResult =
     { index : String
-    , fastest : Float
-    , slowest : Float
     , average : Float
     , totalTime : Float
     }
@@ -85,7 +82,6 @@ init =
         model =
             { canvas = canvas
             , testStartedAt = 0
-            , rectangleDrawTimes = []
             , rectangles = []
             , results = []
             , positionGenerator = Random.map2 Position (Random.int 0 (resolution.width - rectSize.width)) (Random.int 0 (resolution.height - rectSize.height))
@@ -115,8 +111,6 @@ type Msg
     | TestEnd Float
     | RandomPosition Position
     | RandomColor Position Color
-    | RenderBegin (List Rectangle) Float
-    | RenderEnd (List Rectangle) Float Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -133,13 +127,28 @@ update msg model =
                 canvas =
                     Size resolution.width resolution.height
                         |> Canvas.initialize
+
+                canvasWithRects : Canvas
+                canvasWithRects =
+                    model.rectangles
+                        |> List.foldl render canvas
+
+                render : Rectangle -> Canvas -> Canvas
+                render rectangle previousCanvas =
+                    let
+                        rectCanvas : Canvas
+                        rectCanvas =
+                            rectangle.size
+                                |> Canvas.initialize
+                                |> Canvas.fill rectangle.color
+                    in
+                        Canvas.drawCanvas rectCanvas rectangle.position previousCanvas
             in
                 ( { model
-                    | canvas = canvas
+                    | canvas = canvasWithRects
                     , testStartedAt = timestamp
-                    , rectangleDrawTimes = []
                   }
-                , Task.perform (RenderBegin model.rectangles) Time.now
+                , Task.perform TestEnd Time.now
                 )
 
         TestEnd timestamp ->
@@ -147,29 +156,17 @@ update msg model =
                 result : TestResult
                 result =
                     let
-                        fastest : Float
-                        fastest =
-                            Maybe.withDefault 0 (List.minimum model.rectangleDrawTimes)
-
-                        slowest : Float
-                        slowest =
-                            Maybe.withDefault 1 (List.maximum model.rectangleDrawTimes)
+                        delta : Float
+                        delta =
+                            timestamp - model.testStartedAt
 
                         average : Float
                         average =
-                            model.rectangleDrawTimes
-                                |> List.sum
-                                |> (\sum -> sum / (toFloat (List.length model.rectangleDrawTimes)))
-
-                        totalTime : Float
-                        totalTime =
-                            timestamp - model.testStartedAt
+                            delta / (toFloat (List.length model.rectangles))
                     in
                         { index = toString ((List.length model.results) + 1)
-                        , fastest = fastest
-                        , slowest = slowest
                         , average = average
-                        , totalTime = totalTime
+                        , totalTime = delta
                         }
 
                 results : List TestResult
@@ -207,56 +204,6 @@ update msg model =
                 , Random.generate RandomPosition model.positionGenerator
                 )
 
-        RenderBegin rectangles timestamp ->
-            let
-                canvas : Canvas
-                canvas =
-                    model.canvas
-                        |> Canvas.drawCanvas rectCanvas rectangle.position
-
-                rectCanvas : Canvas
-                rectCanvas =
-                    rectangle.size
-                        |> Canvas.initialize
-                        |> Canvas.fill rectangle.color
-
-                rectangle : Rectangle
-                rectangle =
-                    rectangles
-                        |> List.head
-                        |> Maybe.withDefault defaultRect
-
-                newRectangles : List Rectangle
-                newRectangles =
-                    rectangles
-                        |> List.tail
-                        |> Maybe.withDefault []
-            in
-                ( { model | canvas = canvas }
-                , Task.perform (RenderEnd newRectangles timestamp) Time.now
-                )
-
-        RenderEnd rectangles beginTimestamp timestamp ->
-            let
-                delta : Float
-                delta =
-                    timestamp - beginTimestamp
-
-                rectangleDrawTimes : List Float
-                rectangleDrawTimes =
-                    List.append model.rectangleDrawTimes [ delta ]
-
-                command : Cmd Msg
-                command =
-                    if (List.length rectangles) > 0 then
-                        Task.perform (RenderBegin rectangles) Time.now
-                    else
-                        Task.perform TestEnd Time.now
-            in
-                ( { model | rectangleDrawTimes = rectangleDrawTimes }
-                , command
-                )
-
 
 
 -- View
@@ -290,8 +237,6 @@ view model =
                         [ td
                             [ style [ ( "border-top", "1px black solid" ) ] ]
                             [ text (result.index ++ ".") ]
-                        , td tdAttributes [ text (msToString result.fastest) ]
-                        , td tdAttributes [ text (msToString result.slowest) ]
                         , td tdAttributes [ text (msToString result.average) ]
                         , td tdAttributes [ text (msToString result.totalTime) ]
                         ]
@@ -312,8 +257,6 @@ view model =
                             [ tr
                                 []
                                 [ th [ style thStyle ] [ text "" ]
-                                , th [ style thStyle ] [ text "Fastest" ]
-                                , th [ style thStyle ] [ text "Slowest" ]
                                 , th [ style thStyle ] [ text "Average" ]
                                 , th [ style thStyle ] [ text "Total time" ]
                                 ]
@@ -328,10 +271,8 @@ view model =
         averageResult : TestResult
         averageResult =
             { index = "Average"
-            , fastest = Maybe.withDefault -1 <| List.minimum <| List.map .fastest model.results
-            , slowest = Maybe.withDefault -1 <| List.maximum <| List.map .slowest model.results
             , average = (\sum -> sum / (toFloat <| List.length model.results)) <| List.sum <| List.map .average model.results
-            , totalTime = List.sum <| List.map .totalTime model.results
+            , totalTime = (\sum -> sum / (toFloat <| List.length model.results)) <| List.sum <| List.map .totalTime model.results
             }
 
         allResults : List TestResult
