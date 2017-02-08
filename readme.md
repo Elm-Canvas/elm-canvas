@@ -1,3 +1,7 @@
+
+🚨 `elm-community/canvas` is not yet stable. 🚨 
+This repo is currently on version 0.1.0. We are working on 0.2.0 which is gonna be pretty different.
+
 # Canvas for Elm
 
 Making the canvas API accessible within Elm. The canvas element is a very simple way to render 2D graphics.
@@ -108,7 +112,7 @@ Thanks to the authors of the [Elm Web-Gl package](https://github.com/elm-communi
 
 elm-community/canvas is a native module, which means you cant install it from package.elm-lang.org. You can still use this module in your project, but it will take a little work. Here is how to do it..
 
-0 Download this repo
+0 Download either this repo, or better yet, one of the tagged releases (like 0.1.0).
 
 1 Copy the content of `./src` into the source directory of your project. So that means copying `./src/Canvas.elm` and `./src/Native/` to the same directory as your `Main.elm` file.
 

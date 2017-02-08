@@ -9,6 +9,7 @@ examples/.surgeignore
 examples/gulpFile.coffee
 examples/server.coffee
 examples/package.json
+benchmark/*.html
 
 # Do development work in a folder called dev
 dev
