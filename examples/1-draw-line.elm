@@ -36,10 +36,10 @@ type alias Model =
 update : Msg -> Model -> Model
 update message ( canvas, clickState ) =
     case message of
-        Click position ->
+        Click point ->
             case clickState of
                 Nothing ->
-                    ( canvas, FirstClick position )
+                    ( canvas, FirstClick point )
 
                 FirstClick p1 ->
                     ( canvas, clickState )
@@ -47,16 +47,16 @@ update message ( canvas, clickState ) =
                 Moving p0 p1 ->
                     ( drawLine p0 p1 canvas, Nothing )
 
-        Move position ->
+        Move point ->
             case clickState of
                 Nothing ->
                     ( canvas, Nothing )
 
                 FirstClick p0 ->
-                    ( canvas, Moving p0 position )
+                    ( canvas, Moving p0 point )
 
                 Moving p0 _ ->
-                    ( canvas, Moving p0 position )
+                    ( canvas, Moving p0 point )
 
 
 view : Model -> Html Msg
@@ -73,14 +73,11 @@ view model =
 handleClickState : Model -> Canvas
 handleClickState ( canvas, clickState ) =
     case clickState of
-        Nothing ->
-            canvas
-
-        FirstClick _ ->
-            canvas
-
         Moving p0 p1 ->
             drawLine p0 p1 canvas
+
+        _ ->
+            canvas
 
 
 drawLine : Point -> Point -> Canvas -> Canvas
