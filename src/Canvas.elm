@@ -5,8 +5,8 @@ module Canvas
         , Point
         , Size
         , DrawOp(..)
-        , CompositeOp(..)
-        , Cap(..)
+        --, CompositeOp(..)
+        --, Cap(..)
         , initialize
         , blank
         , toHtml
@@ -62,55 +62,104 @@ type DrawOp
     = Font String
     | StrokeText String Point
     | FillText String Point
+    | TextAlign String
+    | TextBaseline String
+
     | GlobalAlpha Float
-    | GlobalCompositionOp CompositeOp
-    | LineCap Cap
+    | GlobalCompositionOp String
+    | LineCap String
+
+    | LineDashOffset Float
+    
     | LineWidth Float
+    | LineJoin String
     | LineTo Point
+    | BezierCurveTo Point Point Point
+    | QuadraticCurveTo Point Point
     | MoveTo Point
+
+    | ShadowBlur Float
+    | ShadowColor Color
+    | ShadowOffsetX Float
+    | ShadowOffsetY Float
+
+    | Arc Point Float Float Float
+    | ArcTo Point Point Float
+
     | Stroke
     | Fill
+    | FillRect Point Size
     | Rect Point Size
+    | Rotate Float
+    | Scale Int Int
+    | Translate Point
+    | Transform Float Float Float Float Float Float
+    | SetLineDash (List Float)
+    | ClearRect Point Size
+    | Clip
+    | ClosePath
     | StrokeRect Point Size
     | StrokeStyle Color
     | FillStyle Color
     | BeginPath
     | PutImageData (Array Int) Size Point
+    
+    | Draw Canvas Point
+    | CropDraw Canvas Point Size Point Size
 
 
-type CompositeOp
-    = SourceAtop
-    | SourceIn
-    | SourceOut
-    | SourceOver
-    | DestinationOver
-    | DestinationIn
-    | DestinationOut
-    | DestinationAtop
-    | Lighter
-    | Copy
-    | Xor
-    | Multiply
-    | Screen
-    | Overlay
-    | Darken
-    | ColorDodge
-    | ColorBurn
-    | HardLight
-    | SoftLight
-    | Difference
-    | Exclusion
-    | Hue
-    | Saturation
-    | Color
-    | Luminosity
+--type CompositeOp
+--    = SourceAtop
+--    | SourceIn
+--    | SourceOut
+--    | SourceOver
+--    | DestinationOver
+--    | DestinationIn
+--    | DestinationOut
+--    | DestinationAtop
+--    | Lighter
+--    | Copy
+--    | Xor
+--    | Multiply
+--    | Screen
+--    | Overlay
+--    | Darken
+--    | ColorDodge
+--    | ColorBurn
+--    | HardLight
+--    | SoftLight
+--    | Difference
+--    | Exclusion
+--    | Hue
+--    | Saturation
+--    | Color
+--    | Luminosity
 
 
-type Cap
-    = Butt
-    | Round
-    | Square
+--type Cap
+--    = Butt
+--    | Round
+--    | Square
 
+--type Join
+--    = Bevel
+--    | Round
+--    | Miter
+
+--type Alignment
+--    = Left
+--    | Right
+--    | Center
+--    | Start
+--    | End
+
+--type Baseline
+--    = Top
+--    | Hanging
+--    | Middle
+--    | Alphabetic
+--    | Ideographic
+--    | Bottom
 
 {-| `initialize` takes in a width and a height (both type `Int`), and returns a `Canvas` with that width and height. A freshly initialized `Canvas` is entirely transparent (its data is an array of 0s, that has a length of width x height x 4)
 

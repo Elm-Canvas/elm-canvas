@@ -72,15 +72,23 @@ var _elm_community$canvas$Native_Canvas = function () {
         break;
 
       case "StrokeText" :
-        var position = drawOp._1;
+        var point = drawOp._1;
 
-        ctx.strokeText(drawOp._0, position.x, position.y)
+        ctx.strokeText(drawOp._0, point.x, point.y)
         break;
 
       case "FillText" :
-        var position = drawOp._1;
+        var point = drawOp._1;
 
-        ctx.fillText(drawOp._0, position.x, position.y)
+        ctx.fillText(drawOp._0, point.x, point.y)
+        break;
+
+      case "TextAlign" :
+        ctx.textAlign = drawOp._0;
+        break;
+
+      case "TextBaseline" :
+        ctx.textBaseline = drawOp._0;
         break;
 
       case "GlobalAlpha" :
@@ -88,16 +96,19 @@ var _elm_community$canvas$Native_Canvas = function () {
         break;
 
       case "GlobalCompositionOp" :
-        // This converts the type from camel case to dash case.
-        var op = drawOp._0.ctor.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-
-        ctx.globalCompositeOperation = op;
+        ctx.globalCompositeOperation = drawOp._0;
         break;
 
       case "LineCap" :
-        var cap = drawOp._0.ctor.toLowerCase();
+        ctx.lineCap = drawOp._0;
+        break;
 
-        ctx.lineCap = cap;
+      case "LineJoin" :
+        ctx.lineJoin = drawOp._0;
+        break;
+
+      case "LineDashOffset" :
+        ctx.lineDashOffset = drawOp._0;
         break;
 
       case "LineWidth" :
@@ -105,15 +116,57 @@ var _elm_community$canvas$Native_Canvas = function () {
         break;
 
       case "LineTo" :
-        var position = drawOp._0;
+        var point = drawOp._0;
 
-        ctx.lineTo(position.x, position.y);
+        ctx.lineTo(point.x, point.y);
+        break;
+
+      case "BezierCurveTo" :
+        var p0 = drawOp._0;
+        var p1 = drawOp._1;
+        var p2 = drawOp._2;
+
+        ctx.bezierCurveTo(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y);
+        break;
+
+      case "QuadraticCurveTo" :
+        var p0 = drawOp._0;
+        var p1 = drawOp._1;
+
+        ctx.quadraticCurveTo(p0.x, p0.y, p1.x, p1.y);
         break;
 
       case "MoveTo" :
-        var position = drawOp._0;
+        var point = drawOp._0;
         
-        ctx.moveTo(position.x, position.y);
+        ctx.moveTo(point.x, point.y);
+        break;
+
+      case "ShadowBlur" :
+        ctx.shadowBlur = drawOp._0;
+        break;
+
+      case "ShadowColor" :
+        ctx.shadowColor = toCssString(drawOp);
+        break;
+
+      case "ShadowOffsetX" :
+        ctx.shadowOffsetX = drawOp._0;
+        break;
+
+      case "ShadowOffsetY" :
+        ctx.shadowOffsetY = drawOp._0;
+        break;
+
+      case "Arc" :
+        var point = drawOp._0;
+        ctx.arc(point.x, point.y, drawOp._1, drawOp._2, drawOp._3);
+        break;
+
+      case "ArcTo" :
+        var point0 = drawOp._0;
+        var point1 = drawOp._1;
+        ctx.arcTo(point0.x, point0.y, point1.x, point1.y, drawOp._2);
         break;
 
       case "Stroke" :
@@ -125,51 +178,92 @@ var _elm_community$canvas$Native_Canvas = function () {
         break;
 
       case "Rect" :
-        var position = drawOp._0;
+        var point = drawOp._0;
         var size = drawOp._1;
 
-        ctx.rect(position.x, position.y, size.width, size.height);
+        ctx.rect(point.x, point.y, size.width, size.height);
+        break;
+
+      case "Rotate" :
+        ctx.rotate(drawOp._0);
+        break;
+
+      case "Scale" :
+        ctx.scale(drawOp._0, drawOp._1);
+        break;
+
+      case "Translate" :
+        var point = drawOp._0;
+
+        ctx.translate(point.x, point.y);
+        break;
+
+      case "Transform" :
+        var a = drawOp._0;
+        var b = drawOp._1;
+        var c = drawOp._2;
+        var d = drawOp._3;
+        var e = drawOp._4;
+        var f = drawOp._5;
+
+        ctx.transform(a, b, c, d, e, f);
+        break;
+
+      case "SetLineDash" :
+        var lineDash = [];
+        var lineDashAsList = drawOp._0;
+
+        while (lineDashAsList.ctor === "::") {
+          lineDash.push(lineDashAsList._0);
+          lineDashAsList = lineDashAsList._1;
+        }
+
+        ctx.setLineDash(lineDash);
+        break;
+
+      case "ClearRect" :
+        var point = drawOp._0;
+        var size = drawOp._1;
+
+        ctx.clearRect(point.x, point.y, size.width, size.height);
+        break;
+
+      case "Clip" :
+        ctx.clip();
+        break;
+
+      case "ClosePath" :
+        ctx.closePath();
         break;
 
       case "StrokeRect" :
-        var position = drawOp._0;
+        var point = drawOp._0;
         var size = drawOp._1;
 
-        ctx.strokeRect(position.x, position.y, size.width, size.height);
+        ctx.strokeRect(point.x, point.y, size.width, size.height);
         break;
 
       case "StrokeStyle" :
-
-        var color = _elm_lang$core$Color$toRgb(drawOp._0);
-
-        var cssString = 
-          'rgba(' + color.red + 
-          ',' + color.green + 
-          ',' + color.blue + 
-          ',' + color.alpha + 
-          ')';
-
-        ctx.strokeStyle = cssString;
+        ctx.strokeStyle = toCssString(drawOp);
         break;
 
-
       case "FillStyle" :
-
-        var color = _elm_lang$core$Color$toRgb(drawOp._0);
-
-        var cssString = 
-          'rgba(' + [ color.red, color.green, color.blue, color.alpha ].join(',') + ')';
-
-
-        ctx.fillStyle = cssString;
+        ctx.fillStyle = toCssString(drawOp);
         break;
 
       case "Fill" :
         ctx.fill();
         break;
 
+      case "FillRect":
+        var point = drawOp._0;
+        var size = drawOp._1;
+
+        ctx.fillRect(point.x, point.y, size.width, size.height);
+        break;
+
       case "PutImageData" :
-        var position = drawOp._2;
+        var point = drawOp._2;
         var size = drawOp._1;
         var data = _elm_lang$core$Native_Array.toJSArray(drawOp._0);
 
@@ -179,9 +273,21 @@ var _elm_community$canvas$Native_Canvas = function () {
           imageData.data[ index ] = data[ index ];
         }
 
-        ctx.putImageData(imageData, position.x, position.y);
+        ctx.putImageData(imageData, point.x, point.y);
+        break;
+
+      case "Draw" :
+        var point = drawOp._1;
+        var canvas = drawOp._0.canvas();
+
+        ctx.drawImage(canvas, point.x, point.y);
         break;
     }
+  }
+
+  function toCssString(drawOp) {        
+    var color = _elm_lang$core$Color$toRgb(drawOp._0);
+    return 'rgba(' + [ color.red, color.green, color.blue, color.alpha ].join(',') + ')'
   }
 
 

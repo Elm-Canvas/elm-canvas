@@ -85,7 +85,7 @@ drawLine p0 p1 =
     Canvas.batch
         [ BeginPath
         , LineWidth 30
-        , LineCap Round
+        , LineCap "round"
         , MoveTo p0
         , LineTo p1
         , Stroke
