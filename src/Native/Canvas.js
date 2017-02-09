@@ -112,7 +112,7 @@ var _elm_community$canvas$Native_Canvas = function () {
 
       case "MoveTo" :
         var position = drawOp._0;
-        
+
         ctx.moveTo(position.x, position.y);
         break;
 
@@ -142,11 +142,11 @@ var _elm_community$canvas$Native_Canvas = function () {
 
         var color = _elm_lang$core$Color$toRgb(drawOp._0);
 
-        var cssString = 
-          'rgba(' + color.red + 
-          ',' + color.green + 
-          ',' + color.blue + 
-          ',' + color.alpha + 
+        var cssString =
+          'rgba(' + color.red +
+          ',' + color.green +
+          ',' + color.blue +
+          ',' + color.alpha +
           ')';
 
         ctx.strokeStyle = cssString;
@@ -157,7 +157,7 @@ var _elm_community$canvas$Native_Canvas = function () {
 
         var color = _elm_lang$core$Color$toRgb(drawOp._0);
 
-        var cssString = 
+        var cssString =
           'rgba(' + [ color.red, color.green, color.blue, color.alpha ].join(',') + ')';
 
 
@@ -266,7 +266,7 @@ var _elm_community$canvas$Native_Canvas = function () {
     // toHtml and every other function. That way its literally
     // the same object being passed into virtualDom.custom, rather
     // than new - however identical - objects.
-    var implementation = 
+    var implementation =
       {
         render: renderCanvas,
         diff: diff
@@ -279,7 +279,7 @@ var _elm_community$canvas$Native_Canvas = function () {
   function renderCanvas(model) {
     LOG('RENDER CANVAS');
 
-    return cloneModel(model).canvas();  
+    return cloneModel(model).canvas();
   }
 
 
