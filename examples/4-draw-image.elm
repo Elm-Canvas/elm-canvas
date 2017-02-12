@@ -126,6 +126,5 @@ drawScaledImages drawOps canvas =
                 , Rect (Position 0 0) (Size 800 600)
                 , Stroke
                 ]
-
     in
         Canvas.batch drawOpsWithBorder canvas
