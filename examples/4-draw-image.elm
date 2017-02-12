@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Canvas exposing (Size, Position, Error, DrawOp(..), DrawImageOp(..), Canvas)
+import Canvas exposing (Size, Position, Error, DrawOp(..), DrawImageParams(..), Canvas)
 import Canvas.Events
 import Color exposing (Color)
 import Task
@@ -67,10 +67,17 @@ update message model =
                     let
                         additionalDrawOps : List DrawOp
                         additionalDrawOps =
-                            [ DrawImage canvas (Scale position (Size 64 64))
+                            [ DrawImage canvas (Scaled position (Size 64 64))
                             ]
+
+                        newDrawOps : List DrawOp
+                        newDrawOps =
+                            if (List.length drawOps) > 200 then
+                                List.drop 2 drawOps
+                            else
+                                drawOps
                     in
-                        ( GotCanvas canvas (List.append drawOps additionalDrawOps)
+                        ( GotCanvas canvas (List.append newDrawOps additionalDrawOps)
                         , Cmd.none
                         )
 
@@ -95,9 +102,12 @@ presentIfReady model =
             p [] [ text "Loading image" ]
 
         GotCanvas canvas drawOps ->
-            Canvas.toHtml
-                [ Canvas.Events.onMouseDown Blit ]
-                (drawScaledImages drawOps canvas)
+            div
+                []
+                [ Canvas.toHtml
+                    [ Canvas.Events.onMouseMove Blit ]
+                    (drawScaledImages drawOps (Canvas.initialize (Size 800 600)))
+                ]
 
 
 drawScaledImages : List DrawOp -> Canvas -> Canvas
@@ -105,5 +115,17 @@ drawScaledImages drawOps canvas =
     let
         { width, height } =
             Canvas.getSize canvas
+
+        drawOpsWithBorder : List DrawOp
+        drawOpsWithBorder =
+            List.append
+                drawOps
+                [ BeginPath
+                , StrokeStyle (Color.rgb 0 0 0)
+                , LineWidth 2.0
+                , Rect (Position 0 0) (Size 800 600)
+                , Stroke
+                ]
+
     in
-        Canvas.batch drawOps canvas
+        Canvas.batch drawOpsWithBorder canvas

@@ -200,7 +200,7 @@ var _elm_community$canvas$Native_Canvas = function () {
             )
             break;
 
-          case "Scale":
+          case "Scaled":
 
             var destPosition = drawImageOp._0
             var destSize = drawImageOp._1
@@ -211,7 +211,7 @@ var _elm_community$canvas$Native_Canvas = function () {
             )
             break;
 
-          case "CropScale":
+          case "CropScaled":
 
             var srcPosition = drawImageOp._0
             var srcSize = drawImageOp._1
