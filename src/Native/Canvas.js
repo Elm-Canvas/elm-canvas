@@ -165,10 +165,12 @@ var _elm_community$canvas$Native_Canvas = function () {
         break;
 
       case "Fill" :
+
         ctx.fill();
         break;
 
       case "PutImageData" :
+
         var position = drawOp._2;
         var size = drawOp._1;
         var data = _elm_lang$core$Native_Array.toJSArray(drawOp._0);
@@ -180,6 +182,14 @@ var _elm_community$canvas$Native_Canvas = function () {
         }
 
         ctx.putImageData(imageData, position.x, position.y);
+        break;
+
+      case "ClearRect" :
+
+        var position = drawOp._0;
+        var size = drawOp._1;
+
+        ctx.clearRect(position.x, position.y, size.width, size.height);
         break;
     }
   }
