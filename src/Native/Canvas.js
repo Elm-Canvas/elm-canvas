@@ -165,10 +165,12 @@ var _elm_community$canvas$Native_Canvas = function () {
         break;
 
       case "Fill" :
+
         ctx.fill();
         break;
 
       case "PutImageData" :
+
         var position = drawOp._2;
         var size = drawOp._1;
         var data = _elm_lang$core$Native_Array.toJSArray(drawOp._0);
@@ -180,6 +182,51 @@ var _elm_community$canvas$Native_Canvas = function () {
         }
 
         ctx.putImageData(imageData, position.x, position.y);
+        break;
+
+      case "DrawImage":
+
+        var srcCanvas = drawOp._0.canvas()
+        var drawImageOp = drawOp._1
+
+        switch (drawOp._1.ctor) {
+          case "At":
+
+            var destPosition = drawImageOp._0
+            ctx.drawImage(
+              srcCanvas,
+              destPosition.x,
+              destPosition.y
+            )
+            break;
+
+          case "Scaled":
+
+            var destPosition = drawImageOp._0
+            var destSize = drawImageOp._1
+            ctx.drawImage(
+              srcCanvas,
+              destPosition.x, destPosition.y,
+              destSize.width, destSize.height
+            )
+            break;
+
+          case "CropScaled":
+
+            var srcPosition = drawImageOp._0
+            var srcSize = drawImageOp._1
+            var destPosition = drawImageOp._2
+            var destSize = drawImageOp._3
+            ctx.drawImage(
+              srcCanvas,
+              srcPosition.x, srcPosition.y,
+              srcSize.width, srcSize.height,
+              destPosition.x, destPosition.y,
+              destSize.width, destSize.height
+            )
+            break
+        }
+
         break;
     }
   }
