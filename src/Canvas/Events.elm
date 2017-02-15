@@ -1,5 +1,5 @@
-module Canvas.Events 
-    exposing 
+module Canvas.Events
+    exposing
         ( onMouseDown
         , onMouseUp
         , onMouseMove

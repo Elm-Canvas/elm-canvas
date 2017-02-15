@@ -7,6 +7,7 @@ module Canvas
         , DrawOp(..)
         , CompositeOp(..)
         , Cap(..)
+        , DrawImageParams(..)
         , initialize
         , toHtml
         , batch
@@ -76,6 +77,8 @@ type DrawOp
     | BeginPath
     | PutImageData (Array Int) Size Position
     | ClearRect Position Size
+    | DrawImage Canvas DrawImageParams
+
 
 
 type CompositeOp
@@ -110,6 +113,12 @@ type Cap
     = Butt
     | Round
     | Square
+
+
+type DrawImageParams
+    = At Position
+    | Scaled Position Size
+    | CropScaled Position Size Position Size
 
 
 {-| `initialize` takes in a width and a height (both type `Int`), and returns a `Canvas` with that width and height. A freshly initialized `Canvas` is entirely transparent (its data is an array of 0s, that has a length of width x height x 4)
