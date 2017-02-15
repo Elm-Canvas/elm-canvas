@@ -132,6 +132,18 @@ initialize =
     Native.Canvas.initialize
 
 
+
+blank : Size -> Color -> Canvas
+blank size color =
+    initialize size
+        |> batch
+            [ BeginPath
+            , Rect (Point 0 0) size
+            , FillStyle color
+            , Fill
+            ]
+
+
 {-| To turn a `Canvas` into `Html msg`, run it through `toHtml`. The first parameter of `toHtml` is a list of attributes just like node in `elm-lang/html`.
 
     pixelatedRender : Canvas -> Html Msg
