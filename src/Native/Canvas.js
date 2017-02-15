@@ -184,6 +184,13 @@ var _elm_community$canvas$Native_Canvas = function () {
         ctx.putImageData(imageData, position.x, position.y);
         break;
 
+      case "ClearRect" :
+
+        var position = drawOp._0;
+        var size = drawOp._1;
+
+        ctx.clearRect(position.x, position.y, size.width, size.height);
+
       case "DrawImage":
 
         var srcCanvas = drawOp._0.canvas()

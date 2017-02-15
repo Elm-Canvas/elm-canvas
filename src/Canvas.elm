@@ -76,7 +76,9 @@ type DrawOp
     | FillStyle Color
     | BeginPath
     | PutImageData (Array Int) Size Position
+    | ClearRect Position Size
     | DrawImage Canvas DrawImageParams
+
 
 
 type CompositeOp
