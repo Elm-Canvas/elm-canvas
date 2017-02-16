@@ -341,7 +341,6 @@ var _elm_community$canvas$Native_Canvas = function () {
     LOG("DIFF")
 
     var diffCanvases = old.model.canvas() !== new_.model.canvas()
-    console.log(diffCanvases);
 
     return {
       applyPatch: function(domNode, data) {
