@@ -4,6 +4,25 @@ var _elm_community$canvas$Native_Canvas = function () {
     // console.log(msg);
   }
 
+  var liveCanvases = { };
+
+
+  function randomHex() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+
+
+  function makeUUID() {
+    var output = ""
+    for (var charIndex = 0; charIndex < 20; charIndex++) {
+      output = output + randomHex();
+    }
+    return output
+  }
+
+
   function makeModel(canvas) {
 
     // The elm debugger crashes when it tries to
@@ -22,7 +41,7 @@ var _elm_community$canvas$Native_Canvas = function () {
     }
   }
 
-  // This is how we ensure immutability
+  // This is how we ensure immutability.
   // Canvas elements are never modified
   // and passed along. They are copied,
   // and the clone is passed along.
@@ -300,52 +319,49 @@ var _elm_community$canvas$Native_Canvas = function () {
   }
 
 
-  function toHtml(factList, canvas) {
+  function toHtml(factList, model) {
     LOG("TO HTML")
 
-    // this is some trickery..
+    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation);
 
-    // by defining implementation in this scope, I am making
-    // a new object. The Elm virtual dom checks to see if
-    // implementation has changed between re-renders. If it
-    // is different, the virtual dom chooses to redraw
-    // the element entirely using renderCanvas. This isnt
-    // a problem in elm-canvas, because its just handing off
-    // an already existing html element stored in the model.
-    // In other contexts, or if does for every dom element,
-    // this would be greatly un-performant.
+  }
 
-    // A more normal way of doing this, would be to define
-    // implementation outside of toHtml, on the same level as
-    // toHtml and every other function. That way its literally
-    // the same object being passed into virtualDom.custom, rather
-    // than new - however identical - objects.
-    var implementation =
-      {
-        render: renderCanvas,
-        diff: diff
-      }
-
-    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, canvas, implementation);
-
+  var implementation = {
+    render: renderCanvas,
+    diff: diff
   }
 
   function renderCanvas(model) {
     LOG('RENDER CANVAS');
-
     return cloneModel(model).canvas();
   }
 
 
-  function diff(oldModel, newModel) {
+  function diff(old, new_) {
     LOG("DIFF")
+
+    var diffCanvases = old.model.canvas() !== new_.model.canvas()
+    console.log(diffCanvases);
 
     return {
       applyPatch: function(domNode, data) {
         LOG("APPLY PATCH");
-        return data.model.canvas();
+
+        if (diffCanvases) {
+
+          var model = data.model;
+
+          domNode.width = model.width;
+          domNode.height = model.height;
+
+          var ctx = domNode.getContext('2d');
+          ctx.drawImage(data.model.canvas(), 0, 0);
+        }
+
+        return domNode;
+
       },
-      data: newModel
+      data: new_
     };
 
   }
