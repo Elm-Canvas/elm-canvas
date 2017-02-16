@@ -355,6 +355,7 @@ var _elm_community$canvas$Native_Canvas = function () {
           domNode.height = model.height;
 
           var ctx = domNode.getContext('2d');
+          ctx.clearRect(0, 0, domNode.width, domNode.height);
           ctx.drawImage(data.model.canvas(), 0, 0);
         }
 
