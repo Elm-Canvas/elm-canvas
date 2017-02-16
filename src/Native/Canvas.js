@@ -4,24 +4,6 @@ var _elm_community$canvas$Native_Canvas = function () {
     // console.log(msg);
   }
 
-  var liveCanvases = { };
-
-
-  function randomHex() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-  }
-
-
-  function makeUUID() {
-    var output = ""
-    for (var charIndex = 0; charIndex < 20; charIndex++) {
-      output = output + randomHex();
-    }
-    return output
-  }
-
 
   function makeModel(canvas) {
 
