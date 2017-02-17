@@ -64,6 +64,7 @@ type DrawOp
     | GlobalCompositionOp String
     | LineCap String
     | LineWidth Float
+    | LineJoin String
     | LineTo Position
     | MoveTo Position
     | Stroke
