@@ -16,7 +16,7 @@ drawOps =
         [ drawRectangle (Position 10 10) Color.red
         , drawRectangle (Position 30 30) (Color.rgba 0 0 255 0.5)
         , [ FillStyle Color.white
-          , Font "48px serif"
+          , Font "48px sans-serif"
           , FillText "Elm Canvas" (Position 50 120)
           ]
         ]
