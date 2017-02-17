@@ -63,6 +63,7 @@ type DrawOp
     | GlobalAlpha Float
     | GlobalCompositionOp String
     | LineCap String
+    | LineDashOffset Float
     | LineWidth Float
     | LineTo Position
     | MoveTo Position

@@ -100,6 +100,11 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.globalAlpha = drawOp._0;
       break;
 
+    case "LineDashOffset" :
+    
+      ctx.lineDashOffset = drawOp._0;
+      break;
+
     case "LineWidth" :
 
       ctx.lineWidth = drawOp._0;
