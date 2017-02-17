@@ -96,6 +96,11 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.lineCap = drawOp._0;
       break;
 
+    case "LineJoin" :
+    
+      ctx.lineJoin = drawOp._0;
+      break;
+
     case "GlobalAlpha" :
       ctx.globalAlpha = drawOp._0;
       break;
