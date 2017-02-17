@@ -1,5 +1,6 @@
 var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line no-unused-vars
 
+
   function LOG(msg) { // eslint-disable-line no-unused-vars
     // console.log(msg);
   }
@@ -66,8 +67,9 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
     return model;
   }
 
+
   function handleDrawOp (ctx, drawOp) {
-    var position, size, color, cssString;
+    var position, size, color;
 
     switch (drawOp.ctor) {
     case "Font" :
@@ -83,16 +85,19 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       break;
 
     case "FillText" :
-      var position = drawOp._1;
+
+      position = drawOp._1;
 
       ctx.fillText(drawOp._0, position.x, position.y);
       break;
 
     case "GlobalCompositionOp" :
+
       ctx.globalCompositeOperation = drawOp._0;
       break;
 
     case "LineCap" :
+
       ctx.lineCap = drawOp._0;
       break;
 
@@ -102,6 +107,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       break;
 
     case "GlobalAlpha" :
+
       ctx.globalAlpha = drawOp._0;
       break;
 
@@ -159,14 +165,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
       color = _elm_lang$core$Color$toRgb(drawOp._0); // eslint-disable-line no-undef
 
-      cssString =
-        "rgba(" + color.red +
-        "," + color.green +
-        "," + color.blue +
-        "," + color.alpha +
-        ")";
-
-      ctx.strokeStyle = cssString;
+      ctx.strokeStyle = getCssString(color);
       break;
 
 
@@ -174,10 +173,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
       color = _elm_lang$core$Color$toRgb(drawOp._0); // eslint-disable-line no-undef
 
-      cssString = "rgba(" + [ color.red, color.green, color.blue, color.alpha ].join(",") + ")";
-
-
-      ctx.fillStyle = cssString;
+      ctx.fillStyle = getCssString(color);
       break;
 
     case "Fill" :
@@ -258,6 +254,11 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
   }
 
 
+  function getCssString (color) {
+    return "rgba(" + [ color.red, color.green, color.blue, color.alpha ].join(",") + ")";
+  }
+
+
   function loadImage(source) {
     LOG("LOAD IMAGE");
 
@@ -300,6 +301,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
     return _elm_lang$core$Native_Array.fromJSArray(imageData.data); // eslint-disable-line no-undef
   }
 
+
   function setSize(size, model) {
     model = cloneModel(model);
     model.width = size.width;
@@ -319,27 +321,30 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
 
   function toHtml(factList, model) {
-    LOG("TO HTML")
+    LOG("TO HTML");
 
-    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation);
+    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation); // eslint-disable-line no-undef
 
   }
+
 
   var implementation = {
     render: renderCanvas,
     diff: diff
-  }
+  };
+
 
   function renderCanvas(model) {
-    LOG('RENDER CANVAS');
+    LOG("RENDER CANVAS");
     return cloneModel(model).canvas();
   }
 
+
   function diff(old, new_) {
-    LOG("DIFF")
+    LOG("DIFF");
 
 
-    var diffCanvases = old.model.canvas() !== new_.model.canvas()
+    var diffCanvases = old.model.canvas() !== new_.model.canvas();
 
     return {
       applyPatch: function(domNode, data) {
@@ -352,7 +357,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
           domNode.width = model.width;
           domNode.height = model.height;
 
-          var ctx = domNode.getContext('2d');
+          var ctx = domNode.getContext("2d");
           ctx.clearRect(0, 0, domNode.width, domNode.height);
           ctx.drawImage(data.model.canvas(), 0, 0);
         }
@@ -364,6 +369,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
     };
 
   }
+
 
   return {
     initialize: initialize,
