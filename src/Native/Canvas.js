@@ -82,30 +82,21 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       break;
 
     case "FillText" :
-
-      position = drawOp._1;
+      var position = drawOp._1;
 
       ctx.fillText(drawOp._0, position.x, position.y);
       break;
 
-    case "GlobalAlpha" :
-
-      ctx.globalAlpha = drawOp._0;
-      break;
-
     case "GlobalCompositionOp" :
-
-      // This converts the type from camel case to dash case.
-      var op = drawOp._0.ctor.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
-
-      ctx.globalCompositeOperation = op;
+      ctx.globalCompositeOperation = drawOp._0;
       break;
 
     case "LineCap" :
+      ctx.lineCap = drawOp._0;
+      break;
 
-      var cap = drawOp._0.ctor.toLowerCase();
-
-      ctx.lineCap = cap;
+    case "GlobalAlpha" :
+      ctx.globalAlpha = drawOp._0;
       break;
 
     case "LineWidth" :

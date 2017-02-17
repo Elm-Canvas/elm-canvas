@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (Html, Attribute)
 import Html.Attributes exposing (style)
-import Canvas exposing (Size, Position, Cap(..), DrawOp(..), Canvas)
+import Canvas exposing (Size, Position, DrawOp(..), Canvas)
 import Canvas.Events
 import Color exposing (Color)
 
@@ -88,7 +88,7 @@ drawLine p0 p1 =
     Canvas.batch
         [ BeginPath
         , LineWidth 30
-        , LineCap Round
+        , LineCap "round"
         , MoveTo p0
         , LineTo p1
         , Stroke
