@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Canvas exposing (Size, Position, Error, DrawOp(..), DrawImageParams(..), Canvas)
+import Canvas exposing (Size, Point, Error, DrawOp(..), DrawImageParams(..), Canvas)
 import Canvas.Events
 import Color exposing (Color)
 import Task
@@ -22,7 +22,7 @@ main =
 
 type Msg
     = ImageLoaded (Result Error Canvas)
-    | Blit Position
+    | Blit Point
 
 
 type Model
@@ -123,7 +123,7 @@ drawScaledImages drawOps canvas =
                 [ BeginPath
                 , StrokeStyle (Color.rgb 0 0 0)
                 , LineWidth 2.0
-                , Rect (Position 0 0) (Size 800 600)
+                , Rect (Point 0 0) (Size 800 600)
                 , Stroke
                 ]
     in

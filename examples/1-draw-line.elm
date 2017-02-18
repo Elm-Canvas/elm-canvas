@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (Html, Attribute)
 import Html.Attributes exposing (style)
-import Canvas exposing (Size, Position, DrawOp(..), Canvas)
+import Canvas exposing (Size, Point, DrawOp(..), Canvas)
 import Canvas.Events
 import Color exposing (Color)
 
@@ -20,13 +20,13 @@ main =
 
 type ClickState
     = Nothing
-    | FirstClick Position
-    | Moving Position Position
+    | FirstClick Point
+    | Moving Point Point
 
 
 type Msg
-    = Click Position
-    | Move Position
+    = Click Point
+    | Move Point
 
 
 type alias Model =
@@ -83,7 +83,7 @@ handleClickState ( canvas, clickState ) =
             drawLine p0 p1 canvas
 
 
-drawLine : Position -> Position -> Canvas -> Canvas
+drawLine : Point -> Point -> Canvas -> Canvas
 drawLine p0 p1 =
     Canvas.batch
         [ BeginPath

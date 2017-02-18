@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Canvas exposing (Size, Position, DrawOp(..))
+import Canvas exposing (Size, Point, DrawOp(..))
 import Color exposing (Color)
 
 
@@ -13,8 +13,8 @@ main =
 drawOps : List DrawOp
 drawOps =
     List.concat
-        [ drawRectangle (Position 10 10) Color.red
-        , drawRectangle (Position 30 30) (Color.rgba 0 0 255 0.5)
+        [ drawRectangle (Point 10 10) Color.red
+        , drawRectangle (Point 30 30) (Color.rgba 0 0 255 0.5)
         , [ FillStyle Color.white
           , Font "48px sans-serif"
           , FillText "Elm Canvas" (Position 50 120)
@@ -22,7 +22,7 @@ drawOps =
         ]
 
 
-drawRectangle : Position -> Color -> List DrawOp
+drawRectangle : Point -> Color -> List DrawOp
 drawRectangle position color =
     [ BeginPath
     , Rect position (Size 370 270)
