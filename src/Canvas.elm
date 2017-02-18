@@ -5,8 +5,6 @@ module Canvas
         , Position
         , Size
         , DrawOp(..)
-        , CompositeOp(..)
-        , Cap(..)
         , DrawImageParams(..)
         , initialize
         , toHtml
@@ -63,9 +61,11 @@ type DrawOp
     | StrokeText String Position
     | FillText String Position
     | GlobalAlpha Float
-    | GlobalCompositionOp CompositeOp
-    | LineCap Cap
+    | GlobalCompositionOp String
+    | LineCap String
+    | LineDashOffset Float
     | LineWidth Float
+    | LineJoin String
     | LineTo Position
     | MoveTo Position
     | Stroke
@@ -78,41 +78,6 @@ type DrawOp
     | PutImageData (Array Int) Size Position
     | ClearRect Position Size
     | DrawImage Canvas DrawImageParams
-
-
-
-type CompositeOp
-    = SourceAtop
-    | SourceIn
-    | SourceOut
-    | SourceOver
-    | DestinationOver
-    | DestinationIn
-    | DestinationOut
-    | DestinationAtop
-    | Lighter
-    | Copy
-    | Xor
-    | Multiply
-    | Screen
-    | Overlay
-    | Darken
-    | ColorDodge
-    | ColorBurn
-    | HardLight
-    | SoftLight
-    | Difference
-    | Exclusion
-    | Hue
-    | Saturation
-    | Color
-    | Luminosity
-
-
-type Cap
-    = Butt
-    | Round
-    | Square
 
 
 type DrawImageParams
