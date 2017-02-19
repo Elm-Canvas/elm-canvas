@@ -66,8 +66,8 @@ type DrawOp
     | LineDashOffset Float
     | LineWidth Float
     | LineJoin String
-    | LineTo Position
-    | MoveTo Position
+    | LineTo Point
+    | MoveTo Point
     | Stroke
     | Fill
     | Rect Point Size
