@@ -11,7 +11,6 @@ import Color exposing (Color)
 import Array exposing (Array)
 
 
-
 put : Color -> Point -> DrawOp
 put color point =
     putHelp ( color, point )
@@ -61,13 +60,18 @@ rectangle color { x, y } { width, height } =
             ]
 
 
--- Brensenham Line Algorithm
 
--- f stands for finish
--- s stands for step
--- d stands for delta (change)
+{- Brensenham Line Algorithm
 
--- basically : increment by delta, 
+   f stands for finish
+   s stands for step
+   d stands for delta (change)
+
+   Basically, along a line, when the difference between
+   x and x + i exceeds dx, increment by sx.
+
+-}
+
 
 type alias LineStatics =
     { fx : Int
@@ -82,24 +86,32 @@ type alias LineStatics =
 line : Color -> Point -> Point -> List DrawOp
 line color p q =
     let
-        (statics, error) =
-            lineInit
-                (round q.x)
-                (round q.y)
-                (round p.x)
-                (round p.y)
+        px =
+            floor p.x
+
+        py =
+            floor p.y
+
+        qx =
+            floor q.x
+
+        qy =
+            floor q.y
+
+        ( statics, error ) =
+            lineInit qx qy px py
     in
-        lineLoop statics error (round p.x, round p.y) []
+        lineLoop statics error ( px, py ) []
             |> List.map (((,) color) << pairToPoint)
             |> putMany
 
 
-pairToPoint : (Int, Int) -> Point
-pairToPoint (x, y) =
+pairToPoint : ( Int, Int ) -> Point
+pairToPoint ( x, y ) =
     Point (toFloat x) (toFloat y)
 
 
-lineInit : Int -> Int -> Int -> Int -> (LineStatics, Float)
+lineInit : Int -> Int -> Int -> Int -> ( LineStatics, Float )
 lineInit x0 y0 x1 y1 =
     let
         dx =
@@ -126,23 +138,23 @@ lineInit x0 y0 x1 y1 =
             else
                 -dy / 2
     in
-        (LineStatics x0 y0 sx sy dx dy, error)
+        ( LineStatics x0 y0 sx sy dx dy, error )
 
 
-lineLoop : LineStatics -> Float -> (Int, Int) -> List (Int, Int) -> List (Int, Int) 
-lineLoop statics error (x, y) points =
+lineLoop : LineStatics -> Float -> ( Int, Int ) -> List ( Int, Int ) -> List ( Int, Int )
+lineLoop statics error ( x, y ) points =
     if (x == statics.fx) && (y == statics.fy) then
-        (x, y) :: points
+        ( x, y ) :: points
     else
         let
             ( error_, q ) =
-                calcError statics error (x, y)
+                calcError statics error ( x, y )
         in
-            lineLoop statics error_ q ((x, y) :: points)
+            lineLoop statics error_ q (( x, y ) :: points)
 
 
-calcError : LineStatics -> Float -> (Int, Int) -> ( Float, (Int, Int) )
-calcError { sx, sy, dx, dy } error (x_, y_) =
+calcError : LineStatics -> Float -> ( Int, Int ) -> ( Float, ( Int, Int ) )
+calcError { sx, sy, dx, dy } error ( x_, y_ ) =
     let
         ( errX, x ) =
             if error > -dx then
@@ -156,6 +168,4 @@ calcError { sx, sy, dx, dy } error (x_, y_) =
             else
                 ( 0, y_ )
     in
-        ( error + errX + errY, (x,y))
-
-
+        ( error + errX + errY, ( x, y ) )
