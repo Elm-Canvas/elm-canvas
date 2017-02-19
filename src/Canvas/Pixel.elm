@@ -4,9 +4,6 @@ module Canvas.Pixel
         , putMany
         , line
         , rectangle
-        , toPosition
-        , toPoint
-        , Position
         )
 
 import Canvas exposing (Canvas, Size, Point, DrawOp(..))
@@ -14,36 +11,23 @@ import Color exposing (Color)
 import Array exposing (Array)
 
 
-type alias Position =
-    { x : Int, y : Int }
+
+put : Color -> Point -> DrawOp
+put color point =
+    putHelp ( color, point )
 
 
-toPoint : Position -> Point
-toPoint { x, y } =
-    Point (toFloat x) (toFloat y)
-
-
-toPosition : Point -> Position
-toPosition { x, y } =
-    Position (round x) (round y)
-
-
-put : Color -> Position -> List DrawOp
-put color position =
-    [ putHelp ( color, position ) ]
-
-
-putMany : List ( Color, Position ) -> List DrawOp
+putMany : List ( Color, Point ) -> List DrawOp
 putMany =
     List.map putHelp
 
 
-putHelp : ( Color, Position ) -> DrawOp
-putHelp ( color, position ) =
+putHelp : ( Color, Point ) -> DrawOp
+putHelp ( color, point ) =
     PutImageData
         (fromColor color)
         (Size 1 1)
-        (toPoint position)
+        point
 
 
 fromColor : Color -> Array Int
@@ -60,20 +44,20 @@ fromColor color =
             ]
 
 
-rectangle : Color -> Position -> Size -> List DrawOp
+rectangle : Color -> Point -> Size -> List DrawOp
 rectangle color { x, y } { width, height } =
     let
         x1 =
-            x + width
+            x + toFloat width
 
         y1 =
-            y + height
+            y + toFloat height
     in
         List.concat
-            [ line color (Position x y) (Position (x1 - 1) y)
-            , line color (Position x y) (Position x (y1 - 1))
-            , line color (Position x1 y1) (Position x y1)
-            , line color (Position x1 y1) (Position x1 y)
+            [ line color (Point x y) (Point (x1 - 1) y)
+            , line color (Point x y) (Point x (y1 - 1))
+            , line color (Point x1 y1) (Point x y1)
+            , line color (Point x1 y1) (Point x1 y)
             ]
 
 
@@ -95,23 +79,43 @@ type alias LineStatics =
     }
 
 
-line : Color -> Position -> Position -> List DrawOp
+line : Color -> Point -> Point -> List DrawOp
 line color p q =
     let
+        (statics, error) =
+            lineInit
+                (round q.x)
+                (round q.y)
+                (round p.x)
+                (round p.y)
+    in
+        lineLoop statics error (round p.x, round p.y) []
+            |> List.map (((,) color) << pairToPoint)
+            |> putMany
+
+
+pairToPoint : (Int, Int) -> Point
+pairToPoint (x, y) =
+    Point (toFloat x) (toFloat y)
+
+
+lineInit : Int -> Int -> Int -> Int -> (LineStatics, Float)
+lineInit x0 y0 x1 y1 =
+    let
         dx =
-            (toFloat << abs) (q.x - p.x)
+            (toFloat << abs) (x0 - x1)
 
         dy =
-            (toFloat << abs) (q.y - p.y)
+            (toFloat << abs) (y0 - y1)
 
         sx =
-            if p.x < q.x then
+            if x0 > x1 then
                 1
             else
                 -1
 
         sy =
-            if p.y < q.y then
+            if y0 > y1 then
                 1
             else
                 -1
@@ -122,36 +126,36 @@ line color p q =
             else
                 -dy / 2
     in
-        lineLoop (LineStatics q.x q.y sx sy dx dy) error p []
-            |> List.map ((,) color)
-            |> putMany
+        (LineStatics x0 y0 sx sy dx dy, error)
 
 
-lineLoop : LineStatics -> Float -> Position -> List Position -> List Position
-lineLoop statics error p positions =
-    if (p.x == statics.fx) && (p.y == statics.fy) then
-        p :: positions
+lineLoop : LineStatics -> Float -> (Int, Int) -> List (Int, Int) -> List (Int, Int) 
+lineLoop statics error (x, y) points =
+    if (x == statics.fx) && (y == statics.fy) then
+        (x, y) :: points
     else
         let
             ( error_, q ) =
-                calcError statics error p
+                calcError statics error (x, y)
         in
-            lineLoop statics error_ q (p :: positions)
+            lineLoop statics error_ q ((x, y) :: points)
 
 
-calcError : LineStatics -> Float -> Position -> ( Float, Position )
-calcError { sx, sy, dx, dy } error position =
+calcError : LineStatics -> Float -> (Int, Int) -> ( Float, (Int, Int) )
+calcError { sx, sy, dx, dy } error (x_, y_) =
     let
         ( errX, x ) =
             if error > -dx then
-                ( -dy, sx + position.x )
+                ( -dy, sx + x_ )
             else
-                ( 0, position.x )
+                ( 0, x_ )
 
         ( errY, y ) =
             if error < dy then
-                ( dx, sy + position.y )
+                ( dx, sy + y_ )
             else
-                ( 0, position.y )
+                ( 0, y_ )
     in
-        ( error + errX + errY, Position x y )
+        ( error + errX + errY, (x,y))
+
+
