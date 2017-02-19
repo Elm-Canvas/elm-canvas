@@ -10,6 +10,7 @@ examples/gulpFile.coffee
 examples/server.coffee
 examples/package.json
 benchmark/*.html
+node_modules
 
 # Do development work in a folder called dev
 dev

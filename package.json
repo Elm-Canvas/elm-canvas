@@ -1,0 +1,50 @@
+{
+  "name": "canvas",
+  "version": "0.2.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/.bin/eslint --fix src/**/*.js",
+    "format": "./node_modules/.bin/esformatter src/**/*.js",
+    "cleanup": "yarn lint && yarn format"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elm-community/canvas.git"
+  },
+  "author": "",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/elm-community/canvas/issues"
+  },
+  "homepage": "https://github.com/elm-community/canvas#readme",
+  "dependencies": {
+    "esformatter-braces": "^1.2.1",
+    "esformatter-literal-notation": "^1.0.1",
+    "esformatter-spaced-lined-comment": "^2.0.1"
+  },
+  "devDependencies": {
+    "esformatter": "^0.10.0",
+    "eslint": "^3.15.0"
+  },
+  "esformatter": {
+    "plugins": [
+      "esformatter-braces",
+      "esformatter-literal-notation",
+      "esformatter-spaced-lined-comment"
+    ],
+    "quotes": {
+      "type": "double"
+    },
+    "indent": {
+      "value": "  ",
+      "FunctionExpression": 1,
+      "ArrayExpression": 1,
+      "ObjectExpression": 1
+    }
+  }
+}

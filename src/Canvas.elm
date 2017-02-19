@@ -2,11 +2,9 @@ module Canvas
     exposing
         ( Canvas
         , Error
-        , Position
+        , Point
         , Size
         , DrawOp(..)
-        , CompositeOp(..)
-        , Cap(..)
         , DrawImageParams(..)
         , initialize
         , toHtml
@@ -20,7 +18,7 @@ module Canvas
 {-| The canvas html element is a very simple way to render 2D graphics. Check out these examples, and get an explanation of the canvas element [here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first, because its probably what you need. Elm-Canvas is for when you need unusually direct and low level access to the canvas element.
 
 # Main Types
-@docs Canvas, Position, Size
+@docs Canvas, Point, Size
 
 # Basics
 @docs initialize, toHtml
@@ -46,10 +44,10 @@ type Error
     = Error
 
 
-{-| A `Position` contains x and y coordinates. Many functions will take a `Position` to indicate where a drawing should occur on a `Canvas`. This type alias is identical to the one found in `elm-lang/mouse`.
+{-| A `Point` contains x and y coordinates. Many functions will take a `Point` to indicate where a drawing should occur on a `Canvas`.
 -}
-type alias Position =
-    { x : Int, y : Int }
+type alias Point =
+    { x : Float, y : Float }
 
 
 {-| A `Size` contains a width and a height`, both of which are `Int`. Many functions will take a `Size` to indicate the size of a canvas region. This type alias is identical to the one found in `elm-lang/window`.
@@ -60,65 +58,32 @@ type alias Size =
 
 type DrawOp
     = Font String
-    | StrokeText String Position
-    | FillText String Position
+    | StrokeText String Point
+    | FillText String Point
     | GlobalAlpha Float
-    | GlobalCompositionOp CompositeOp
-    | LineCap Cap
+    | GlobalCompositionOp String
+    | LineCap String
+    | LineDashOffset Float
     | LineWidth Float
+    | LineJoin String
     | LineTo Position
     | MoveTo Position
     | Stroke
     | Fill
-    | Rect Position Size
-    | StrokeRect Position Size
+    | Rect Point Size
+    | StrokeRect Point Size
     | StrokeStyle Color
     | FillStyle Color
     | BeginPath
-    | PutImageData (Array Int) Size Position
-    | ClearRect Position Size
+    | PutImageData (Array Int) Size Point
+    | ClearRect Point Size
     | DrawImage Canvas DrawImageParams
 
 
-
-type CompositeOp
-    = SourceAtop
-    | SourceIn
-    | SourceOut
-    | SourceOver
-    | DestinationOver
-    | DestinationIn
-    | DestinationOut
-    | DestinationAtop
-    | Lighter
-    | Copy
-    | Xor
-    | Multiply
-    | Screen
-    | Overlay
-    | Darken
-    | ColorDodge
-    | ColorBurn
-    | HardLight
-    | SoftLight
-    | Difference
-    | Exclusion
-    | Hue
-    | Saturation
-    | Color
-    | Luminosity
-
-
-type Cap
-    = Butt
-    | Round
-    | Square
-
-
 type DrawImageParams
-    = At Position
-    | Scaled Position Size
-    | CropScaled Position Size Position Size
+    = At Point
+    | Scaled Point Size
+    | CropScaled Point Size Point Size
 
 
 {-| `initialize` takes in a width and a height (both type `Int`), and returns a `Canvas` with that width and height. A freshly initialized `Canvas` is entirely transparent (its data is an array of 0s, that has a length of width x height x 4)
