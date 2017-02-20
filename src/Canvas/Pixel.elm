@@ -12,7 +12,6 @@ import Color exposing (Color)
 import Array exposing (Array)
 
 
-
 put : Color -> Point -> DrawOp
 put color point =
     putHelp ( color, point )
@@ -62,11 +61,10 @@ rectangle color { x, y } { width, height } =
             ]
 
 
-
 bezier : Int -> Color -> Point -> Point -> Point -> Point -> List DrawOp
 bezier resolution color p0 p1 p2 p3 =
     let
-        points = 
+        points =
             bezierLoop resolution 0 p0 p1 p2 p3 []
     in
         List.map2 (,) points (List.drop 1 points)
@@ -74,8 +72,8 @@ bezier resolution color p0 p1 p2 p3 =
             |> List.concat
 
 
-applyLine : Color -> (Point, Point) -> List DrawOp
-applyLine  color ( p0, p1 ) =
+applyLine : Color -> ( Point, Point ) -> List DrawOp
+applyLine color ( p0, p1 ) =
     line color p0 p1
 
 
@@ -91,32 +89,32 @@ bezierLoop seg i p0 p1 p2 p3 points =
             points_
 
 
-
 calcBezierPoint : Int -> Int -> Point -> Point -> Point -> Point -> Point
 calcBezierPoint seg i p0 p1 p2 p3 =
     let
-        (a, b, c, d) =
+        ( a, b, c, d ) =
             calcBezier seg i
     in
         Point
-            ( a * p0.x + b * p1.x + c * p2.x + d * p3.x)
-            ( a * p0.y + b * p1.y + c * p2.y + d * p3.y)
+            (a * p0.x + b * p1.x + c * p2.x + d * p3.x)
+            (a * p0.y + b * p1.y + c * p2.y + d * p3.y)
 
 
-calcBezier : Int -> Int -> (Float, Float, Float, Float)
+calcBezier : Int -> Int -> ( Float, Float, Float, Float )
 calcBezier seg i =
     let
-        a = 
+        a =
             (toFloat i) / (toFloat seg)
 
         b =
             1 - a
     in
-        ( b^3
-        , 3 * b^2 * a
-        , 3 * a^2 * b
-        , a^3
+        ( b ^ 3
+        , 3 * b ^ 2 * a
+        , 3 * a ^ 2 * b
+        , a ^ 3
         )
+
 
 
 {- Brensenham Line Algorithm
@@ -164,9 +162,9 @@ line color p q =
             |> putMany
 
 
-toPointAndColor : Color -> ( Int, Int ) -> (Color, Point)
+toPointAndColor : Color -> ( Int, Int ) -> ( Color, Point )
 toPointAndColor color ( x, y ) =
-    (color, Point (toFloat x) (toFloat y))
+    ( color, Point (toFloat x) (toFloat y) )
 
 
 lineInit : Int -> Int -> Int -> Int -> ( LineStatics, Float )
