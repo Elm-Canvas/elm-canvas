@@ -11,7 +11,6 @@ import Canvas exposing (Canvas, Size, Point, DrawOp(..))
 import Color exposing (Color)
 import Array exposing (Array)
 
-import Debug exposing (log)
 
 
 put : Color -> Point -> DrawOp
