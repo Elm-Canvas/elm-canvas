@@ -4,11 +4,14 @@ module Canvas.Pixel
         , putMany
         , line
         , rectangle
+        , bezier
         )
 
 import Canvas exposing (Canvas, Size, Point, DrawOp(..))
 import Color exposing (Color)
 import Array exposing (Array)
+
+import Debug exposing (log)
 
 
 put : Color -> Point -> DrawOp
@@ -61,6 +64,62 @@ rectangle color { x, y } { width, height } =
 
 
 
+bezier : Int -> Color -> Point -> Point -> Point -> Point -> List DrawOp
+bezier resolution color p0 p1 p2 p3 =
+    let
+        points = 
+            bezierLoop resolution 0 p0 p1 p2 p3 []
+    in
+        List.map2 (,) points (List.drop 1 points)
+            |> List.map (applyLine color)
+            |> List.concat
+
+
+applyLine : Color -> (Point, Point) -> List DrawOp
+applyLine  color ( p0, p1 ) =
+    line color p0 p1
+
+
+bezierLoop : Int -> Int -> Point -> Point -> Point -> Point -> List Point -> List Point
+bezierLoop seg i p0 p1 p2 p3 points =
+    let
+        points_ =
+            (calcBezierPoint seg i p0 p1 p2 p3) :: points
+    in
+        if i < seg then
+            bezierLoop seg (i + 1) p0 p1 p2 p3 points_
+        else
+            points_
+
+
+
+calcBezierPoint : Int -> Int -> Point -> Point -> Point -> Point -> Point
+calcBezierPoint seg i p0 p1 p2 p3 =
+    let
+        (a, b, c, d) =
+            calcBezier seg i
+    in
+        Point
+            ( a * p0.x + b * p1.x + c * p2.x + d * p3.x)
+            ( a * p0.y + b * p1.y + c * p2.y + d * p3.y)
+
+
+calcBezier : Int -> Int -> (Float, Float, Float, Float)
+calcBezier seg i =
+    let
+        a = 
+            (toFloat i) / (toFloat seg)
+
+        b =
+            1 - a
+    in
+        ( b^3
+        , 3 * b^2 * a
+        , 3 * a^2 * b
+        , a^3
+        )
+
+
 {- Brensenham Line Algorithm
 
    f stands for finish
@@ -102,13 +161,13 @@ line color p q =
             lineInit qx qy px py
     in
         lineLoop statics error ( px, py ) []
-            |> List.map (((,) color) << pairToPoint)
+            |> List.map (toPointAndColor color)
             |> putMany
 
 
-pairToPoint : ( Int, Int ) -> Point
-pairToPoint ( x, y ) =
-    Point (toFloat x) (toFloat y)
+toPointAndColor : Color -> ( Int, Int ) -> (Color, Point)
+toPointAndColor color ( x, y ) =
+    (color, Point (toFloat x) (toFloat y))
 
 
 lineInit : Int -> Int -> Int -> Int -> ( LineStatics, Float )
