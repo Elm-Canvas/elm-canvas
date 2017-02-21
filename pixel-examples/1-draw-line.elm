@@ -6,7 +6,6 @@ import Canvas exposing (Size, Point, DrawOp(..), Canvas)
 import Canvas.Pixel as Pixel
 import Canvas.Events
 import Color exposing (Color)
-import Debug
 
 
 main =

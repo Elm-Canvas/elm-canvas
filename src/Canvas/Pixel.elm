@@ -14,20 +14,20 @@ import Array exposing (Array)
 
 put : Color -> Point -> DrawOp
 put color point =
-    putHelp ( color, point )
-
-
-putMany : List ( Color, Point ) -> List DrawOp
-putMany =
-    List.map putHelp
-
-
-putHelp : ( Color, Point ) -> DrawOp
-putHelp ( color, point ) =
     PutImageData
         (fromColor color)
         (Size 1 1)
         point
+
+
+putMany : List ( Color, Point ) -> List DrawOp
+putMany =
+    List.map putTuple
+
+
+putTuple : ( Color, Point ) -> DrawOp
+putTuple ( color, point ) =
+    put color point
 
 
 fromColor : Color -> Array Int
