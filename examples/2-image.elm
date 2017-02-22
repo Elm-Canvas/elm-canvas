@@ -1,7 +1,9 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Canvas exposing (Size, Point, Error, DrawOp(..), Canvas)
+import Canvas exposing (Size, Error, DrawOp(..), Canvas)
+import Canvas.Point exposing (Point)
+import Canvas.Point as Point
 import Canvas.Events
 import Color exposing (Color)
 import Task
@@ -47,7 +49,7 @@ update message model =
         ImageLoaded result ->
             case Result.toMaybe result of
                 Just canvas ->
-                    ( GotCanvas canvas (Point 0 0), Cmd.none )
+                    ( GotCanvas canvas (Point.fromInts ( 0, 0 )), Cmd.none )
 
                 Nothing ->
                     ( Loading, loadImage )
@@ -91,17 +93,19 @@ drawSquare point canvas =
     Canvas.batch
         [ StrokeStyle Color.red
         , LineWidth 15
-        , StrokeRect point
-            <| calcSize point
-            <| Canvas.getSize canvas
+        , StrokeRect point <|
+            calcSize point <|
+                Canvas.getSize canvas
         ]
         canvas
 
 
 calcSize : Point -> Size -> Size
-calcSize {x, y} {width, height} =
-    Size 
-        (width - 2 * (round x))
-        (height - 2 * (round y))
-
-
+calcSize point { width, height } =
+    let
+        ( x, y ) =
+            Point.toInts point
+    in
+        Size
+            (width - 2 * x)
+            (height - 2 * y)

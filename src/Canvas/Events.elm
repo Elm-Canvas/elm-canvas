@@ -9,7 +9,8 @@ module Canvas.Events
 
 import Html exposing (Attribute)
 import Html.Events exposing (on)
-import Canvas exposing (Point)
+import Canvas.Point exposing (Point)
+import Canvas.Point as Point
 import Json.Decode as Json
 
 
@@ -62,20 +63,27 @@ onDoubleClick message =
             positionDecoder
 
 
-positionInCanvas : ( Point, Point ) -> Point
+positionInCanvas : ( ( Float, Float ), ( Float, Float ) ) -> Point
 positionInCanvas ( client, offset ) =
-    Point (client.x - offset.x) (client.y - offset.y)
+    let
+        ( cx, cy ) =
+            client
+
+        ( ox, oy ) =
+            offset
+    in
+        Point.fromFloats ( cx - ox, cy - oy )
 
 
-positionDecoder : Json.Decoder ( Point, Point )
+positionDecoder : Json.Decoder ( ( Float, Float ), ( Float, Float ) )
 positionDecoder =
-    Json.at [ "target" ] (toPoint "offsetLeft" "offsetTop")
-        |> Json.map2 (,) (toPoint "clientX" "clientY")
+    Json.at [ "target" ] (toTuple "offsetLeft" "offsetTop")
+        |> Json.map2 (,) (toTuple "clientX" "clientY")
 
 
-toPoint : String -> String -> Json.Decoder Point
-toPoint x y =
-    Json.map2 Point (field_ x) (field_ y)
+toTuple : String -> String -> Json.Decoder ( Float, Float )
+toTuple x y =
+    Json.map2 (,) (field_ x) (field_ y)
 
 
 field_ : String -> Json.Decoder Float
