@@ -87,7 +87,8 @@ handleClickState ( canvas, clickState ) =
 
 drawLine : Point -> Point -> Canvas -> Canvas
 drawLine p0 p1 =
-    Pixel.line Color.black (factor p0) (factor p1)
+    Pixel.line (factor p0) (factor p1)
+        |> List.map (Pixel.put Color.black)
         |> Canvas.batch
 
 

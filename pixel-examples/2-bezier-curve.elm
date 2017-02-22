@@ -74,8 +74,8 @@ draws : Int -> List DrawOp
 draws resolution =
     Pixel.bezier
         resolution
-        Color.red
         (Point 90 90)
         (Point 90 10)
         (Point 10 90)
         (Point 10 10)
+        |> List.map (Pixel.put Color.red)

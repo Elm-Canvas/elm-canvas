@@ -1,7 +1,6 @@
 module Canvas.Pixel
     exposing
         ( put
-        , putMany
         , line
         , rectangle
         , bezier
@@ -20,16 +19,6 @@ put color point =
         point
 
 
-putMany : List ( Color, Point ) -> List DrawOp
-putMany =
-    List.map putTuple
-
-
-putTuple : ( Color, Point ) -> DrawOp
-putTuple ( color, point ) =
-    put color point
-
-
 fromColor : Color -> Array Int
 fromColor color =
     let
@@ -44,8 +33,15 @@ fromColor color =
             ]
 
 
-rectangle : Color -> Point -> Size -> List DrawOp
-rectangle color { x, y } { width, height } =
+get : Point -> Canvas -> Color
+get point canvas =
+    Canvas.getImageData
+        point
+        (Size 1 1)
+
+
+rectangle : Point -> Size -> List Point
+rectangle { x, y } { width, height } =
     let
         x1 =
             x + toFloat width
@@ -54,27 +50,27 @@ rectangle color { x, y } { width, height } =
             y + toFloat height
     in
         List.concat
-            [ line color (Point x y) (Point (x1 - 1) y)
-            , line color (Point x y) (Point x (y1 - 1))
-            , line color (Point x1 y1) (Point x y1)
-            , line color (Point x1 y1) (Point x1 y)
+            [ line (Point x y) (Point (x1 - 1) y)
+            , line (Point x y) (Point x (y1 - 1))
+            , line (Point x1 y1) (Point x y1)
+            , line (Point x1 y1) (Point x1 y)
             ]
 
 
-bezier : Int -> Color -> Point -> Point -> Point -> Point -> List DrawOp
-bezier resolution color p0 p1 p2 p3 =
+bezier : Int -> Point -> Point -> Point -> Point -> List Point
+bezier resolution p0 p1 p2 p3 =
     let
         points =
             bezierLoop resolution 0 p0 p1 p2 p3 []
     in
         List.map2 (,) points (List.drop 1 points)
-            |> List.map (applyLine color)
+            |> List.map applyLine
             |> List.concat
 
 
-applyLine : Color -> ( Point, Point ) -> List DrawOp
-applyLine color ( p0, p1 ) =
-    line color p0 p1
+applyLine : ( Point, Point ) -> List Point
+applyLine ( p0, p1 ) =
+    line p0 p1
 
 
 bezierLoop : Int -> Int -> Point -> Point -> Point -> Point -> List Point -> List Point
@@ -139,8 +135,8 @@ type alias LineStatics =
     }
 
 
-line : Color -> Point -> Point -> List DrawOp
-line color p q =
+line : Point -> Point -> List Point
+line p q =
     let
         px =
             floor p.x
@@ -158,13 +154,12 @@ line color p q =
             lineInit qx qy px py
     in
         lineLoop statics error ( px, py ) []
-            |> List.map (toPointAndColor color)
-            |> putMany
+            |> List.map toPoint
 
 
-toPointAndColor : Color -> ( Int, Int ) -> ( Color, Point )
-toPointAndColor color ( x, y ) =
-    ( color, Point (toFloat x) (toFloat y) )
+toPoint : ( Int, Int ) -> Point
+toPoint ( x, y ) =
+    Point (toFloat x) (toFloat y)
 
 
 lineInit : Int -> Int -> Int -> Int -> ( LineStatics, Float )

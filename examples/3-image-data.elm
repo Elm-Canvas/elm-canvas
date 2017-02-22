@@ -73,8 +73,12 @@ invert canvas =
 
 
 invertedImageData : Canvas -> Array Int
-invertedImageData =
-    Canvas.getImageData >> Array.indexedMap invertHelp
+invertedImageData canvas =
+    canvas
+        |> Canvas.getImageData
+            (Point 0 0)
+            (Canvas.getSize canvas)
+        |> Array.indexedMap invertHelp
 
 
 invertHelp : Int -> Int -> Int

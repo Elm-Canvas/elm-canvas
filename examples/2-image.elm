@@ -91,17 +91,15 @@ drawSquare point canvas =
     Canvas.batch
         [ StrokeStyle Color.red
         , LineWidth 15
-        , StrokeRect point
-            <| calcSize point
-            <| Canvas.getSize canvas
+        , StrokeRect point <|
+            calcSize point <|
+                Canvas.getSize canvas
         ]
         canvas
 
 
 calcSize : Point -> Size -> Size
-calcSize {x, y} {width, height} =
-    Size 
+calcSize { x, y } { width, height } =
+    Size
         (width - 2 * (round x))
         (height - 2 * (round y))
-
-
