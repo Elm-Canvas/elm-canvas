@@ -27,7 +27,7 @@ canvas =
     in
         Canvas.batch
             [ BeginPath
-            , Rect (Point.fromInts (0, 0)) size
+            , Rect (Point.fromInts ( 0, 0 )) size
             , FillStyle Color.blue
             , Fill
             ]
@@ -36,9 +36,9 @@ canvas =
 
 draws : List DrawOp
 draws =
-    [ Pixel.put Color.red (Point.fromInts (1, 1))
-    , Pixel.put Color.red (Point.fromInts (3, 1))
-    , Pixel.put Color.red (Point.fromInts (1, 3))
-    , Pixel.put Color.red (Point.fromInts (3, 3))
-    , Pixel.put Color.red (Point.fromInts (2, 2))
+    [ Pixel.put Color.red (Point.fromInts ( 1, 1 ))
+    , Pixel.put Color.red (Point.fromInts ( 3, 1 ))
+    , Pixel.put Color.red (Point.fromInts ( 1, 3 ))
+    , Pixel.put Color.red (Point.fromInts ( 3, 3 ))
+    , Pixel.put Color.red (Point.fromInts ( 2, 2 ))
     ]

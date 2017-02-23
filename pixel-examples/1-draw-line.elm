@@ -97,7 +97,7 @@ drawLine p0 p1 =
 factor : Point -> Point
 factor point =
     let
-        (x, y) = 
+        ( x, y ) =
             Point.toFloats point
     in
-        Point.fromFloats (x / 16, y / 16)
+        Point.fromFloats ( x / 16, y / 16 )

@@ -66,7 +66,7 @@ update message model =
                             Pixel.get point canvas
                     in
                         ( Loaded canvas (Just ( point, pixel ))
-                        , Cmd.none 
+                        , Cmd.none
                         )
 
 
