@@ -2,7 +2,6 @@ module Canvas
     exposing
         ( Canvas
         , Error
-        , Point
         , Size
         , DrawOp(..)
         , DrawImageParams(..)
@@ -29,6 +28,7 @@ import Html exposing (Html, Attribute)
 import Array exposing (Array)
 import Task exposing (Task)
 import Color exposing (Color)
+import Canvas.Point exposing (Point)
 import Native.Canvas
 
 
@@ -42,12 +42,6 @@ type Canvas
 -}
 type Error
     = Error
-
-
-{-| A `Point` contains x and y coordinates. Many functions will take a `Point` to indicate where a drawing should occur on a `Canvas`.
--}
-type alias Point =
-    { x : Float, y : Float }
 
 
 {-| A `Size` contains a width and a height`, both of which are `Int`. Many functions will take a `Size` to indicate the size of a canvas region. This type alias is identical to the one found in `elm-lang/window`.

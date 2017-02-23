@@ -2,7 +2,9 @@ module Main exposing (..)
 
 import Html exposing (Html, Attribute)
 import Html.Attributes exposing (style)
-import Canvas exposing (Size, Point, DrawOp(..), Canvas)
+import Canvas exposing (Size, DrawOp(..), Canvas)
+import Canvas.Point exposing (Point)
+import Canvas.Point as Point
 import Canvas.Events
 import Color exposing (Color)
 

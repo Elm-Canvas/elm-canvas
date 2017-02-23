@@ -69,7 +69,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
 
   function handleDrawOp (ctx, drawOp) {
-    var position, size, color;
+    var point, size, color;
 
     switch (drawOp.ctor) {
     case "Font" :
@@ -79,16 +79,16 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
     case "StrokeText" :
 
-      position = drawOp._1;
+      point = drawOp._1;
 
-      ctx.strokeText(drawOp._0, position.x, position.y);
+      ctx.strokeText(drawOp._0, point._0, point._1);
       break;
 
     case "FillText" :
 
-      position = drawOp._1;
+      point = drawOp._1;
 
-      ctx.fillText(drawOp._0, position.x, position.y);
+      ctx.fillText(drawOp._0, point._0, point._1);
       break;
 
     case "GlobalCompositionOp" :
@@ -123,16 +123,16 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
     case "LineTo" :
 
-      position = drawOp._0;
+      point = drawOp._0;
 
-      ctx.lineTo(position.x, position.y);
+      ctx.lineTo(point._0, point._1);
       break;
 
     case "MoveTo" :
 
-      position = drawOp._0;
+      point = drawOp._0;
 
-      ctx.moveTo(position.x, position.y);
+      ctx.moveTo(point._0, point._1);
       break;
 
     case "Stroke" :
@@ -147,18 +147,18 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
     case "Rect" :
 
-      position = drawOp._0;
+      point = drawOp._0;
       size = drawOp._1;
 
-      ctx.rect(position.x, position.y, size.width, size.height);
+      ctx.rect(point._0, point._1, size.width, size.height);
       break;
 
     case "StrokeRect" :
 
-      position = drawOp._0;
+      point = drawOp._0;
       size = drawOp._1;
 
-      ctx.strokeRect(position.x, position.y, size.width, size.height);
+      ctx.strokeRect(point._0, point._1, size.width, size.height);
       break;
 
     case "StrokeStyle" :
@@ -183,7 +183,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
     case "PutImageData" :
 
-      position = drawOp._2;
+      point = drawOp._2;
       size = drawOp._1;
       var data = _elm_lang$core$Native_Array.toJSArray(drawOp._0); // eslint-disable-line no-undef
 
@@ -193,57 +193,57 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
         imageData.data[ index ] = data[ index ];
       }
 
-      ctx.putImageData(imageData, position.x, position.y);
+      ctx.putImageData(imageData, point._0, point._1);
       break;
 
     case "ClearRect" :
 
-      position = drawOp._0;
+      point = drawOp._0;
       size = drawOp._1;
 
-      ctx.clearRect(position.x, position.y, size.width, size.height);
+      ctx.clearRect(point._0, point._1, size.width, size.height);
       break;
 
     case "DrawImage":
 
       var srcCanvas = drawOp._0.canvas();
       var drawImageOp = drawOp._1;
-      var srcPosition, srcSize, destPosition, destSize;
+      var srcPoint, srcSize, destPoint, destSize;
 
       switch (drawOp._1.ctor) {
       case "At":
 
-        destPosition = drawImageOp._0;
+        destPoint = drawImageOp._0;
         ctx.drawImage(
           srcCanvas,
-          destPosition.x,
-          destPosition.y
+          destPoint._0,
+          destPoint._1
         );
         break;
 
       case "Scaled":
 
-        destPosition = drawImageOp._0;
+        destPoint = drawImageOp._0;
         destSize = drawImageOp._1;
         ctx.drawImage(
           srcCanvas,
-          destPosition.x, destPosition.y,
+          destPoint._0, destPoint._1,
           destSize.width, destSize.height
         );
         break;
 
       case "CropScaled":
 
-        srcPosition = drawImageOp._0;
+        srcPoint = drawImageOp._0;
         srcSize = drawImageOp._1;
-        destPosition = drawImageOp._2;
+        destPoint = drawImageOp._2;
         destSize = drawImageOp._3;
 
         ctx.drawImage(
           srcCanvas,
-          srcPosition.x, srcPosition.y,
+          srcPoint._0, srcPoint._1,
           srcSize.width, srcSize.height,
-          destPosition.x, destPosition.y,
+          destPoint._0, destPoint._1,
           destSize.width, destSize.height
         );
         break;
