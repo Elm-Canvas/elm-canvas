@@ -1,6 +1,7 @@
 module Canvas.Pixel
     exposing
         ( put
+        , get
         , line
         , rectangle
         , bezier
@@ -32,12 +33,27 @@ fromColor color =
             , round (alpha * 255)
             ]
 
+toColor : Array Int -> Color
+toColor colorValues =
+    Color.rgba
+        (toColorHelp 0 colorValues)
+        (toColorHelp 1 colorValues)
+        (toColorHelp 2 colorValues)
+        (((toColorHelp 3 colorValues) |> toFloat) / 255)
+
+
+toColorHelp : Int -> Array Int -> Int
+toColorHelp index colorValues =
+    Array.get index colorValues |> Maybe.withDefault 0 
+
 
 get : Point -> Canvas -> Color
 get point canvas =
     Canvas.getImageData
         point
         (Size 1 1)
+        canvas
+        |> toColor
 
 
 rectangle : Point -> Size -> List Point
