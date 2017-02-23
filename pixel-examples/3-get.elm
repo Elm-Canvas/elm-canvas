@@ -2,9 +2,10 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Canvas.Events as Events
-import Canvas exposing (Size, Point, Error, DrawOp(..), Canvas)
+import Canvas exposing (Size, DrawOp(..), Error, Canvas)
+import Canvas.Point exposing (Point)
+import Canvas.Point as Point
 import Canvas.Pixel as Pixel
-import Array exposing (Array)
 import Color exposing (Color)
 import Task
 
@@ -64,7 +65,9 @@ update message model =
                         pixel =
                             Pixel.get point canvas
                     in
-                        ( Loaded canvas (Just ( point, pixel )), Cmd.none )
+                        ( Loaded canvas (Just ( point, pixel ))
+                        , Cmd.none 
+                        )
 
 
 

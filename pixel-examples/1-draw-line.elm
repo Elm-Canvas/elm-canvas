@@ -2,7 +2,9 @@ module Main exposing (..)
 
 import Html exposing (Html, Attribute)
 import Html.Attributes exposing (style)
-import Canvas exposing (Size, Point, DrawOp(..), Canvas)
+import Canvas exposing (Size, DrawOp(..), Canvas)
+import Canvas.Point exposing (Point)
+import Canvas.Point as Point
 import Canvas.Pixel as Pixel
 import Canvas.Events
 import Color exposing (Color)
@@ -93,5 +95,9 @@ drawLine p0 p1 =
 
 
 factor : Point -> Point
-factor { x, y } =
-    Point (x / 16) (y / 16)
+factor point =
+    let
+        (x, y) = 
+            Point.toFloats point
+    in
+        Point.fromFloats (x / 16, y / 16)

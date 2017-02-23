@@ -297,8 +297,8 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
     var canvas = model.canvas();
     var ctx = canvas.getContext("2d");
     var imageData = ctx.getImageData(
-      point.x, 
-      point.y,
+      point._0, 
+      point._1,
       size.width,
       size.height
     );

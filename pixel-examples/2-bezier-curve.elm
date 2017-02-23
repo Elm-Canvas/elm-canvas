@@ -1,11 +1,12 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Canvas exposing (Size, Point, Canvas, DrawOp(..))
+import Canvas exposing (Size, DrawOp(..), Canvas)
+import Canvas.Point exposing (Point)
+import Canvas.Point as Point
 import Canvas.Pixel as Pixel
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (style, value, type_)
 import Color
 
 
@@ -34,8 +35,8 @@ view resolution =
         []
         [ Canvas.toHtml
             [ style
-                [ ( "width", "400px" )
-                , ( "height", "400px" )
+                [ ( "width", "800px" )
+                , ( "height", "800px" )
                 , ( "image-rendering", "pixelated" )
                 ]
             ]
@@ -63,7 +64,7 @@ canvas =
     in
         Canvas.batch
             [ BeginPath
-            , Rect (Point 0 0) size
+            , Rect (Point.fromInts (0, 0)) size
             , FillStyle Color.blue
             , Fill
             ]
@@ -74,8 +75,8 @@ draws : Int -> List DrawOp
 draws resolution =
     Pixel.bezier
         resolution
-        (Point 90 90)
-        (Point 90 10)
-        (Point 10 90)
-        (Point 10 10)
+        (Point.fromInts (90, 90))
+        (Point.fromInts (90, 10))
+        (Point.fromInts (10, 90))
+        (Point.fromInts (10, 10))
         |> List.map (Pixel.put Color.red)
