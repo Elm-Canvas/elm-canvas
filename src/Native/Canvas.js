@@ -69,7 +69,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
 
   function handleDrawOp (ctx, drawOp) {
-    var point, size, color;
+    var point, point1, size, color;
 
     switch (drawOp.ctor) {
     case "Font" :
@@ -87,7 +87,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
     case "ArcTo" :
 
       point = drawOp._0;
-      var point1 = drawOp._1;
+      point1 = drawOp._1;
 
       ctx.arcTo(point._0, point._1, point1._0, point1._1, drawOp._2);
       break;
@@ -159,6 +159,14 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
       ctx.beginPath();
       break;
+
+    case "BezierCurveTo" :
+
+      point = drawOp._0;
+      point1 = drawOp._1;
+      var point2 = drawOp._2;
+
+      ctx.bezierCurveTo(point._0, point._1, point1._0, point1._1, point2._0, point2._1);
 
     case "Rect" :
 
