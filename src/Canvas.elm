@@ -52,6 +52,8 @@ type alias Size =
 
 type DrawOp
     = Font String
+    | Arc Point Float Float Float
+    | ArcTo Point Point Float
     | StrokeText String Point
     | FillText String Point
     | GlobalAlpha Float

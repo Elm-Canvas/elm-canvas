@@ -77,6 +77,21 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.font = drawOp._0;
       break;
 
+    case "Arc" :
+
+      point = drawOp._0;
+
+      ctx.arc(point._0, point._1, drawOp._1, drawOp._2, drawOp._3);
+      break;
+
+    case "ArcTo" :
+
+      point = drawOp._0;
+      var point1 = drawOp._1;
+
+      ctx.arcTo(point._0, point._1, point1._0, point1._1, drawOp._2);
+      break;
+
     case "StrokeText" :
 
       point = drawOp._1;
