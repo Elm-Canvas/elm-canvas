@@ -72,6 +72,7 @@ type DrawOp
     | FillStyle Color
     | BeginPath
     | BezierCurveTo Point Point Point
+    | QuadraticCurveTo Point Point
     | PutImageData (Array Int) Size Point
     | ClearRect Point Size
     | DrawImage Canvas DrawImageParams

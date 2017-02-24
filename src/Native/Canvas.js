@@ -167,6 +167,16 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       var point2 = drawOp._2;
 
       ctx.bezierCurveTo(point._0, point._1, point1._0, point1._1, point2._0, point2._1);
+      break;
+
+    case "QuadraticCurveTo" :
+
+      point = drawOp._0;
+      point1 = drawOp._1;
+
+      ctx.quadraticCurveTo(point._0, point._1, point1._0, point1._1);
+      break;
+
 
     case "Rect" :
 
