@@ -135,6 +135,28 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.moveTo(point._0, point._1);
       break;
 
+    case "ShadowBlur" :
+
+      ctx.shadowBlur = drawOp._0;
+      break;
+
+    case "ShadowColor" :
+
+      color = _elm_lang$core$Color$toRgb(drawOp._0); // eslint-disable-line no-undef
+
+      ctx.shadowColor = getCssString(color);
+      break;
+
+    case "ShadowOffsetX" :
+
+      ctx.shadowOffsetX = drawOp._0;
+      break;
+
+    case "ShadowOffsetY" :
+
+      ctx.shadowOffsetY = drawOp._0;
+      break;
+
     case "Stroke" :
 
       ctx.stroke();

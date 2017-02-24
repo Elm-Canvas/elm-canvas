@@ -62,6 +62,10 @@ type DrawOp
     | LineJoin String
     | LineTo Point
     | MoveTo Point
+    | ShadowBlur Float
+    | ShadowColor Color
+    | ShadowOffsetX Float
+    | ShadowOffsetY Float
     | Stroke
     | Fill
     | Rect Point Size
