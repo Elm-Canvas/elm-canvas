@@ -168,6 +168,15 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.strokeStyle = getCssString(color);
       break;
 
+    case "TextAlign" :
+
+      ctx.textAlign = drawOp._0;
+      break;
+
+    case "TextBaseline" :
+
+      ctx.textBaseline = drawOp._0;
+      break;
 
     case "FillStyle" :
 

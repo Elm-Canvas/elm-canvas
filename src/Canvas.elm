@@ -67,6 +67,8 @@ type DrawOp
     | Rect Point Size
     | StrokeRect Point Size
     | StrokeStyle Color
+    | TextAlign String 
+    | TextBaseline String
     | FillStyle Color
     | BeginPath
     | PutImageData (Array Int) Size Point
