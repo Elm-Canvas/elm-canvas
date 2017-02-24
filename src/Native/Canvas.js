@@ -360,14 +360,19 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
   }
 
 
-  function getImageData(model) {
+  function getImageData(point, size, model) {
     LOG("GET IMAGE DATA");
 
     var canvas = model.canvas();
     var ctx = canvas.getContext("2d");
-    var imageData = ctx.getImageData(0, 0, model.width, model.height);
+    var imageData = ctx.getImageData(
+      point._0, 
+      point._1,
+      size.width,
+      size.height
+    );
 
-    return _elm_lang$core$Native_Array.fromJSArray(imageData.data); // eslint-disable-line no-undef
+    return _elm_lang$core$Native_Array.fromJSArray(imageData.data);  // eslint-disable-line no-undef
   }
 
 
@@ -446,7 +451,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
     getSize: getSize,
     loadImage: loadImage,
     toHtml: F2(toHtml), // eslint-disable-line no-undef
-    getImageData: getImageData,
+    getImageData: F3(getImageData), // eslint-disable-line no-undef
     clone: cloneModel,
     batch: F2(batch) // eslint-disable-line no-undef
   };
