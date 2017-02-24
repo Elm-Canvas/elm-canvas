@@ -61,6 +61,7 @@ type DrawOp
     | LineCap String
     | LineDashOffset Float
     | LineWidth Float
+    | MiterLimit Float
     | LineJoin String
     | LineTo Point
     | MoveTo Point
