@@ -121,6 +121,11 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.lineWidth = drawOp._0;
       break;
 
+    case "MiterLimit" :
+
+      ctx.miterLimit = drawOp._0;
+      break;
+
     case "LineTo" :
 
       point = drawOp._0;
