@@ -52,6 +52,8 @@ type alias Size =
 
 type DrawOp
     = Font String
+    | Arc Point Float Float Float
+    | ArcTo Point Point Float
     | StrokeText String Point
     | FillText String Point
     | GlobalAlpha Float
@@ -69,6 +71,8 @@ type DrawOp
     | StrokeStyle Color
     | FillStyle Color
     | BeginPath
+    | BezierCurveTo Point Point Point
+    | QuadraticCurveTo Point Point
     | PutImageData (Array Int) Size Point
     | ClearRect Point Size
     | DrawImage Canvas DrawImageParams
