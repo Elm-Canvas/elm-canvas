@@ -36,12 +36,12 @@ fromColor color =
             ]
 
 toColor : Array Int -> Color
-toColor colorValues =
+toColor values =
     Color.rgba
-        (toColorHelp 0 colorValues)
-        (toColorHelp 1 colorValues)
-        (toColorHelp 2 colorValues)
-        (((toColorHelp 3 colorValues) |> toFloat) / 255)
+        (toColorHelp 0 values)
+        (toColorHelp 1 values)
+        (toColorHelp 2 values)
+        (((toColorHelp 3 values) |> toFloat) / 255)
 
 
 toColorHelp : Int -> Array Int -> Int
@@ -85,6 +85,10 @@ rectangle point { width, height } =
                 (Point.fromInts (x1, y))
             ]
 
+
+{-|
+    Bezier 
+-}
 
 bezier : Int -> Point -> Point -> Point -> Point -> List Point
 bezier resolution p0 p1 p2 p3 =
