@@ -2,7 +2,9 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Events as Events
-import Canvas exposing (Size, Position, Error, DrawOp(..), Canvas)
+import Canvas exposing (Size, Error, DrawOp(..), Canvas)
+import Canvas.Point exposing (Point)
+import Canvas.Point as Point
 import Array exposing (Array)
 import Task
 
@@ -67,14 +69,18 @@ invert canvas =
         [ PutImageData
             (invertedImageData canvas)
             (Canvas.getSize canvas)
-            (Position 0 0)
+            (Point.fromInts ( 0, 0 ))
         ]
         canvas
 
 
 invertedImageData : Canvas -> Array Int
-invertedImageData =
-    Canvas.getImageData >> Array.indexedMap invertHelp
+invertedImageData canvas =
+    canvas
+        |> Canvas.getImageData
+            (Point 0 0)
+            (Canvas.getSize canvas)
+        |> Array.indexedMap invertHelp
 
 
 invertHelp : Int -> Int -> Int

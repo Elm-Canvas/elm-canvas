@@ -1,7 +1,9 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Canvas exposing (Size, Position, Error, DrawOp(..), Canvas)
+import Canvas exposing (Size, Error, DrawOp(..), Canvas)
+import Canvas.Point exposing (Point)
+import Canvas.Point as Point
 import Canvas.Events
 import Color exposing (Color)
 import Task
@@ -22,11 +24,11 @@ main =
 
 type Msg
     = ImageLoaded (Result Error Canvas)
-    | Move Position
+    | Move Point
 
 
 type Model
-    = GotCanvas Canvas Position
+    = GotCanvas Canvas Point
     | Loading
 
 
@@ -47,7 +49,7 @@ update message model =
         ImageLoaded result ->
             case Result.toMaybe result of
                 Just canvas ->
-                    ( GotCanvas canvas (Position 0 0), Cmd.none )
+                    ( GotCanvas canvas (Point.fromInts ( 0, 0 )), Cmd.none )
 
                 Nothing ->
                     ( Loading, loadImage )
@@ -86,17 +88,24 @@ presentIfReady model =
                     [ Canvas.Events.onMouseMove Move ]
 
 
-drawSquare : Position -> Canvas -> Canvas
-drawSquare { x, y } canvas =
+drawSquare : Point -> Canvas -> Canvas
+drawSquare point canvas =
+    Canvas.batch
+        [ StrokeStyle Color.red
+        , LineWidth 15
+        , StrokeRect point <|
+            calcSize point <|
+                Canvas.getSize canvas
+        ]
+        canvas
+
+
+calcSize : Point -> Size -> Size
+calcSize point { width, height } =
     let
-        { width, height } =
-            Canvas.getSize canvas
+        ( x, y ) =
+            Point.toInts point
     in
-        Canvas.batch
-            [ StrokeStyle Color.red
-            , LineWidth 15
-            , StrokeRect
-                (Position x y)
-                (Size (width - 2 * x) (height - 2 * y))
-            ]
-            canvas
+        Size
+            (width - 2 * x)
+            (height - 2 * y)

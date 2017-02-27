@@ -2,7 +2,6 @@ module Canvas
     exposing
         ( Canvas
         , Error
-        , Position
         , Size
         , DrawOp(..)
         , DrawImageParams(..)
@@ -18,7 +17,7 @@ module Canvas
 {-| The canvas html element is a very simple way to render 2D graphics. Check out these examples, and get an explanation of the canvas element [here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first, because its probably what you need. Elm-Canvas is for when you need unusually direct and low level access to the canvas element.
 
 # Main Types
-@docs Canvas, Position, Size
+@docs Canvas, Point, Size
 
 # Basics
 @docs initialize, toHtml
@@ -29,6 +28,7 @@ import Html exposing (Html, Attribute)
 import Array exposing (Array)
 import Task exposing (Task)
 import Color exposing (Color)
+import Canvas.Point exposing (Point)
 import Native.Canvas
 
 
@@ -44,12 +44,6 @@ type Error
     = Error
 
 
-{-| A `Position` contains x and y coordinates. Many functions will take a `Position` to indicate where a drawing should occur on a `Canvas`. This type alias is identical to the one found in `elm-lang/mouse`.
--}
-type alias Position =
-    { x : Int, y : Int }
-
-
 {-| A `Size` contains a width and a height`, both of which are `Int`. Many functions will take a `Size` to indicate the size of a canvas region. This type alias is identical to the one found in `elm-lang/window`.
 -}
 type alias Size =
@@ -58,32 +52,43 @@ type alias Size =
 
 type DrawOp
     = Font String
-    | StrokeText String Position
-    | FillText String Position
+    | Arc Point Float Float Float
+    | ArcTo Point Point Float
+    | StrokeText String Point
+    | FillText String Point
     | GlobalAlpha Float
     | GlobalCompositionOp String
     | LineCap String
     | LineDashOffset Float
     | LineWidth Float
+    | MiterLimit Float
     | LineJoin String
-    | LineTo Position
-    | MoveTo Position
+    | LineTo Point
+    | MoveTo Point
+    | ShadowBlur Float
+    | ShadowColor Color
+    | ShadowOffsetX Float
+    | ShadowOffsetY Float
     | Stroke
     | Fill
-    | Rect Position Size
-    | StrokeRect Position Size
+    | Rect Point Size
+    | StrokeRect Point Size
     | StrokeStyle Color
+    | TextAlign String 
+    | TextBaseline String
     | FillStyle Color
     | BeginPath
-    | PutImageData (Array Int) Size Position
-    | ClearRect Position Size
+    | BezierCurveTo Point Point Point
+    | QuadraticCurveTo Point Point
+    | PutImageData (Array Int) Size Point
+    | ClearRect Point Size
     | DrawImage Canvas DrawImageParams
 
 
 type DrawImageParams
-    = At Position
-    | Scaled Position Size
-    | CropScaled Position Size Position Size
+    = At Point
+    | Scaled Point Size
+    | CropScaled Point Size Point Size
 
 
 {-| `initialize` takes in a width and a height (both type `Int`), and returns a `Canvas` with that width and height. A freshly initialized `Canvas` is entirely transparent (its data is an array of 0s, that has a length of width x height x 4)
@@ -152,7 +157,7 @@ loadImage =
       , 0, 0, 0, 255,      255, 255, 255, 255
       ]
 -}
-getImageData : Canvas -> Array Int
+getImageData : Point -> Size -> Canvas -> Array Int
 getImageData =
     Native.Canvas.getImageData
 

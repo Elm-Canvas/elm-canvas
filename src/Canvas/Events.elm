@@ -9,16 +9,17 @@ module Canvas.Events
 
 import Html exposing (Attribute)
 import Html.Events exposing (on)
-import Canvas exposing (Position)
+import Canvas.Point exposing (Point)
+import Canvas.Point as Point
 import Json.Decode as Json
 
 
-{-| Just like the `onMouseDown` in `Html.Events`, but this one passes along a `Position` that is relative to the `Canvas`. So clicking right in the middle of a 200x200 `Canvas` will return a `Position` == `{x = 100, y = 100}`.
+{-| Just like the `onMouseDown` in `Html.Events`, but this one passes along a `Point` that is relative to the `Canvas`. So clicking right in the middle of a 200x200 `Canvas` will return a `Point` == `{x = 100, y = 100}`.
     case message of
       CanvasClick position ->
         -- ..
 -}
-onMouseDown : (Position -> msg) -> Attribute msg
+onMouseDown : (Point -> msg) -> Attribute msg
 onMouseDown message =
     on "mousedown" <|
         Json.map
@@ -27,7 +28,7 @@ onMouseDown message =
 
 
 {-| -}
-onMouseUp : (Position -> msg) -> Attribute msg
+onMouseUp : (Point -> msg) -> Attribute msg
 onMouseUp message =
     on "mouseup" <|
         Json.map
@@ -36,7 +37,7 @@ onMouseUp message =
 
 
 {-| -}
-onMouseMove : (Position -> msg) -> Attribute msg
+onMouseMove : (Point -> msg) -> Attribute msg
 onMouseMove message =
     on "mousemove" <|
         Json.map
@@ -45,7 +46,7 @@ onMouseMove message =
 
 
 {-| -}
-onClick : (Position -> msg) -> Attribute msg
+onClick : (Point -> msg) -> Attribute msg
 onClick message =
     on "click" <|
         Json.map
@@ -54,7 +55,7 @@ onClick message =
 
 
 {-| -}
-onDoubleClick : (Position -> msg) -> Attribute msg
+onDoubleClick : (Point -> msg) -> Attribute msg
 onDoubleClick message =
     on "dblclick" <|
         Json.map
@@ -62,22 +63,29 @@ onDoubleClick message =
             positionDecoder
 
 
-positionInCanvas : ( Position, Position ) -> Position
+positionInCanvas : ( ( Float, Float ), ( Float, Float ) ) -> Point
 positionInCanvas ( client, offset ) =
-    Position (client.x - offset.x) (client.y - offset.y)
+    let
+        ( cx, cy ) =
+            client
+
+        ( ox, oy ) =
+            offset
+    in
+        Point.fromFloats ( cx - ox, cy - oy )
 
 
-positionDecoder : Json.Decoder ( Position, Position )
+positionDecoder : Json.Decoder ( ( Float, Float ), ( Float, Float ) )
 positionDecoder =
-    Json.at [ "target" ] (toPosition "offsetLeft" "offsetTop")
-        |> Json.map2 (,) (toPosition "clientX" "clientY")
+    Json.at [ "target" ] (toTuple "offsetLeft" "offsetTop")
+        |> Json.map2 (,) (toTuple "clientX" "clientY")
 
 
-toPosition : String -> String -> Json.Decoder Position
-toPosition x y =
-    Json.map2 Position (field_ x) (field_ y)
+toTuple : String -> String -> Json.Decoder ( Float, Float )
+toTuple x y =
+    Json.map2 (,) (field_ x) (field_ y)
 
 
-field_ : String -> Json.Decoder Int
+field_ : String -> Json.Decoder Float
 field_ key =
-    Json.field key Json.int
+    Json.field key Json.float
