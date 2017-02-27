@@ -1,8 +1,10 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Canvas exposing (Size, Position, Error, DrawOp(..), DrawImageParams(..), Canvas)
-import Canvas.Events
+import Canvas exposing (Size, Error, DrawOp(..), DrawImageParams(..), Canvas)
+import Canvas.Point exposing (Point)
+import Canvas.Point as Point
+import Canvas.Events as Events
 import Color exposing (Color)
 import Task
 
@@ -22,7 +24,7 @@ main =
 
 type Msg
     = ImageLoaded (Result Error Canvas)
-    | Blit Position
+    | Blit Point
 
 
 type Model
@@ -102,12 +104,11 @@ presentIfReady model =
             p [] [ text "Loading image" ]
 
         GotCanvas canvas drawOps ->
-            div
-                []
-                [ Canvas.toHtml
-                    [ Canvas.Events.onMouseMove Blit ]
-                    (drawScaledImages drawOps (Canvas.initialize (Size 800 600)))
-                ]
+            Canvas.initialize (Size 800 600)
+                |> drawScaledImages drawOps
+                |> Canvas.toHtml [ Events.onMouseMove Blit ]
+                |> List.singleton
+                |> div []
 
 
 drawScaledImages : List DrawOp -> Canvas -> Canvas
@@ -123,7 +124,7 @@ drawScaledImages drawOps canvas =
                 [ BeginPath
                 , StrokeStyle (Color.rgb 0 0 0)
                 , LineWidth 2.0
-                , Rect (Position 0 0) (Size 800 600)
+                , Rect (Point.fromInts ( 0, 0 )) (Size 800 600)
                 , Stroke
                 ]
     in

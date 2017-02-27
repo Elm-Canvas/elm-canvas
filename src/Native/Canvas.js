@@ -69,7 +69,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
 
   function handleDrawOp (ctx, drawOp) {
-    var position, size, color;
+    var point, point1, size, color;
 
     switch (drawOp.ctor) {
     case "Font" :
@@ -77,18 +77,33 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.font = drawOp._0;
       break;
 
+    case "Arc" :
+
+      point = drawOp._0;
+
+      ctx.arc(point._0, point._1, drawOp._1, drawOp._2, drawOp._3);
+      break;
+
+    case "ArcTo" :
+
+      point = drawOp._0;
+      point1 = drawOp._1;
+
+      ctx.arcTo(point._0, point._1, point1._0, point1._1, drawOp._2);
+      break;
+
     case "StrokeText" :
 
-      position = drawOp._1;
+      point = drawOp._1;
 
-      ctx.strokeText(drawOp._0, position.x, position.y);
+      ctx.strokeText(drawOp._0, point._0, point._1);
       break;
 
     case "FillText" :
 
-      position = drawOp._1;
+      point = drawOp._1;
 
-      ctx.fillText(drawOp._0, position.x, position.y);
+      ctx.fillText(drawOp._0, point._0, point._1);
       break;
 
     case "GlobalCompositionOp" :
@@ -121,18 +136,45 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.lineWidth = drawOp._0;
       break;
 
+    case "MiterLimit" :
+
+      ctx.miterLimit = drawOp._0;
+      break;
+
     case "LineTo" :
 
-      position = drawOp._0;
+      point = drawOp._0;
 
-      ctx.lineTo(position.x, position.y);
+      ctx.lineTo(point._0, point._1);
       break;
 
     case "MoveTo" :
 
-      position = drawOp._0;
+      point = drawOp._0;
 
-      ctx.moveTo(position.x, position.y);
+      ctx.moveTo(point._0, point._1);
+      break;
+
+    case "ShadowBlur" :
+
+      ctx.shadowBlur = drawOp._0;
+      break;
+
+    case "ShadowColor" :
+
+      color = _elm_lang$core$Color$toRgb(drawOp._0); // eslint-disable-line no-undef
+
+      ctx.shadowColor = getCssString(color);
+      break;
+
+    case "ShadowOffsetX" :
+
+      ctx.shadowOffsetX = drawOp._0;
+      break;
+
+    case "ShadowOffsetY" :
+
+      ctx.shadowOffsetY = drawOp._0;
       break;
 
     case "Stroke" :
@@ -145,20 +187,38 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.beginPath();
       break;
 
+    case "BezierCurveTo" :
+
+      point = drawOp._0;
+      point1 = drawOp._1;
+      var point2 = drawOp._2;
+
+      ctx.bezierCurveTo(point._0, point._1, point1._0, point1._1, point2._0, point2._1);
+      break;
+
+    case "QuadraticCurveTo" :
+
+      point = drawOp._0;
+      point1 = drawOp._1;
+
+      ctx.quadraticCurveTo(point._0, point._1, point1._0, point1._1);
+      break;
+
+
     case "Rect" :
 
-      position = drawOp._0;
+      point = drawOp._0;
       size = drawOp._1;
 
-      ctx.rect(position.x, position.y, size.width, size.height);
+      ctx.rect(point._0, point._1, size.width, size.height);
       break;
 
     case "StrokeRect" :
 
-      position = drawOp._0;
+      point = drawOp._0;
       size = drawOp._1;
 
-      ctx.strokeRect(position.x, position.y, size.width, size.height);
+      ctx.strokeRect(point._0, point._1, size.width, size.height);
       break;
 
     case "StrokeStyle" :
@@ -168,6 +228,15 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.strokeStyle = getCssString(color);
       break;
 
+    case "TextAlign" :
+
+      ctx.textAlign = drawOp._0;
+      break;
+
+    case "TextBaseline" :
+
+      ctx.textBaseline = drawOp._0;
+      break;
 
     case "FillStyle" :
 
@@ -183,7 +252,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
     case "PutImageData" :
 
-      position = drawOp._2;
+      point = drawOp._2;
       size = drawOp._1;
       var data = _elm_lang$core$Native_Array.toJSArray(drawOp._0); // eslint-disable-line no-undef
 
@@ -193,57 +262,57 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
         imageData.data[ index ] = data[ index ];
       }
 
-      ctx.putImageData(imageData, position.x, position.y);
+      ctx.putImageData(imageData, point._0, point._1);
       break;
 
     case "ClearRect" :
 
-      position = drawOp._0;
+      point = drawOp._0;
       size = drawOp._1;
 
-      ctx.clearRect(position.x, position.y, size.width, size.height);
+      ctx.clearRect(point._0, point._1, size.width, size.height);
       break;
 
     case "DrawImage":
 
       var srcCanvas = drawOp._0.canvas();
       var drawImageOp = drawOp._1;
-      var srcPosition, srcSize, destPosition, destSize;
+      var srcPoint, srcSize, destPoint, destSize;
 
       switch (drawOp._1.ctor) {
       case "At":
 
-        destPosition = drawImageOp._0;
+        destPoint = drawImageOp._0;
         ctx.drawImage(
           srcCanvas,
-          destPosition.x,
-          destPosition.y
+          destPoint._0,
+          destPoint._1
         );
         break;
 
       case "Scaled":
 
-        destPosition = drawImageOp._0;
+        destPoint = drawImageOp._0;
         destSize = drawImageOp._1;
         ctx.drawImage(
           srcCanvas,
-          destPosition.x, destPosition.y,
+          destPoint._0, destPoint._1,
           destSize.width, destSize.height
         );
         break;
 
       case "CropScaled":
 
-        srcPosition = drawImageOp._0;
+        srcPoint = drawImageOp._0;
         srcSize = drawImageOp._1;
-        destPosition = drawImageOp._2;
+        destPoint = drawImageOp._2;
         destSize = drawImageOp._3;
 
         ctx.drawImage(
           srcCanvas,
-          srcPosition.x, srcPosition.y,
+          srcPoint._0, srcPoint._1,
           srcSize.width, srcSize.height,
-          destPosition.x, destPosition.y,
+          destPoint._0, destPoint._1,
           destSize.width, destSize.height
         );
         break;
@@ -296,14 +365,19 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
   }
 
 
-  function getImageData(model) {
+  function getImageData(point, size, model) {
     LOG("GET IMAGE DATA");
 
     var canvas = model.canvas();
     var ctx = canvas.getContext("2d");
-    var imageData = ctx.getImageData(0, 0, model.width, model.height);
+    var imageData = ctx.getImageData(
+      point._0, 
+      point._1,
+      size.width,
+      size.height
+    );
 
-    return _elm_lang$core$Native_Array.fromJSArray(imageData.data); // eslint-disable-line no-undef
+    return _elm_lang$core$Native_Array.fromJSArray(imageData.data);  // eslint-disable-line no-undef
   }
 
 
@@ -382,7 +456,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
     getSize: getSize,
     loadImage: loadImage,
     toHtml: F2(toHtml), // eslint-disable-line no-undef
-    getImageData: getImageData,
+    getImageData: F3(getImageData), // eslint-disable-line no-undef
     clone: cloneModel,
     batch: F2(batch), // eslint-disable-line no-undef
     toDataURL: F3(toDataURL) // eslint-disable-line no-undef
