@@ -75,7 +75,7 @@ type DrawOp
     | Rect Point Size
     | StrokeRect Point Size
     | StrokeStyle Color
-    | TextAlign String 
+    | TextAlign String
     | TextBaseline String
     | FillStyle Color
     | BeginPath
@@ -182,6 +182,7 @@ setSize =
 toDataURL : String -> Float -> Canvas -> String
 toDataURL =
     Native.Canvas.toDataURL
+
 
 clone : Canvas -> Canvas
 clone =

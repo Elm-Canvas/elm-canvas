@@ -35,6 +35,7 @@ fromColor color =
             , round (alpha * 255)
             ]
 
+
 toColor : Array Int -> Color
 toColor colorValues =
     Color.rgba
@@ -46,7 +47,7 @@ toColor colorValues =
 
 toColorHelp : Int -> Array Int -> Int
 toColorHelp index colorValues =
-    Array.get index colorValues |> Maybe.withDefault 0 
+    Array.get index colorValues |> Maybe.withDefault 0
 
 
 get : Point -> Canvas -> Color
@@ -61,7 +62,7 @@ get point canvas =
 rectangle : Point -> Size -> List Point
 rectangle point { width, height } =
     let
-        (x, y) =
+        ( x, y ) =
             Point.toInts point
 
         x1 =
@@ -71,18 +72,18 @@ rectangle point { width, height } =
             y + height
     in
         List.concat
-            [ line 
-                (Point.fromInts (x, y)) 
-                (Point.fromInts (x1 - 1, y))
-            , line 
-                (Point.fromInts (x, y)) 
-                (Point.fromInts (x, y1 - 1))
-            , line 
-                (Point.fromInts (x1, y1)) 
-                (Point.fromInts (x, y1))
-            , line 
-                (Point.fromInts (x1, y1)) 
-                (Point.fromInts (x1, y))
+            [ line
+                (Point.fromInts ( x, y ))
+                (Point.fromInts ( x1 - 1, y ))
+            , line
+                (Point.fromInts ( x, y ))
+                (Point.fromInts ( x, y1 - 1 ))
+            , line
+                (Point.fromInts ( x1, y1 ))
+                (Point.fromInts ( x, y1 ))
+            , line
+                (Point.fromInts ( x1, y1 ))
+                (Point.fromInts ( x1, y ))
             ]
 
 
@@ -90,13 +91,13 @@ bezier : Int -> Point -> Point -> Point -> Point -> List Point
 bezier resolution p0 p1 p2 p3 =
     let
         points =
-            bezierLoop 
-                resolution 
-                0 
-                (Point.toFloats p0) 
-                (Point.toFloats p1) 
-                (Point.toFloats p2) 
-                (Point.toFloats p3) 
+            bezierLoop
+                resolution
+                0
+                (Point.toFloats p0)
+                (Point.toFloats p1)
+                (Point.toFloats p2)
+                (Point.toFloats p3)
                 []
     in
         List.map2 (,) points (List.drop 1 points)
@@ -109,7 +110,7 @@ applyLine ( p0, p1 ) =
     line p0 p1
 
 
-bezierLoop : Int -> Int -> ( Float, Float ) -> ( Float, Float ) ->  ( Float, Float ) -> ( Float, Float ) -> List Point -> List Point
+bezierLoop : Int -> Int -> ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> List Point -> List Point
 bezierLoop seg i p0 p1 p2 p3 points =
     let
         points_ =
@@ -122,7 +123,7 @@ bezierLoop seg i p0 p1 p2 p3 points =
 
 
 calcBezierPoint : Int -> Int -> ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> Point
-calcBezierPoint seg i (p0x, p0y) (p1x, p1y) (p2x, p2y) (p3x, p3y) =
+calcBezierPoint seg i ( p0x, p0y ) ( p1x, p1y ) ( p2x, p2y ) ( p3x, p3y ) =
     let
         ( a, b, c, d ) =
             calcBezier seg i
@@ -175,10 +176,10 @@ type alias LineStatics =
 line : Point -> Point -> List Point
 line p q =
     let
-        (px, py) =
+        ( px, py ) =
             Point.toInts p
 
-        (qx, qy) = 
+        ( qx, qy ) =
             Point.toInts q
 
         ( statics, error ) =

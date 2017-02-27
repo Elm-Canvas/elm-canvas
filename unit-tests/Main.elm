@@ -1,3 +1,5 @@
+module Main exposing (..)
+
 import Expect
 import Test exposing (..)
 import Test.Runner.Html
@@ -5,12 +7,13 @@ import Canvas exposing (Canvas, Size)
 import Canvas.Point exposing (Point)
 import Array exposing (Array)
 
+
 main : Test.Runner.Html.TestProgram
 main =
     [ testInitializeGetImageData
     ]
-      |> concat
-      |> Test.Runner.Html.run
+        |> concat
+        |> Test.Runner.Html.run
 
 
 testInitializeGetImageData : Test
@@ -31,16 +34,17 @@ testInitializeGetImageData =
                     imageData =
                         let
                             origin : Point
-                            origin = Canvas.Point.fromInts ( 0, 0 )
+                            origin =
+                                Canvas.Point.fromInts ( 0, 0 )
 
                             size : Size
-                            size = Canvas.getSize canvas
+                            size =
+                                Canvas.getSize canvas
                         in
                             canvas
                                 |> Canvas.getImageData origin size
                 in
                     Expect.equal imageData expectation
-
         , test "A 5x5 empty canvas initializes properly" <|
             \() ->
                 let
@@ -56,15 +60,15 @@ testInitializeGetImageData =
                     imageData =
                         let
                             origin : Point
-                            origin = Canvas.Point.fromInts ( 0, 0 )
+                            origin =
+                                Canvas.Point.fromInts ( 0, 0 )
 
                             size : Size
-                            size = Canvas.getSize canvas
+                            size =
+                                Canvas.getSize canvas
                         in
                             canvas
                                 |> Canvas.getImageData origin size
                 in
                     Expect.equal imageData expectation
         ]
-
-
