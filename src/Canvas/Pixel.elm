@@ -23,27 +23,30 @@ put color point =
         point
 
 
-fromColor : Color -> Array Int
+fromColor : Color -> List Int
 fromColor color =
     let
         { red, green, blue, alpha } =
             Color.toRgb color
     in
-        Array.fromList
-            [ red
-            , green
-            , blue
-            , round (alpha * 255)
-            ]
+        [ red
+        , green
+        , blue
+        , round (alpha * 255)
+        ]
 
 
-toColor : Array Int -> Color
-toColor values =
-    Color.rgba
-        (toColorHelp 0 values)
-        (toColorHelp 1 values)
-        (toColorHelp 2 values)
-        (((toColorHelp 3 values) |> toFloat) / 255)
+toColor : List Int -> Color
+toColor rgba =
+    let
+        values = 
+            Array.fromList rgba
+    in
+        Color.rgba
+            (toColorHelp 0 values)
+            (toColorHelp 1 values)
+            (toColorHelp 2 values)
+            (((toColorHelp 3 values) |> toFloat) / 255)
 
 
 toColorHelp : Int -> Array Int -> Int
@@ -96,39 +99,33 @@ type alias Row =
     List Pixel
 
 
-scale : Float -> Float -> Canvas -> Canvas
-scale xFactor yFactor canvas =
+--scale : Float -> Float -> Size -> List Int -> List Int
+--scale xFactor yFactor {width, height} data =
+scale : Size -> Size -> List Int -> List Int
+scale oldSize newSize data =
     let
-        { width, height } =
-            Canvas.getSize canvas
-
         xOccurances =
-            getOccurances xFactor width
+            getOccurances
+                ((toFloat newSize.width) / (toFloat oldSize.width))
+                oldSize.width
 
         yOccurances =
-            getOccurances yFactor height
-
-        newSize =
-            Size
-                (floor <| xFactor * toFloat width)
-                (floor <| yFactor * toFloat height)
+            getOccurances
+                ((toFloat newSize.height) / (toFloat oldSize.height))
+                oldSize.height
     in
-        Canvas.batch
-            [ PutImageData
-                (getScaledData xOccurances yOccurances (getRows canvas))
-                newSize
-                (Point.fromInts ( 0, 0 ))
-            ]
-            (Canvas.initialize newSize)
+        getScaledData 
+            xOccurances 
+            yOccurances 
+            (getRows data oldSize)
 
 
-getScaledData : List Int -> List Int -> List Row -> Array Int
+getScaledData : List Int -> List Int -> List Row -> List Int
 getScaledData xOccurances yOccurances rows =
     List.map (List.map2 scaleHelp xOccurances) rows
         |> List.map2 scaleHelp yOccurances
         |> List.concat
         |> List.concat
-        |> Array.fromList
 
 
 scaleHelp : Int -> List a -> List a
@@ -138,35 +135,27 @@ scaleHelp n l =
 
 getOccurances : Float -> Int -> List Int
 getOccurances factor length =
-    List.range 0 (length - 1)
-        |> List.map (getOccurance factor)
+    List.range 0 length
+        |> List.map (toFloat >> (*) factor >> floor)
+        |> pairWithNext
+        |> List.map calcOccurance
 
 
-getOccurance : Float -> Int -> Int
-getOccurance factor i =
-    let
-        i_ =
-            floor <| factor * (toFloat i)
-
-        j =
-            floor <| factor * (toFloat (i + 1))
-    in
-        j - i_
+pairWithNext : List Int -> List (Int, Int)
+pairWithNext l =
+    List.map2 (,) l (List.drop 1 l)
 
 
-getRows : Canvas -> List Row
-getRows canvas =
-    let
-        { width, height } =
-            Canvas.getSize canvas
-    in
-        Canvas.getImageData
-            (Point.fromInts ( 0, 0 ))
-            (Size width height)
-            canvas
-            |> Array.toList
-            |> intoPixels []
-            |> intoRowsLoop width []
+calcOccurance : (Int, Int) -> Int
+calcOccurance (i, j) =
+    j - i
+
+
+getRows : List Int -> Size ->List Row
+getRows data { width, height } =
+    data
+        |> intoPixels []
+        |> intoRowsLoop width []
 
 
 intoRowsLoop : Int -> List Row -> List Pixel -> List Row
