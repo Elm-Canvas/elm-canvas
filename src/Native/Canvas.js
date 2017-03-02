@@ -54,6 +54,8 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
 
   function batch(drawOps, model) {
+    LOG("BATCH");
+
     model = cloneModel(model);
 
     var ctx = model.canvas().getContext("2d");
@@ -251,10 +253,9 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       break;
 
     case "PutImageData" :
-
       point = drawOp._2;
       size = drawOp._1;
-      var data = _elm_lang$core$Native_Array.toJSArray(drawOp._0); // eslint-disable-line no-undef
+      var data = _elm_lang$core$Native_List.toArray(drawOp._0); // eslint-disable-line no-undef
 
       var imageData = ctx.createImageData(size.width, size.height);
 
@@ -372,7 +373,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       size.height
     );
 
-    return _elm_lang$core$Native_Array.fromJSArray(imageData.data);  // eslint-disable-line no-undef
+    return _elm_lang$core$Native_List.fromArray(imageData.data);  // eslint-disable-line no-undef
   }
 
 
