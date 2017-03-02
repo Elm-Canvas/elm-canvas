@@ -5,6 +5,7 @@ module Canvas.Pixel
         , line
         , rectangle
         , bezier
+        , scale
         )
 
 import Canvas exposing (Canvas, Size, DrawOp(..))
@@ -12,6 +13,7 @@ import Canvas.Point exposing (Point)
 import Canvas.Point as Point
 import Color exposing (Color)
 import Array exposing (Array)
+import Debug exposing (log)
 
 
 put : Color -> Point -> DrawOp
@@ -35,6 +37,7 @@ fromColor color =
             , round (alpha * 255)
             ]
 
+
 toColor : Array Int -> Color
 toColor values =
     Color.rgba
@@ -46,7 +49,7 @@ toColor values =
 
 toColorHelp : Int -> Array Int -> Int
 toColorHelp index colorValues =
-    Array.get index colorValues |> Maybe.withDefault 0 
+    Array.get index colorValues |> Maybe.withDefault 0
 
 
 get : Point -> Canvas -> Color
@@ -61,7 +64,7 @@ get point canvas =
 rectangle : Point -> Size -> List Point
 rectangle point { width, height } =
     let
-        (x, y) =
+        ( x, y ) =
             Point.toInts point
 
         x1 =
@@ -71,36 +74,137 @@ rectangle point { width, height } =
             y + height
     in
         List.concat
-            [ line 
-                (Point.fromInts (x, y)) 
-                (Point.fromInts (x1 - 1, y))
-            , line 
-                (Point.fromInts (x, y)) 
-                (Point.fromInts (x, y1 - 1))
-            , line 
-                (Point.fromInts (x1, y1)) 
-                (Point.fromInts (x, y1))
-            , line 
-                (Point.fromInts (x1, y1)) 
-                (Point.fromInts (x1, y))
+            [ line
+                (Point.fromInts ( x, y ))
+                (Point.fromInts ( x1 - 1, y ))
+            , line
+                (Point.fromInts ( x, y ))
+                (Point.fromInts ( x, y1 - 1 ))
+            , line
+                (Point.fromInts ( x1, y1 ))
+                (Point.fromInts ( x, y1 ))
+            , line
+                (Point.fromInts ( x1, y1 ))
+                (Point.fromInts ( x1, y ))
             ]
 
 
-{-|
-    Bezier 
--}
+type alias Pixel =
+    List Int
 
+
+type alias Row =
+    List Pixel
+
+
+scale : Float -> Float -> Canvas -> Canvas
+scale xFactor yFactor canvas =
+    let
+        { width, height } =
+            Canvas.getSize canvas
+
+        xOccurances =
+            getOccurances xFactor width
+
+        yOccurances =
+            getOccurances yFactor height
+
+        newSize =
+            Size
+                (floor <| xFactor * toFloat width)
+                (floor <| yFactor * toFloat height)
+    in
+        Canvas.batch
+            [ PutImageData
+                (getScaledData xOccurances yOccurances (getRows canvas))
+                newSize
+                (Point.fromInts ( 0, 0 ))
+            ]
+            (Canvas.initialize newSize)
+
+
+getScaledData : List Int -> List Int -> List Row -> Array Int
+getScaledData xOccurances yOccurances rows =
+    List.map (List.map2 scaleHelp xOccurances) rows
+        |> List.map2 scaleHelp yOccurances
+        |> List.concat
+        |> List.concat
+        |> Array.fromList
+
+
+scaleHelp : Int -> List a -> List a
+scaleHelp n l =
+    List.concat (List.repeat n l)
+
+
+getOccurances : Float -> Int -> List Int
+getOccurances factor length =
+    List.range 0 (length - 1)
+        |> List.map (getOccurance factor)
+
+
+getOccurance : Float -> Int -> Int
+getOccurance factor i =
+    let
+        i_ =
+            floor <| factor * (toFloat i)
+
+        j =
+            floor <| factor * (toFloat (i + 1))
+    in
+        j - i_
+
+
+getRows : Canvas -> List Row
+getRows canvas =
+    let
+        { width, height } =
+            Canvas.getSize canvas
+    in
+        Canvas.getImageData
+            (Point.fromInts ( 0, 0 ))
+            (Size width height)
+            canvas
+            |> Array.toList
+            |> intoPixels []
+            |> intoRowsLoop width []
+
+
+intoRowsLoop : Int -> List Row -> List Pixel -> List Row
+intoRowsLoop width rows pixels =
+    if List.length pixels <= width then
+        pixels :: rows
+    else
+        intoRowsLoop
+            width
+            (List.take width pixels :: rows)
+            (List.drop width pixels)
+
+
+intoPixels : List Pixel -> List Int -> List Pixel
+intoPixels pixels data =
+    if List.length data <= 4 then
+        data :: pixels
+    else
+        intoPixels
+            (List.take 4 data :: pixels)
+            (List.drop 4 data)
+
+
+{-|
+    Bezier
+-}
 bezier : Int -> Point -> Point -> Point -> Point -> List Point
 bezier resolution p0 p1 p2 p3 =
     let
         points =
-            bezierLoop 
-                resolution 
-                0 
-                (Point.toFloats p0) 
-                (Point.toFloats p1) 
-                (Point.toFloats p2) 
-                (Point.toFloats p3) 
+            bezierLoop
+                resolution
+                0
+                (Point.toFloats p0)
+                (Point.toFloats p1)
+                (Point.toFloats p2)
+                (Point.toFloats p3)
                 []
     in
         List.map2 (,) points (List.drop 1 points)
@@ -113,7 +217,7 @@ applyLine ( p0, p1 ) =
     line p0 p1
 
 
-bezierLoop : Int -> Int -> ( Float, Float ) -> ( Float, Float ) ->  ( Float, Float ) -> ( Float, Float ) -> List Point -> List Point
+bezierLoop : Int -> Int -> ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> List Point -> List Point
 bezierLoop seg i p0 p1 p2 p3 points =
     let
         points_ =
@@ -126,7 +230,7 @@ bezierLoop seg i p0 p1 p2 p3 points =
 
 
 calcBezierPoint : Int -> Int -> ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> Point
-calcBezierPoint seg i (p0x, p0y) (p1x, p1y) (p2x, p2y) (p3x, p3y) =
+calcBezierPoint seg i ( p0x, p0y ) ( p1x, p1y ) ( p2x, p2y ) ( p3x, p3y ) =
     let
         ( a, b, c, d ) =
             calcBezier seg i
@@ -179,10 +283,10 @@ type alias LineStatics =
 line : Point -> Point -> List Point
 line p q =
     let
-        (px, py) =
+        ( px, py ) =
             Point.toInts p
 
-        (qx, qy) = 
+        ( qx, qy ) =
             Point.toInts q
 
         ( statics, error ) =

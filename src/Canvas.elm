@@ -157,6 +157,7 @@ loadImage =
       , 0, 0, 0, 255,      255, 255, 255, 255
       ]
 -}
+
 getImageData : Point -> Size -> Canvas -> Array Int
 getImageData =
     Native.Canvas.getImageData

@@ -54,6 +54,10 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
 
   function batch(drawOps, model) {
+    LOG("BATCH");
+
+    // console.log(drawOps)
+
     model = cloneModel(model);
 
     var ctx = model.canvas().getContext("2d");
