@@ -13,7 +13,6 @@ import Canvas.Point exposing (Point)
 import Canvas.Point as Point
 import Color exposing (Color)
 import Array exposing (Array)
-import Debug exposing (log)
 
 
 put : Color -> Point -> DrawOp
