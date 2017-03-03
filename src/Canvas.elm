@@ -73,7 +73,7 @@ type DrawOp
     | Rect Point Size
     | StrokeRect Point Size
     | StrokeStyle Color
-    | TextAlign String 
+    | TextAlign String
     | TextBaseline String
     | FillStyle Color
     | BeginPath
