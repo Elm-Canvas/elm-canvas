@@ -323,6 +323,11 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
   }
 
 
+  function toDataURL (mimetype, quality, model) {
+    return model.canvas().toDataURL(mimetype, quality);
+  }
+
+
   function getCssString (color) {
     return "rgba(" + [ color.red, color.green, color.blue, color.alpha ].join(",") + ")";
   }
@@ -453,6 +458,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
     toHtml: F2(toHtml), // eslint-disable-line no-undef
     getImageData: F3(getImageData), // eslint-disable-line no-undef
     clone: cloneModel,
-    batch: F2(batch) // eslint-disable-line no-undef
+    batch: F2(batch), // eslint-disable-line no-undef
+    toDataURL: F3(toDataURL) // eslint-disable-line no-undef
   };
 }();

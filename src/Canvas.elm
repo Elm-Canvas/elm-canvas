@@ -12,6 +12,7 @@ module Canvas
         , getImageData
         , getSize
         , setSize
+        , toDataURL
         )
 
 {-| The canvas html element is a very simple way to render 2D graphics. Check out these examples, and get an explanation of the canvas element [here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first, because its probably what you need. Elm-Canvas is for when you need unusually direct and low level access to the canvas element.
@@ -74,7 +75,7 @@ type DrawOp
     | Rect Point Size
     | StrokeRect Point Size
     | StrokeStyle Color
-    | TextAlign String 
+    | TextAlign String
     | TextBaseline String
     | FillStyle Color
     | BeginPath
@@ -174,6 +175,13 @@ getSize =
 setSize : Size -> Canvas -> Canvas
 setSize =
     Native.Canvas.setSize
+
+
+{-| Given a `String` mimetype, a `Float` quality, and a source `Canvas`, return a base64 encoded string of that data.
+-}
+toDataURL : String -> Float -> Canvas -> String
+toDataURL =
+    Native.Canvas.toDataURL
 
 
 clone : Canvas -> Canvas
