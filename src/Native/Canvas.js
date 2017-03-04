@@ -382,11 +382,11 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
 
   function setSize(size, model) {
-    model = cloneModel(model);
-    model.width = size.width;
-    model.height = size.height;
+    var canvas = cloneModel(model).canvas();
+    canvas.width = size.width;
+    canvas.height = size.height;
 
-    return model;
+    return makeModel(canvas);
   }
 
 
