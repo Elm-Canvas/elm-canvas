@@ -78,7 +78,7 @@ invertedImageData : Canvas -> List Int
 invertedImageData canvas =
     canvas
         |> Canvas.getImageData
-            (Point.fromInts (0, 0))
+            (Point.fromInts ( 0, 0 ))
             (Canvas.getSize canvas)
         |> List.indexedMap invertHelp
 
