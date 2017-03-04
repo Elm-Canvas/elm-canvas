@@ -82,7 +82,10 @@ type DrawOp
     | ShadowOffsetY Float
     | Stroke
     | Fill
+    | FillRect Point Size
     | Rect Point Size
+    | Rotate Float
+    | Scale Float Float
     | StrokeRect Point Size
     | StrokeStyle Color
     | TextAlign String
@@ -93,6 +96,8 @@ type DrawOp
     | QuadraticCurveTo Point Point
     | PutImageData (List Int) Size Point
     | ClearRect Point Size
+    | Clip
+    | ClosePath
     | DrawImage Canvas DrawImageParams
 
 

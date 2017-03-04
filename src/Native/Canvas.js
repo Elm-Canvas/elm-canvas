@@ -204,13 +204,22 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.quadraticCurveTo(point._0, point._1, point1._0, point1._1);
       break;
 
-
     case "Rect" :
 
       point = drawOp._0;
       size = drawOp._1;
 
       ctx.rect(point._0, point._1, size.width, size.height);
+      break;
+
+    case "Rotate" :
+
+      ctx.rotate(drawOp._0);
+      break;
+
+    case "Scale" :
+
+      ctx.scale(drawOp._0, drawOp._1);
       break;
 
     case "StrokeRect" :
@@ -250,6 +259,14 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.fill();
       break;
 
+    case "FillRect" :
+
+      point = drawOp._0;
+      size = drawOp._1;
+
+      ctx.fillRect(point._0, point._1, size.width, size.height);
+      break;
+
     case "PutImageData" :
 
       point = drawOp._2;
@@ -271,6 +288,16 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       size = drawOp._1;
 
       ctx.clearRect(point._0, point._1, size.width, size.height);
+      break;
+
+    case "Clip" :
+
+      ctx.clip();
+      break;
+
+    case "ClosePath" : 
+
+      ctx.clearPath();
       break;
 
     case "DrawImage":
