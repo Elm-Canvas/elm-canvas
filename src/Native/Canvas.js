@@ -204,13 +204,22 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.quadraticCurveTo(point._0, point._1, point1._0, point1._1);
       break;
 
-
     case "Rect" :
 
       point = drawOp._0;
       size = drawOp._1;
 
       ctx.rect(point._0, point._1, size.width, size.height);
+      break;
+
+    case "Rotate" :
+
+      ctx.rotate(drawOp._0);
+      break;
+
+    case "Scale" :
+
+      ctx.scale(drawOp._0, drawOp._1);
       break;
 
     case "StrokeRect" :
@@ -250,11 +259,19 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.fill();
       break;
 
+    case "FillRect" :
+
+      point = drawOp._0;
+      size = drawOp._1;
+
+      ctx.fillRect(point._0, point._1, size.width, size.height);
+      break;
+
     case "PutImageData" :
 
       point = drawOp._2;
       size = drawOp._1;
-      var data = _elm_lang$core$Native_Array.toJSArray(drawOp._0); // eslint-disable-line no-undef
+      var data = _elm_lang$core$Native_List.toArray(drawOp._0); // eslint-disable-line no-undef
 
       var imageData = ctx.createImageData(size.width, size.height);
 
@@ -271,6 +288,16 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       size = drawOp._1;
 
       ctx.clearRect(point._0, point._1, size.width, size.height);
+      break;
+
+    case "Clip" :
+
+      ctx.clip();
+      break;
+
+    case "ClosePath" : 
+
+      ctx.clearPath();
       break;
 
     case "DrawImage":
@@ -323,6 +350,11 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
   }
 
 
+  function toDataURL (mimetype, quality, model) {
+    return model.canvas().toDataURL(mimetype, quality);
+  }
+
+
   function getCssString (color) {
     return "rgba(" + [ color.red, color.green, color.blue, color.alpha ].join(",") + ")";
   }
@@ -372,16 +404,16 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       size.height
     );
 
-    return _elm_lang$core$Native_Array.fromJSArray(imageData.data);  // eslint-disable-line no-undef
+    return _elm_lang$core$Native_List.fromArray(imageData.data); // eslint-disable-line no-undef
   }
 
 
   function setSize(size, model) {
-    model = cloneModel(model);
-    model.width = size.width;
-    model.height = size.height;
+    var canvas = cloneModel(model).canvas();
+    canvas.width = size.width;
+    canvas.height = size.height;
 
-    return model;
+    return makeModel(canvas);
   }
 
 
@@ -453,6 +485,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
     toHtml: F2(toHtml), // eslint-disable-line no-undef
     getImageData: F3(getImageData), // eslint-disable-line no-undef
     clone: cloneModel,
-    batch: F2(batch) // eslint-disable-line no-undef
+    batch: F2(batch), // eslint-disable-line no-undef
+    toDataURL: F3(toDataURL) // eslint-disable-line no-undef
   };
 }();

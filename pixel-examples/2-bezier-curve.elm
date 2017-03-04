@@ -78,5 +78,5 @@ draws resolution =
         (Point.fromInts ( 90, 90 ))
         (Point.fromInts ( 90, 10 ))
         (Point.fromInts ( 10, 90 ))
-        (Point.fromInts ( 10, 10 ))
+        (Point.fromInts ( 10, 10 ))       
         |> List.map (Pixel.put Color.red)

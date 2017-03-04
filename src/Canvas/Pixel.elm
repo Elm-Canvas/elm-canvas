@@ -7,6 +7,15 @@ module Canvas.Pixel
         , bezier
         )
 
+{-|The basic methods of the canvas element do not lend themselves well to pixel perfect canvas drawing. This module exposes a number of functions which make doing so easy. By pixel perfect, we mean, drawing with no anti-aliased edges.
+
+# Basics
+@docs put, get
+
+# Point Calculation
+@docs line, rectangle, bezier
+-}
+
 import Canvas exposing (Canvas, Size, DrawOp(..))
 import Canvas.Point exposing (Point)
 import Canvas.Point as Point
@@ -14,6 +23,15 @@ import Color exposing (Color)
 import Array exposing (Array)
 
 
+
+{-|Give `put` a `Color`, and a `Point`, and you have a `DrawOp` which will set that exact pixel to that exact color.
+
+    putRedPixel : Point -> Canvas -> Canvas
+    putRedPixel point =
+        Canvas.batch
+            [ Pixel.put Color.red point ]
+
+-}
 put : Color -> Point -> DrawOp
 put color point =
     PutImageData
@@ -22,33 +40,43 @@ put color point =
         point
 
 
-fromColor : Color -> Array Int
+fromColor : Color -> List Int
 fromColor color =
     let
         { red, green, blue, alpha } =
             Color.toRgb color
     in
-        Array.fromList
-            [ red
-            , green
-            , blue
-            , round (alpha * 255)
-            ]
+        [ red
+        , green
+        , blue
+        , round (alpha * 255)
+        ]
 
-toColor : Array Int -> Color
+
+toColor : List Int -> Color
 toColor colorValues =
-    Color.rgba
-        (toColorHelp 0 colorValues)
-        (toColorHelp 1 colorValues)
-        (toColorHelp 2 colorValues)
-        (((toColorHelp 3 colorValues) |> toFloat) / 255)
+    let
+        rgba =
+            Array.fromList colorValues
+    in
+        Color.rgba
+            (toColorHelp 0 rgba)
+            (toColorHelp 1 rgba)
+            (toColorHelp 2 rgba)
+            (((toColorHelp 3 rgba) |> toFloat) / 255)
 
 
 toColorHelp : Int -> Array Int -> Int
 toColorHelp index colorValues =
-    Array.get index colorValues |> Maybe.withDefault 0 
+    Array.get index colorValues |> Maybe.withDefault 0
 
 
+{-|Also as fundamental to `put`, `get` will give you the color value of a specific pixel in a `Canvas`.
+
+    isBlueAt : Point -> Canvas -> Bool
+    isBlueAt point canvas =
+        (Pixel.get point canvas) == Color.blue
+-}
 get : Point -> Canvas -> Color
 get point canvas =
     Canvas.getImageData
@@ -58,10 +86,18 @@ get point canvas =
         |> toColor
 
 
+{-|To get a list of `Point` along the edge of a rectangle, use `Pixel.rectangle`.
+
+    drawRectangle : Color -> Point -> Size -> Canvas -> Canvas
+    drawRectangle color point size =
+        Pixel.rectangle point size
+            |> List.map (Pixel.put color)
+            |> Canvas.batch
+-}
 rectangle : Point -> Size -> List Point
 rectangle point { width, height } =
     let
-        (x, y) =
+        ( x, y ) =
             Point.toInts point
 
         x1 =
@@ -71,32 +107,53 @@ rectangle point { width, height } =
             y + height
     in
         List.concat
-            [ line 
-                (Point.fromInts (x, y)) 
-                (Point.fromInts (x1 - 1, y))
-            , line 
-                (Point.fromInts (x, y)) 
-                (Point.fromInts (x, y1 - 1))
-            , line 
-                (Point.fromInts (x1, y1)) 
-                (Point.fromInts (x, y1))
-            , line 
-                (Point.fromInts (x1, y1)) 
-                (Point.fromInts (x1, y))
+            [ line
+                (Point.fromInts ( x, y ))
+                (Point.fromInts ( x1 - 1, y ))
+            , line
+                (Point.fromInts ( x, y ))
+                (Point.fromInts ( x, y1 - 1 ))
+            , line
+                (Point.fromInts ( x1, y1 ))
+                (Point.fromInts ( x, y1 ))
+            , line
+                (Point.fromInts ( x1, y1 ))
+                (Point.fromInts ( x1, y ))
             ]
 
 
+{-|To make a curved line, try this function called `bezier`, named after [the bezier curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve). It works by approximation, drawing many small straight lines along a curved path. Its first parameter, an `Int`, is the resolution of the curve (resolution=1 will be just a straight line, and higher values will compute a more perfect curve). The remaining parameters are `Point`. The first and last `Point` refer to the starting and ending points of the curve. The middle two are control points, which are where the curve will curve towards from each end point.
+
+    drawArc : Color -> Point -> Point -> Int -> Canvas -> Canvas
+    drawArc color starting ending height =
+        let
+            ( sx, sy ) = 
+                Point.toInts starting
+
+            ( ex, ey ) =
+                Point.toInts ending
+        in 
+            Pixel.bezier 
+                (abs (sx - ex)) 
+                starting
+                (Point.fromInts (sx, sy + height))
+                (Point.fromInts (ex, ey + height))
+                ending
+                |> List.map (Pixel.put color)
+                |> Canvas.batch
+
+-}
 bezier : Int -> Point -> Point -> Point -> Point -> List Point
 bezier resolution p0 p1 p2 p3 =
     let
         points =
-            bezierLoop 
-                resolution 
-                0 
-                (Point.toFloats p0) 
-                (Point.toFloats p1) 
-                (Point.toFloats p2) 
-                (Point.toFloats p3) 
+            bezierLoop
+                resolution
+                0
+                (Point.toFloats p0)
+                (Point.toFloats p1)
+                (Point.toFloats p2)
+                (Point.toFloats p3)
                 []
     in
         List.map2 (,) points (List.drop 1 points)
@@ -109,7 +166,7 @@ applyLine ( p0, p1 ) =
     line p0 p1
 
 
-bezierLoop : Int -> Int -> ( Float, Float ) -> ( Float, Float ) ->  ( Float, Float ) -> ( Float, Float ) -> List Point -> List Point
+bezierLoop : Int -> Int -> ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> List Point -> List Point
 bezierLoop seg i p0 p1 p2 p3 points =
     let
         points_ =
@@ -122,7 +179,7 @@ bezierLoop seg i p0 p1 p2 p3 points =
 
 
 calcBezierPoint : Int -> Int -> ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> Point
-calcBezierPoint seg i (p0x, p0y) (p1x, p1y) (p2x, p2y) (p3x, p3y) =
+calcBezierPoint seg i ( p0x, p0y ) ( p1x, p1y ) ( p2x, p2y ) ( p3x, p3y ) =
     let
         ( a, b, c, d ) =
             calcBezier seg i
@@ -172,13 +229,21 @@ type alias LineStatics =
     }
 
 
+{-|Given a starting and ending `Point`, this function will give you every `Point` along that line. It uses the bresenham line algorithm. 
+
+    drawLine : Color -> Point -> Point -> Canvas -> Canvas
+    drawLine color starting ending =
+        Pixel.line starting ending 
+            |> List.map (Pixel.put color)
+            |> Canvas.batch
+-}
 line : Point -> Point -> List Point
 line p q =
     let
-        (px, py) =
+        ( px, py ) =
             Point.toInts p
 
-        (qx, qy) = 
+        ( qx, qy ) =
             Point.toInts q
 
         ( statics, error ) =
