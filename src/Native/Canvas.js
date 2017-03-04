@@ -222,6 +222,11 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.scale(drawOp._0, drawOp._1);
       break;
 
+    case "SetLineDash" :
+
+      ctx.setLineDash(_elm_lang$core$Native_List.toArray(drawOp._0)); // eslint-disable-line no-undef
+      break;
+
     case "StrokeRect" :
 
       point = drawOp._0;
