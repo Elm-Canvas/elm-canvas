@@ -86,6 +86,10 @@ type DrawOp
     | Rect Point Size
     | Rotate Float
     | Scale Float Float
+    | SetLineDash (List Int)
+    | SetTransform Float Float Float Float Float Float
+    | Transform Float Float Float Float Float Float
+    | Translate Point
     | StrokeRect Point Size
     | StrokeStyle Color
     | TextAlign String
