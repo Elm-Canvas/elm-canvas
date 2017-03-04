@@ -1,3 +1,8 @@
+/*global _elm_lang$core$Native_List */
+/*global _elm_lang$core$Color$toRgb */
+/*global _elm_lang$core$Native_Scheduler */
+/*global _elm_lang$virtual_dom$Native_VirtualDom */
+
 var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line no-unused-vars
 
 
@@ -162,7 +167,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
     case "ShadowColor" :
 
-      color = _elm_lang$core$Color$toRgb(drawOp._0); // eslint-disable-line no-undef
+      color = _elm_lang$core$Color$toRgb(drawOp._0);
 
       ctx.shadowColor = getCssString(color);
       break;
@@ -222,41 +227,6 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.scale(drawOp._0, drawOp._1);
       break;
 
-    case "SetLineDash" :
-
-      ctx.setLineDash(_elm_lang$core$Native_List.toArray(drawOp._0)); // eslint-disable-line no-undef
-      break;
-
-    case "SetTransform" :
-
-      ctx.setTransform(
-        drawOp._0, 
-        drawOp._1, 
-        drawOp._2,
-        drawOp._3,
-        drawOp._4,
-        drawOp._5
-      );
-      break;
-
-    case "Transform" :
-
-      ctx.transform(
-        drawOp._0, 
-        drawOp._1, 
-        drawOp._2,
-        drawOp._3,
-        drawOp._4,
-        drawOp._5
-      );
-      break;
-
-    case "Translate" :
-
-      point = drawOp._0;
-      ctx.translate(point._0, point._1);
-      break;
-
     case "StrokeRect" :
 
       point = drawOp._0;
@@ -267,7 +237,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
     case "StrokeStyle" :
 
-      color = _elm_lang$core$Color$toRgb(drawOp._0); // eslint-disable-line no-undef
+      color = _elm_lang$core$Color$toRgb(drawOp._0);
 
       ctx.strokeStyle = getCssString(color);
       break;
@@ -284,7 +254,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
     case "FillStyle" :
 
-      color = _elm_lang$core$Color$toRgb(drawOp._0); // eslint-disable-line no-undef
+      color = _elm_lang$core$Color$toRgb(drawOp._0);
 
       ctx.fillStyle = getCssString(color);
       break;
@@ -306,7 +276,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
 
       point = drawOp._2;
       size = drawOp._1;
-      var data = _elm_lang$core$Native_List.toArray(drawOp._0); // eslint-disable-line no-undef
+      var data = _elm_lang$core$Native_List.toArray(drawOp._0);
 
       var imageData = ctx.createImageData(size.width, size.height);
 
@@ -398,7 +368,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
   function loadImage(source) {
     LOG("LOAD IMAGE");
 
-    var Scheduler = _elm_lang$core$Native_Scheduler; // eslint-disable-line no-undef
+    var Scheduler = _elm_lang$core$Native_Scheduler;
     return Scheduler.nativeBinding(function (callback) {
       var img = new Image();
 
@@ -439,7 +409,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       size.height
     );
 
-    return _elm_lang$core$Native_List.fromArray(imageData.data); // eslint-disable-line no-undef
+    return _elm_lang$core$Native_List.fromArray(imageData.data);
   }
 
 
@@ -464,7 +434,7 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
   function toHtml(factList, model) {
     LOG("TO HTML");
 
-    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation); // eslint-disable-line no-undef
+    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation);
 
   }
 
