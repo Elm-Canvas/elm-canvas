@@ -7,7 +7,7 @@ module Canvas.Events
         , onDoubleClick
         )
 
-{-|These functions are just like the `Html.Events` functions `onMouseDown`, `onMouseUp`, etc, except that they pass along a `Point`, representing exactly where on the canvas the mouse activity occured. They can be used on other elements too, like divs.
+{-| These functions are just like the `Html.Events` functions `onMouseDown`, `onMouseUp`, etc, except that they pass along a `Point`, representing exactly where on the canvas the mouse activity occured. They can be used on other elements too, like divs.
 
 @docs onMouseDown, onMouseUp, onMouseMove, onClick, onDoubleClick
 -}
@@ -20,7 +20,7 @@ import Json.Decode as Json
 
 
 {-| Just like the `onMouseDown` in `Html.Events`, but this one passes along a `Point` that is relative to the `Canvas`. So clicking right in the middle of a 200x200 `Canvas` will return a `Point.toInts point == ( 100, 100 )`.
-    
+
     Canvas.toHtml
         [ Canvas.Events.onClick CanvasClick ]
         canvas

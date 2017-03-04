@@ -59,7 +59,7 @@ type alias Size =
     { width : Int, height : Int }
 
 
-{-|`DrawOp` are how you can draw onto `Canvas`. To do so, give a `List DrawOp` to `Canvas.batch`, and apply that to a `Canvas`. Each `DrawOp` corresponds almost exactly to a method in the canvas api. [You can look up all the context methods here at the Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D). The biggest exception to the canvas api, is how we handle `ctx.drawImage()`. Since `ctx.drawImage()` can take parameters in three different ways, we made a union type `DrawImageParams` to handle each case. 
+{-| `DrawOp` are how you can draw onto `Canvas`. To do so, give a `List DrawOp` to `Canvas.batch`, and apply that to a `Canvas`. Each `DrawOp` corresponds almost exactly to a method in the canvas api. [You can look up all the context methods here at the Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D). The biggest exception to the canvas api, is how we handle `ctx.drawImage()`. Since `ctx.drawImage()` can take parameters in three different ways, we made a union type `DrawImageParams` to handle each case.
 -}
 type DrawOp
     = Font String
@@ -109,7 +109,7 @@ type DrawImageParams
     | CropScaled Point Size Point Size
 
 
-{-| `initialize` takes `Size`, and returns a `Canvas` of that size. A freshly initialized `Canvas` is entirely transparent, meaning if you used `getImageData` to get its image data, it would be a `List Int` entirely of 0s. 
+{-| `initialize` takes `Size`, and returns a `Canvas` of that size. A freshly initialized `Canvas` is entirely transparent, meaning if you used `getImageData` to get its image data, it would be a `List Int` entirely of 0s.
 
     squareCanvas : Int -> Canvas
     squareCanvas length =
@@ -130,7 +130,8 @@ toHtml : List (Attribute msg) -> Canvas -> Html msg
 toHtml =
     Native.Canvas.toHtml
 
-{-| This is our primary way of drawing onto canvases. Give `batch` a list of `DrawOp` and you can apply those `DrawOp` to a canvas. 
+
+{-| This is our primary way of drawing onto canvases. Give `batch` a list of `DrawOp` and you can apply those `DrawOp` to a canvas.
 
     drawLine : Point -> Point -> Canvas -> Canvas
     drawLine p0 p1 =
@@ -156,11 +157,11 @@ batch =
     update : Msg -> Model -> (Model, Cmd Msg)
     update message model =
         case message of
-            ImageLoaded -> 
+            ImageLoaded ->
                 case Result.toMaybe result of
                     Just canvas ->
                         -- ..
-            
+
                     Nothing ->
                         -- ..
         -- ..
@@ -170,7 +171,7 @@ loadImage =
     Native.Canvas.loadImage
 
 
-{-| `Canvas` have data. Its data comes in the form `List Int`, all of which are between 0 and 255. They represent the RGBA values of every pixel in the image, where the first four `Int` are the color values of the first pixel, the next four `Int` the second pixels, etc. The length of the image data is always a multiple of four, since each pixel is represented by four `Int`. 
+{-| `Canvas` have data. Its data comes in the form `List Int`, all of which are between 0 and 255. They represent the RGBA values of every pixel in the image, where the first four `Int` are the color values of the first pixel, the next four `Int` the second pixels, etc. The length of the image data is always a multiple of four, since each pixel is represented by four `Int`.
 
     -- twoByTwoCanvas =
 
@@ -211,5 +212,3 @@ setSize =
 toDataUrl : String -> Float -> Canvas -> String
 toDataUrl =
     Native.Canvas.toDataURL
-
-

@@ -7,7 +7,7 @@ module Canvas.Pixel
         , bezier
         )
 
-{-|The basic methods of the canvas element do not lend themselves well to pixel perfect canvas drawing. This module exposes a number of functions which make doing so easy. By pixel perfect, we mean, drawing with no anti-aliased edges.
+{-| The basic methods of the canvas element do not lend themselves well to pixel perfect canvas drawing. This module exposes a number of functions which make doing so easy. By pixel perfect, we mean, drawing with no anti-aliased edges.
 
 # Basics
 @docs put, get
@@ -23,8 +23,7 @@ import Color exposing (Color)
 import Array exposing (Array)
 
 
-
-{-|Give `put` a `Color`, and a `Point`, and you have a `DrawOp` which will set that exact pixel to that exact color.
+{-| Give `put` a `Color`, and a `Point`, and you have a `DrawOp` which will set that exact pixel to that exact color.
 
     putRedPixel : Point -> Canvas -> Canvas
     putRedPixel point =
@@ -71,7 +70,7 @@ toColorHelp index colorValues =
     Array.get index colorValues |> Maybe.withDefault 0
 
 
-{-|Also as fundamental to `put`, `get` will give you the color value of a specific pixel in a `Canvas`.
+{-| Also as fundamental to `put`, `get` will give you the color value of a specific pixel in a `Canvas`.
 
     isBlueAt : Point -> Canvas -> Bool
     isBlueAt point canvas =
@@ -86,7 +85,7 @@ get point canvas =
         |> toColor
 
 
-{-|To get a list of `Point` along the edge of a rectangle, use `Pixel.rectangle`.
+{-| To get a list of `Point` along the edge of a rectangle, use `Pixel.rectangle`.
 
     drawRectangle : Color -> Point -> Size -> Canvas -> Canvas
     drawRectangle color point size =
@@ -122,19 +121,19 @@ rectangle point { width, height } =
             ]
 
 
-{-|To make a curved line, try this function called `bezier`, named after [the bezier curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve). It works by approximation, drawing many small straight lines along a curved path. Its first parameter, an `Int`, is the resolution of the curve (resolution=1 will be just a straight line, and higher values will compute a more perfect curve). The remaining parameters are `Point`. The first and last `Point` refer to the starting and ending points of the curve. The middle two are control points, which are where the curve will curve towards from each end point.
+{-| To make a curved line, try this function called `bezier`, named after [the bezier curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve). It works by approximation, drawing many small straight lines along a curved path. Its first parameter, an `Int`, is the resolution of the curve (resolution=1 will be just a straight line, and higher values will compute a more perfect curve). The remaining parameters are `Point`. The first and last `Point` refer to the starting and ending points of the curve. The middle two are control points, which are where the curve will curve towards from each end point.
 
     drawArc : Color -> Point -> Point -> Int -> Canvas -> Canvas
     drawArc color starting ending height =
         let
-            ( sx, sy ) = 
+            ( sx, sy ) =
                 Point.toInts starting
 
             ( ex, ey ) =
                 Point.toInts ending
-        in 
-            Pixel.bezier 
-                (abs (sx - ex)) 
+        in
+            Pixel.bezier
+                (abs (sx - ex))
                 starting
                 (Point.fromInts (sx, sy + height))
                 (Point.fromInts (ex, ey + height))
@@ -229,11 +228,11 @@ type alias LineStatics =
     }
 
 
-{-|Given a starting and ending `Point`, this function will give you every `Point` along that line. It uses the bresenham line algorithm. 
+{-| Given a starting and ending `Point`, this function will give you every `Point` along that line. It uses the bresenham line algorithm.
 
     drawLine : Color -> Point -> Point -> Canvas -> Canvas
     drawLine color starting ending =
-        Pixel.line starting ending 
+        Pixel.line starting ending
             |> List.map (Pixel.put color)
             |> Canvas.batch
 -}
