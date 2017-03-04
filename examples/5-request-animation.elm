@@ -1,3 +1,5 @@
+module Main exposing (..)
+
 import Html exposing (Html, div, text)
 import Random exposing (Generator)
 import Time exposing (Time)
@@ -151,9 +153,11 @@ update msg model =
                 updateDot : Dot -> Dot
                 updateDot dot =
                     let
-                        ( px, py ) = Point.toFloats dot.position
+                        ( px, py ) =
+                            Point.toFloats dot.position
 
-                        ( vx, vy ) = Point.toFloats dot.velocity
+                        ( vx, vy ) =
+                            Point.toFloats dot.velocity
 
                         positionInc : { x : Float, y : Float }
                         positionInc =
@@ -196,8 +200,8 @@ update msg model =
                                 )
                     in
                         { dot
-                        | position = position
-                        , velocity = velocity
+                            | position = position
+                            , velocity = velocity
                         }
 
                 fade : List DrawOp
@@ -219,7 +223,8 @@ update msg model =
                         drawDot : Dot -> List DrawOp
                         drawDot dot =
                             let
-                                ( originX, originY ) = Point.toFloats dot.position
+                                ( originX, originY ) =
+                                    Point.toFloats dot.position
 
                                 halfSize : Float
                                 halfSize =
@@ -228,7 +233,7 @@ update msg model =
                                 [ BeginPath
                                 , FillStyle dot.color
                                 , Rect
-                                    (Point.fromFloats ( (originX - halfSize), (originY - halfSize)) )
+                                    (Point.fromFloats ( (originX - halfSize), (originY - halfSize) ))
                                     (Size (round dotSize) (round dotSize))
                                 , Fill
                                 ]
