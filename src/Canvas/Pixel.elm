@@ -22,27 +22,30 @@ put color point =
         point
 
 
-fromColor : Color -> Array Int
+fromColor : Color -> List Int
 fromColor color =
     let
         { red, green, blue, alpha } =
             Color.toRgb color
     in
-        Array.fromList
-            [ red
-            , green
-            , blue
-            , round (alpha * 255)
-            ]
+        [ red
+        , green
+        , blue
+        , round (alpha * 255)
+        ]
 
 
-toColor : Array Int -> Color
+toColor : List Int -> Color
 toColor colorValues =
-    Color.rgba
-        (toColorHelp 0 colorValues)
-        (toColorHelp 1 colorValues)
-        (toColorHelp 2 colorValues)
-        (((toColorHelp 3 colorValues) |> toFloat) / 255)
+    let
+        rgba =
+            Array.fromList colorValues
+    in
+        Color.rgba
+            (toColorHelp 0 rgba)
+            (toColorHelp 1 rgba)
+            (toColorHelp 2 rgba)
+            (((toColorHelp 3 rgba) |> toFloat) / 255)
 
 
 toColorHelp : Int -> Array Int -> Int

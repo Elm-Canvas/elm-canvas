@@ -58,7 +58,7 @@ update message model =
                     , loadImage
                     )
 
-        Blit position ->
+        Blit point ->
             case model of
                 Loading ->
                     ( Loading
@@ -66,22 +66,21 @@ update message model =
                     )
 
                 GotCanvas canvas drawOps ->
-                    let
-                        additionalDrawOps : List DrawOp
-                        additionalDrawOps =
-                            [ DrawImage canvas (Scaled position (Size 64 64))
-                            ]
+                    ( GotCanvas canvas (blit point canvas drawOps)
+                    , Cmd.none
+                    )
 
-                        newDrawOps : List DrawOp
-                        newDrawOps =
-                            if (List.length drawOps) > 200 then
-                                List.drop 2 drawOps
-                            else
-                                drawOps
-                    in
-                        ( GotCanvas canvas (List.append newDrawOps additionalDrawOps)
-                        , Cmd.none
-                        )
+
+blit : Point -> Canvas -> List DrawOp -> List DrawOp
+blit point canvas drawOps =
+    let
+        newestOps =
+            if List.length drawOps > 200 then
+                List.take 199 drawOps
+            else
+                drawOps
+    in
+        (DrawImage canvas (Scaled point (Size 64 64))) :: newestOps
 
 
 

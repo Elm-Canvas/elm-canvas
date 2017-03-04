@@ -26,7 +26,6 @@ module Canvas
 -}
 
 import Html exposing (Html, Attribute)
-import Array exposing (Array)
 import Task exposing (Task)
 import Color exposing (Color)
 import Canvas.Point exposing (Point)
@@ -81,7 +80,7 @@ type DrawOp
     | BeginPath
     | BezierCurveTo Point Point Point
     | QuadraticCurveTo Point Point
-    | PutImageData (Array Int) Size Point
+    | PutImageData (List Int) Size Point
     | ClearRect Point Size
     | DrawImage Canvas DrawImageParams
 
@@ -158,7 +157,7 @@ loadImage =
       , 0, 0, 0, 255,      255, 255, 255, 255
       ]
 -}
-getImageData : Point -> Size -> Canvas -> Array Int
+getImageData : Point -> Size -> Canvas -> List Int
 getImageData =
     Native.Canvas.getImageData
 
