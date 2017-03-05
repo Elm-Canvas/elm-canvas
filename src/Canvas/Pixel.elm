@@ -23,7 +23,6 @@ import Canvas.Point exposing (Point)
 import Canvas.Point as Point
 import Color exposing (Color)
 import Array exposing (Array)
-import Debug exposing (log)
 
 
 {-| Give `put` a `Color`, and a `Point`, and you have a `DrawOp` which will set that exact pixel to that exact color.
