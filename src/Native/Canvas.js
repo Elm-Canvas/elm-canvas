@@ -227,6 +227,41 @@ var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line 
       ctx.scale(drawOp._0, drawOp._1);
       break;
 
+    case "SetLineDash" :
+
+      ctx.setLineDash(_elm_lang$core$Native_List.toArray(drawOp._0));
+      break;
+
+    case "SetTransform" :
+
+      ctx.setTransform(
+        drawOp._0, 
+        drawOp._1, 
+        drawOp._2,
+        drawOp._3,
+        drawOp._4,
+        drawOp._5
+      );
+      break;
+
+    case "Transform" :
+
+      ctx.transform(
+        drawOp._0, 
+        drawOp._1, 
+        drawOp._2,
+        drawOp._3,
+        drawOp._4,
+        drawOp._5
+      );
+      break;
+
+    case "Translate" :
+
+      point = drawOp._0;
+      ctx.translate(point._0, point._1);
+      break;
+
     case "StrokeRect" :
 
       point = drawOp._0;

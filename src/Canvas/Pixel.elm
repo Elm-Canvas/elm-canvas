@@ -5,6 +5,8 @@ module Canvas.Pixel
         , line
         , rectangle
         , bezier
+        , ellipse
+        , circle
         )
 
 {-| The basic methods of the canvas element do not lend themselves well to pixel perfect canvas drawing. This module exposes a number of functions which make doing so easy. By pixel perfect, we mean, drawing with no anti-aliased edges.
@@ -87,14 +89,14 @@ get point canvas =
 
 {-| To get a list of `Point` along the edge of a rectangle, use `Pixel.rectangle`.
 
-    drawRectangle : Color -> Point -> Size -> Canvas -> Canvas
-    drawRectangle color point size =
-        Pixel.rectangle point size
+    drawRectangle : Color -> Size -> Point -> Canvas -> Canvas
+    drawRectangle color size point =
+        Pixel.rectangle size point
             |> List.map (Pixel.put color)
             |> Canvas.batch
 -}
-rectangle : Point -> Size -> List Point
-rectangle point { width, height } =
+rectangle : Size -> Point -> List Point
+rectangle { width, height } point =
     let
         ( x, y ) =
             Point.toInts point
@@ -119,6 +121,108 @@ rectangle point { width, height } =
                 (Point.fromInts ( x1, y1 ))
                 (Point.fromInts ( x1, y ))
             ]
+
+
+{-| To get a list of `Point` along the edge of a circle of diameter `Int`, use `Pixel.circle`.
+
+    drawCircle : Color -> Int -> Point -> Canvas -> Canvas
+    drawCircle color diameter point =
+        Pixel.circle diameter point
+            |> List.map (Pixel.put color)
+            |> Canvas.batch
+-}
+circle : Int -> Point -> List Point
+circle diameter =
+    ellipse (Size diameter diameter)
+
+
+{-| To get a list of `Point` along the edge of a ellipse of dimensions `Size`, use `Pixel.ellipse`.
+
+    circle : Int -> Point -> List Point
+    circle diameter point =
+        ellipse (Size diameter diameter) point
+-}
+ellipse : Size -> Point -> List Point
+ellipse { width, height } point =
+    let
+        adjustedPoint =
+            let
+                ( x, y ) =
+                    Point.toInts point
+            in
+                Point.fromInts
+                    ( x + width
+                    , y + height
+                    )
+
+        firstHalf =
+            ellipseLoopFirst
+                (Point.toInts adjustedPoint)
+                ( 0, height )
+                (2 * (width ^ 2) + (height ^ 2) * (1 - 2 * height))
+                (Size width height)
+                []
+
+        secondHalf =
+            ellipseLoopSecond
+                (Point.toInts adjustedPoint)
+                ( width, 0 )
+                (2 * (width ^ 2) + (height ^ 2) * (1 - 2 * width))
+                (Size width height)
+                []
+    in
+        List.map Point.fromInts (List.append firstHalf secondHalf)
+
+
+ellipseLoopFirst : ( Int, Int ) -> ( Int, Int ) -> Int -> Size -> List ( Int, Int ) -> List ( Int, Int )
+ellipseLoopFirst ( cx, cy ) ( x, y ) sigma { width, height } points =
+    if x * (height ^ 2) <= y * (width ^ 2) then
+        let
+            ( dy, dSigma ) =
+                if sigma >= 0 then
+                    ( 1, (4 * (width ^ 2)) * (1 - y) )
+                else
+                    ( 0, 0 )
+        in
+            ellipseLoopFirst
+                ( cx, cy )
+                ( x + 1, (y - dy) )
+                (sigma + dSigma + ((height ^ 2) * ((4 * x) + 6)))
+                (Size width height)
+                (addPoints cx cy x y points)
+    else
+        points
+
+
+ellipseLoopSecond : ( Int, Int ) -> ( Int, Int ) -> Int -> Size -> List ( Int, Int ) -> List ( Int, Int )
+ellipseLoopSecond ( cx, cy ) ( x, y ) sigma { width, height } points =
+    if y * (width ^ 2) <= x * (height ^ 2) then
+        let
+            ( dx, dSigma ) =
+                if sigma >= 0 then
+                    ( 1, (4 * (height ^ 2)) * (1 - x) )
+                else
+                    ( 0, 0 )
+        in
+            ellipseLoopSecond
+                ( cx, cy )
+                ( x - dx, y + 1 )
+                (sigma + dSigma + ((width ^ 2) * ((4 * y) + 6)))
+                (Size width height)
+                (addPoints cx cy x y points)
+    else
+        points
+
+
+addPoints : Int -> Int -> Int -> Int -> List ( Int, Int ) -> List ( Int, Int )
+addPoints cx cy x y points =
+    List.append
+        points
+        [ ( cx + x, cy + y )
+        , ( cx - x, cy + y )
+        , ( cx + x, cy - y )
+        , ( cx - x, cy - y )
+        ]
 
 
 {-| To make a curved line, try this function called `bezier`, named after [the bezier curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve). It works by approximation, drawing many small straight lines along a curved path. Its first parameter, an `Int`, is the resolution of the curve (resolution=1 will be just a straight line, and higher values will compute a more perfect curve). The remaining parameters are `Point`. The first and last `Point` refer to the starting and ending points of the curve. The middle two are control points, which are where the curve will curve towards from each end point.
