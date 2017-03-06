@@ -1,100 +1,63 @@
-
-🚨 `elm-community/canvas` is not yet stable. 🚨 
-This repo is currently on version 0.1.0. We are working on 0.2.0 which is gonna be pretty different.
-
 # Canvas for Elm
 
 Making the canvas API accessible within Elm. The canvas element is a very simple way to render 2D graphics.
 
 # Getting started
 
-Checkout these examples..
-* [Simple Render](https://elm-canvas-examples.surge.sh/0-simple-render.html)
-* [Click](https://elm-canvas-examples.surge.sh/1-click.html)
-* [Snap Shot](https://elm-canvas-examples.surge.sh/2-snap-shot.html)
-* [Show and Hide](https://elm-canvas-examples.surge.sh/3-show-and-hide.html)
-* [Image](https://elm-canvas-examples.surge.sh/4-image.html)
-* [Invert Image Data](https://elm-canvas-examples.surge.sh/5-invert-image-data.html)
-* [Draw Line](https://elm-canvas-examples.surge.sh/6-draw-line.html)
-* [Crop](https://elm-canvas-examples.surge.sh/7-crop.html)
-* [Request Animation Frame](https://elm-canvas-examples.surge.sh/8-request-animation-frame.html)
-
-Or, clone this repo, and run them locally from `./examples`. They will live reload so you can toy around with them yourself. Just follow the instructions in `examples/readme.md`.
+Checkout the examples. Clone this repo, and run them locally from `./examples` (type `elm package install` and then `elm-reactor` from that directory).
 
 # Whats this all this about?
 
 This code ..
 
 ``` Elm
-import Canvas
+import Canvas exposing (DrawOp(..))
+import Canvas.Point as Point
 import Color
 
 
 main =
-  Canvas.initialize (Canvas.Size 400 300)
-  |>Canvas.fill (Color.rgb 23 92 254)
-  |>Canvas.toHtml []
+    Canvas.initialize (Canvas.Size 400 300)
+        |> Canvas.batch fillBlue
+        |> Canvas.toHtml []
+
+
+fillBlue : List DrawOp
+fillBlue =
+    [ FillStyle Color.blue
+    , FillRect
+        (Point.fromInts ( 0, 0 )) 
+        (Canvas.Size 400 300)
+    ]
 
 -- Canvas.initialize : Size -> Canvas
--- Canvas.fill : Color -> Canvas -> Canvas
+-- Canvas.batch : List DrawOp -> Canvas -> Canvas
 -- Canvas.toHtml : List (Attribute a) -> Canvas -> Html a
-
-
 ```
 
 .. renders as ..
 
-![alt text](http://i.imgur.com/idJXHTP.png "Simple Canvas Render")
+![alt text](http://i.imgur.com/SruZuvZ.png "Simple Canvas Render")
 
 
 The Elm-Canvas library provides the type `Canvas`, which can be passed around, modified, drawn on, pasted, and ultimately passed into `toHtml` where they are rendered.
 
+Almost all the properties and methods of the 2d canvas context are available in elm-community/canvas. [Understanding them is necessary to full useage of this package.](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D).
+
 
 ## What is the Canvas Element?
 
-The canvas element is a unique html element that contains something called image data. The canvas element renders its image data, and by modification of its image data you can change what is rendered. This library provides an API to modify and set canvas image data.
+[The mozilla developer network has the best answer to this question.](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) But basically, the canvas element is a unique html element that contains something called image data. The canvas element renders its image data, and by modification of its image data you can change what is rendered. This library provides an API to modify and set canvas image data.
 
-The canvas element itself has three properties: `width`, `height`, and `data`. Confusingly, `width` and `height` are the resolution of the canvas- NOT the actual dimensions of the canvas. To set the width and height of a canvas, one must set the width and height properties in the style of the element. If the styles width and the canvass width are not equal, everything will be fine, the difference being that the pixels will be render as rectangles rather than squares.
-
-The `data` property of the canvas element is the color information in the canvas. The `data` property is an array of numbers. Each number is a color value for a specific pixel. The first four numbers in that array are the red, green, blue, and alpha values of the first pixel, and the next four are the red, green, blue, and alpha values for the second pixel, which is the pixel to the right of the first pixel (and the first pixel is the upper left most one).
-
-``` Elm
-  --  A canvas thats three pixels wide and two pixels tall..
-
-  --       |       | 
-  --   red | white | red
-  --       |       | 
-  --  -------------------
-  --       |       | 
-  --   red | black | black
-  --       |       |
-
-  -- ..has the following data..
-
-  getImageData canvas == fromList
-    [ 255, 0, 0, 255,    255, 255, 255, 255,    255, 0, 0, 255
-    , 255, 0, 0, 255,    0, 0, 0, 255,          0, 0, 0, 0
-    ] 
-
-```
-
-Because every pixel is four numbers long, and every canvas has `width * height` pixels, every canvas data has a length of `4 * width * height`.
-
-Because the data is a one dimensional format of a two dimensional arrangement of pixels, to change the pixel at `x=50 y=20` of a `116 x 55` canvas (where `x=0 y=0` is the upper left corner), one must change the values at indices.. 
-
-```
-((50 + (20 * 116)) * 4)
-((50 + (20 * 116)) * 4) + 1
-((50 + (20 * 116)) * 4) + 2
-((50 + (20 * 116)) * 4) + 3
-
-
-((x + (y * width)) * 4) + (colorIndex)
-```
 
 ## When should you use Canvas?
 
-Think hard before choosing to use the Elm Canvas library! For most use cases, there are probably better tools than Canvas. If you have image assets you want to move around the screen (like in a video game), then [evancz/elm-graphics](https://github.com/evancz/elm-graphics) and [elm-community/webgl](https://github.com/elm-community/webgl) are better options. If you want to render vector graphics use [elm-svg](http://package.elm-lang.org/packages/elm-lang/svg/latest). You should use the canvas when you absolutely need to change pixel values in a very low level way, which is an unusual project requirement. Generally speaking, the canvas element should be used when you need to render raster graphics that are not defined until run time. Making a paint app is an example of a project that needs a canvas element, because the purpose of a drawing app is to make graphics that do not yet exist.
+We made this package for a some really unusual use cases, which likely arent your use case. Think hard before choosing to use elm-community/canvas, you probably dont need it. If you have image assets you want to move around the screen (like in a video game), then [evancz/elm-graphics](https://github.com/evancz/elm-graphics) and [elm-community/webgl](https://github.com/elm-community/webgl) are better options. If you want to render vector graphics use [elm-svg](http://package.elm-lang.org/packages/elm-lang/svg/latest). You should use the canvas when you absolutely need to change pixel values in a very low level way, which is an unusual project requirement.
+
+In making this package, we had various design considerations. On one hand we wanted to make things clearer and simpler than the native canvas API actually is (theres a lot of room for improvement on that front). On the other hand, we knew that there are other packages out there that are clear and simple, and that anyone who needs elm-community/canvas likely wasnt satisfied with a clear and simple API. For elm-community/canvas, we are just trying to expose as much of the native canvas API as we can into Elm. We are making no presumption about why a clear and simple rendering API was not sufficient for you. 
+
+That said, we didnt make a package so sparse as the only expose the native API. The events submodule exposes some useful html event handlers that return the exact position of mouse events. Doing pixel-perfect drawing is notoriously complicated, so we made a pixel submodule to make that more straight forward.
+
 
 ## Contributing
 
@@ -106,7 +69,7 @@ This package is maintained by [Chadtech](https://github.com/chadtech).
 
 ## Thanks
 
-Thanks to the authors of the [Elm Web-Gl package](https://github.com/elm-community/webgl) for writing really readable code, which I found very educational on how to make native Elm packages. Thanks to all the helpful and insightful people in the Elm slack channel, including [Alex Spurling](https://github.com/alexspurling), the maker of [this elm app called 'quick draw'](https://github.com/alexspurling).
+Thanks to [Alex](https://github.com/mrozbarry) for contributing to this project, but also for his feedback and insights into what an Elm canvas API needs to look like. Thanks to the authors of the [Elm Web-Gl package](https://github.com/elm-community/webgl) for writing really readable code, which I found very educational on how to make native Elm packages. Thanks to all the helpful and insightful people in the Elm slack channel, including [Alex Spurling](https://github.com/alexspurling), the maker of [this elm app called 'quick draw'](https://github.com/alexspurling).
 
 ## How to use elm-community/canvas in your project
 
