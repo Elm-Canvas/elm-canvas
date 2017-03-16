@@ -5,13 +5,7 @@ import Html.Attributes exposing (disabled, style)
 import Html.Events exposing (onClick)
 import Color exposing (Color)
 import Random
-import Task
-import Date exposing (Date)
-import Time exposing (Time)
-import Canvas exposing (Canvas, Position, Size)
 
-
--- Constants
 
 
 numberOfRects : Int
@@ -50,11 +44,6 @@ type alias Model =
     { canvas : Canvas
     , testStartedAt : Float
     , rectangles : List Rectangle
-    , results : List TestResult
-    , positionGenerator : Random.Generator Position
-    , colorGenerator : Random.Generator Color
-    }
-
 
 type alias Rectangle =
     { position : Position
@@ -74,24 +63,6 @@ init : ( Model, Cmd Msg )
 init =
     let
         canvas : Canvas
-        canvas =
-            Size resolution.width resolution.height
-                |> Canvas.initialize
-
-        model : Model
-        model =
-            { canvas = canvas
-            , testStartedAt = 0
-            , rectangles = []
-            , results = []
-            , positionGenerator = Random.map2 Position (Random.int 0 (resolution.width - rectSize.width)) (Random.int 0 (resolution.height - rectSize.height))
-            , colorGenerator = Random.map3 Color.rgb (Random.int 0 255) (Random.int 0 255) (Random.int 0 255)
-            }
-    in
-        ( model
-        , Random.generate RandomPosition model.positionGenerator
-        )
-
 
 defaultRect : Rectangle
 defaultRect =
@@ -106,14 +77,7 @@ defaultRect =
 
 
 type Msg
-    = Benchmark
-    | TestBegin Float
-    | TestEnd Float
-    | RandomPosition Position
-    | RandomColor Position Color
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
+Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Benchmark ->
@@ -123,32 +87,7 @@ update msg model =
 
         TestBegin timestamp ->
             let
-                canvas : Canvas
-                canvas =
-                    Size resolution.width resolution.height
-                        |> Canvas.initialize
-
-                canvasWithRects : Canvas
-                canvasWithRects =
-                    model.rectangles
-                        |> List.foldl render canvas
-
-                render : Rectangle -> Canvas -> Canvas
-                render rectangle previousCanvas =
-                    let
-                        rectCanvas : Canvas
-                        rectCanvas =
-                            rectangle.size
-                                |> Canvas.initialize
-                                |> Canvas.fill rectangle.color
-                    in
-                        Canvas.drawCanvas rectCanvas rectangle.position previousCanvas
-            in
-                ( { model
-                    | canvas = canvasWithRects
-                    , testStartedAt = timestamp
-                  }
-                , Task.perform TestEnd Time.now
+           , Task.perform TestEnd Time.now
                 )
 
         TestEnd timestamp ->
@@ -173,25 +112,7 @@ update msg model =
                 results =
                     List.append model.results [ result ]
             in
-                ( { model | results = results }
-                , Cmd.none
-                )
-
-        RandomPosition position ->
-            if (List.length model.rectangles) < numberOfRects then
-                ( model
-                , Random.generate (RandomColor position) model.colorGenerator
-                )
-            else
-                ( model
-                , Cmd.none
-                )
-
-        RandomColor position color ->
-            let
-                rectangle : Rectangle
-                rectangle =
-                    Rectangle
+               Rectangle
                         position
                         rectSize
                         color
@@ -199,14 +120,7 @@ update msg model =
                 rectangles : List Rectangle
                 rectangles =
                     List.append model.rectangles [ rectangle ]
-            in
-                ( { model | rectangles = rectangles }
-                , Random.generate RandomPosition model.positionGenerator
-                )
 
-
-
--- View
 
 
 view : Model -> Html Msg
@@ -291,21 +205,7 @@ view model =
             if buttonDisabled then
                 "Preloading rectangle data..."
             else
-                "Begin benchmark"
-    in
-        div
-            []
-            [ div
-                []
-                [ text
-                    ("Average time to render "
-                        ++ (toString numberOfRects)
-                        ++ " opaque rectangles on a "
-                        ++ (toString resolution.width)
-                        ++ "x"
-                        ++ (toString resolution.height)
-                        ++ " canvas"
-                    )
+
                 ]
             , div
                 []

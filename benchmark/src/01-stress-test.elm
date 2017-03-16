@@ -8,7 +8,7 @@ import Random
 import Task
 import Date exposing (Date)
 import Time exposing (Time)
-import Canvas exposing (Canvas, Position, Size)
+
 
 
 -- Constants
@@ -52,9 +52,7 @@ type alias Model =
     , rectangleDrawTimes : List Float
     , rectangles : List Rectangle
     , results : List TestResult
-    , positionGenerator : Random.Generator Position
-    , colorGenerator : Random.Generator Color
-    }
+
 
 
 type alias Rectangle =
@@ -81,19 +79,7 @@ init =
             Size resolution.width resolution.height
                 |> Canvas.initialize
 
-        model : Model
-        model =
-            { canvas = canvas
-            , testStartedAt = 0
-            , rectangleDrawTimes = []
-            , rectangles = []
-            , results = []
-            , positionGenerator = Random.map2 Position (Random.int 0 (resolution.width - rectSize.width)) (Random.int 0 (resolution.height - rectSize.height))
-            , colorGenerator = Random.map3 Color.rgb (Random.int 0 255) (Random.int 0 255) (Random.int 0 255)
-            }
-    in
-        ( model
-        , Random.generate RandomPosition model.positionGenerator
+
         )
 
 
@@ -111,12 +97,7 @@ defaultRect =
 
 type Msg
     = Benchmark
-    | TestBegin Float
-    | TestEnd Float
-    | RandomPosition Position
-    | RandomColor Position Color
-    | RenderBegin (List Rectangle) Float
-    | RenderEnd (List Rectangle) Float Float
+ Rectangle) Float Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -170,58 +151,7 @@ update msg model =
                         , slowest = slowest
                         , average = average
                         , totalTime = totalTime
-                        }
-
-                results : List TestResult
-                results =
-                    List.append model.results [ result ]
-            in
-                ( { model | results = results }
-                , Cmd.none
-                )
-
-        RandomPosition position ->
-            if (List.length model.rectangles) < numberOfRects then
-                ( model
-                , Random.generate (RandomColor position) model.colorGenerator
-                )
-            else
-                ( model
-                , Cmd.none
-                )
-
-        RandomColor position color ->
-            let
-                rectangle : Rectangle
-                rectangle =
-                    Rectangle
-                        position
-                        rectSize
-                        color
-
-                rectangles : List Rectangle
-                rectangles =
-                    List.append model.rectangles [ rectangle ]
-            in
-                ( { model | rectangles = rectangles }
-                , Random.generate RandomPosition model.positionGenerator
-                )
-
-        RenderBegin rectangles timestamp ->
-            let
-                canvas : Canvas
-                canvas =
-                    model.canvas
-                        |> Canvas.drawCanvas rectCanvas rectangle.position
-
-                rectCanvas : Canvas
-                rectCanvas =
-                    rectangle.size
-                        |> Canvas.initialize
-                        |> Canvas.fill rectangle.color
-
-                rectangle : Rectangle
-                rectangle =
+            rectangle =
                     rectangles
                         |> List.head
                         |> Maybe.withDefault defaultRect
@@ -329,15 +259,7 @@ view model =
         averageResult =
             { index = "Average"
             , fastest = Maybe.withDefault -1 <| List.minimum <| List.map .fastest model.results
-            , slowest = Maybe.withDefault -1 <| List.maximum <| List.map .slowest model.results
-            , average = (\sum -> sum / (toFloat <| List.length model.results)) <| List.sum <| List.map .average model.results
-            , totalTime = List.sum <| List.map .totalTime model.results
-            }
-
-        allResults : List TestResult
-        allResults =
-            if (List.length model.results) > 1 then
-                List.append model.results [ averageResult ]
+     List.append model.results [ averageResult ]
             else
                 model.results
 

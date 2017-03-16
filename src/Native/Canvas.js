@@ -1,8 +1,15 @@
-var _elm_community$canvas$Native_Canvas = function () {
+/*global _elm_lang$core$Native_List */
+/*global _elm_lang$core$Color$toRgb */
+/*global _elm_lang$core$Native_Scheduler */
+/*global _elm_lang$virtual_dom$Native_VirtualDom */
 
-  function LOG(msg) {
+var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line no-unused-vars
+
+
+  function LOG(msg) { // eslint-disable-line no-unused-vars
     // console.log(msg);
   }
+
 
   function makeModel(canvas) {
 
@@ -15,24 +22,24 @@ var _elm_community$canvas$Native_Canvas = function () {
     }
 
     return {
-      ctor: 'Canvas',
+      ctor: "Canvas",
       canvas: getCanvas,
       width: canvas.width,
       height: canvas.height
-    }
+    };
   }
 
-  // This is how we ensure immutability
+  // This is how we ensure immutability.
   // Canvas elements are never modified
   // and passed along. They are copied,
-  // and the copy is passed along.
-  function copyModel(model) {
+  // and the clone is passed along.
+  function cloneModel(model) {
 
     var canvas = document.createElement("canvas");
     canvas.width = model.width;
     canvas.height = model.height;
 
-    var ctx = canvas.getContext('2d')
+    var ctx = canvas.getContext("2d");
     ctx.drawImage(model.canvas(), 0, 0);
 
     return makeModel(canvas);
@@ -43,7 +50,6 @@ var _elm_community$canvas$Native_Canvas = function () {
   function initialize(size) {
 
     var canvas = document.createElement("canvas");
-
     canvas.width = size.width;
     canvas.height = size.height;
 
@@ -52,186 +58,402 @@ var _elm_community$canvas$Native_Canvas = function () {
   }
 
 
+  function batch(drawOps, model) {
+    model = cloneModel(model);
+
+    var ctx = model.canvas().getContext("2d");
+
+    while (drawOps.ctor !== "[]") {
+      handleDrawOp(ctx, drawOps._0);
+
+      drawOps = drawOps._1;
+    }
+
+    return model;
+  }
+
+
+  function handleDrawOp (ctx, drawOp) {
+    var point, point1, size, color;
+
+    switch (drawOp.ctor) {
+    case "Font" :
+
+      ctx.font = drawOp._0;
+      break;
+
+    case "Arc" :
+
+      point = drawOp._0;
+
+      ctx.arc(point._0, point._1, drawOp._1, drawOp._2, drawOp._3);
+      break;
+
+    case "ArcTo" :
+
+      point = drawOp._0;
+      point1 = drawOp._1;
+
+      ctx.arcTo(point._0, point._1, point1._0, point1._1, drawOp._2);
+      break;
+
+    case "StrokeText" :
+
+      point = drawOp._1;
+
+      ctx.strokeText(drawOp._0, point._0, point._1);
+      break;
+
+    case "FillText" :
+
+      point = drawOp._1;
+
+      ctx.fillText(drawOp._0, point._0, point._1);
+      break;
+
+    case "GlobalCompositionOp" :
+
+      ctx.globalCompositeOperation = drawOp._0;
+      break;
+
+    case "LineCap" :
+
+      ctx.lineCap = drawOp._0;
+      break;
+
+    case "LineJoin" :
+    
+      ctx.lineJoin = drawOp._0;
+      break;
+
+    case "GlobalAlpha" :
+
+      ctx.globalAlpha = drawOp._0;
+      break;
+
+    case "LineDashOffset" :
+    
+      ctx.lineDashOffset = drawOp._0;
+      break;
+
+    case "LineWidth" :
+
+      ctx.lineWidth = drawOp._0;
+      break;
+
+    case "MiterLimit" :
+
+      ctx.miterLimit = drawOp._0;
+      break;
+
+    case "LineTo" :
+
+      point = drawOp._0;
+
+      ctx.lineTo(point._0, point._1);
+      break;
+
+    case "MoveTo" :
+
+      point = drawOp._0;
+
+      ctx.moveTo(point._0, point._1);
+      break;
+
+    case "ShadowBlur" :
+
+      ctx.shadowBlur = drawOp._0;
+      break;
+
+    case "ShadowColor" :
+
+      color = _elm_lang$core$Color$toRgb(drawOp._0);
+
+      ctx.shadowColor = getCssString(color);
+      break;
+
+    case "ShadowOffsetX" :
+
+      ctx.shadowOffsetX = drawOp._0;
+      break;
+
+    case "ShadowOffsetY" :
+
+      ctx.shadowOffsetY = drawOp._0;
+      break;
+
+    case "Stroke" :
+
+      ctx.stroke();
+      break;
+
+    case "BeginPath" :
+
+      ctx.beginPath();
+      break;
+
+    case "BezierCurveTo" :
+
+      point = drawOp._0;
+      point1 = drawOp._1;
+      var point2 = drawOp._2;
+
+      ctx.bezierCurveTo(point._0, point._1, point1._0, point1._1, point2._0, point2._1);
+      break;
+
+    case "QuadraticCurveTo" :
+
+      point = drawOp._0;
+      point1 = drawOp._1;
+
+      ctx.quadraticCurveTo(point._0, point._1, point1._0, point1._1);
+      break;
+
+    case "Rect" :
+
+      point = drawOp._0;
+      size = drawOp._1;
+
+      ctx.rect(point._0, point._1, size.width, size.height);
+      break;
+
+    case "Rotate" :
+
+      ctx.rotate(drawOp._0);
+      break;
+
+    case "Scale" :
+
+      ctx.scale(drawOp._0, drawOp._1);
+      break;
+
+    case "SetLineDash" :
+
+      ctx.setLineDash(_elm_lang$core$Native_List.toArray(drawOp._0));
+      break;
+
+    case "SetTransform" :
+
+      ctx.setTransform(
+        drawOp._0, 
+        drawOp._1, 
+        drawOp._2,
+        drawOp._3,
+        drawOp._4,
+        drawOp._5
+      );
+      break;
+
+    case "Transform" :
+
+      ctx.transform(
+        drawOp._0, 
+        drawOp._1, 
+        drawOp._2,
+        drawOp._3,
+        drawOp._4,
+        drawOp._5
+      );
+      break;
+
+    case "Translate" :
+
+      point = drawOp._0;
+      ctx.translate(point._0, point._1);
+      break;
+
+    case "StrokeRect" :
+
+      point = drawOp._0;
+      size = drawOp._1;
+
+      ctx.strokeRect(point._0, point._1, size.width, size.height);
+      break;
+
+    case "StrokeStyle" :
+
+      color = _elm_lang$core$Color$toRgb(drawOp._0);
+
+      ctx.strokeStyle = getCssString(color);
+      break;
+
+    case "TextAlign" :
+
+      ctx.textAlign = drawOp._0;
+      break;
+
+    case "TextBaseline" :
+
+      ctx.textBaseline = drawOp._0;
+      break;
+
+    case "FillStyle" :
+
+      color = _elm_lang$core$Color$toRgb(drawOp._0);
+
+      ctx.fillStyle = getCssString(color);
+      break;
+
+    case "Fill" :
+
+      ctx.fill();
+      break;
+
+    case "FillRect" :
+
+      point = drawOp._0;
+      size = drawOp._1;
+
+      ctx.fillRect(point._0, point._1, size.width, size.height);
+      break;
+
+    case "PutImageData" :
+
+      point = drawOp._2;
+      size = drawOp._1;
+      var data = _elm_lang$core$Native_List.toArray(drawOp._0);
+
+      var imageData = ctx.createImageData(size.width, size.height);
+
+      for (var index = 0; index < data.length; index++) {
+        imageData.data[ index ] = data[ index ];
+      }
+
+      ctx.putImageData(imageData, point._0, point._1);
+      break;
+
+    case "ClearRect" :
+
+      point = drawOp._0;
+      size = drawOp._1;
+
+      ctx.clearRect(point._0, point._1, size.width, size.height);
+      break;
+
+    case "Clip" :
+
+      ctx.clip();
+      break;
+
+    case "ClosePath" : 
+
+      ctx.clearPath();
+      break;
+
+    case "DrawImage":
+
+      var srcCanvas = drawOp._0.canvas();
+      var drawImageOp = drawOp._1;
+      var srcPoint, srcSize, destPoint, destSize;
+
+      switch (drawOp._1.ctor) {
+      case "At":
+
+        destPoint = drawImageOp._0;
+        ctx.drawImage(
+          srcCanvas,
+          destPoint._0,
+          destPoint._1
+        );
+        break;
+
+      case "Scaled":
+
+        destPoint = drawImageOp._0;
+        destSize = drawImageOp._1;
+        ctx.drawImage(
+          srcCanvas,
+          destPoint._0, destPoint._1,
+          destSize.width, destSize.height
+        );
+        break;
+
+      case "CropScaled":
+
+        srcPoint = drawImageOp._0;
+        srcSize = drawImageOp._1;
+        destPoint = drawImageOp._2;
+        destSize = drawImageOp._3;
+
+        ctx.drawImage(
+          srcCanvas,
+          srcPoint._0, srcPoint._1,
+          srcSize.width, srcSize.height,
+          destPoint._0, destPoint._1,
+          destSize.width, destSize.height
+        );
+        break;
+      }
+
+      break;
+    }
+  }
+
+
+  function toDataURL (mimetype, quality, model) {
+    return model.canvas().toDataURL(mimetype, quality);
+  }
+
+
+  function getCssString (color) {
+    return "rgba(" + [ color.red, color.green, color.blue, color.alpha ].join(",") + ")";
+  }
+
+
   function loadImage(source) {
+    LOG("LOAD IMAGE");
+
     var Scheduler = _elm_lang$core$Native_Scheduler;
     return Scheduler.nativeBinding(function (callback) {
       var img = new Image();
 
-      function getImage() {
-        return img;
-      }
-
       img.onload = function () {
-        callback(Scheduler.succeed({
-          ctor: 'Image',
-          img: getImage,
-          width: img.width,
-          height: img.height
-        }));
+        var canvas = document.createElement("canvas");
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        var ctx = canvas.getContext("2d");
+
+        ctx.drawImage(img, 0, 0);
+
+        callback(Scheduler.succeed(makeModel(canvas)));
       };
 
       img.onerror = function () {
-        callback(Scheduler.fail({ ctor: 'Error' }));
+        callback(Scheduler.fail({ ctor: "Error" }));
       };
 
-      img.crossOrigin = "Anonymous";
+      if (source.slice(0,5) !== "data:") {
+        img.crossOrigin = "Anonymous";
+      }
       img.src = source;
     });
   }
 
 
-  function getImageData(model) {
+  function getImageData(point, size, model) {
     LOG("GET IMAGE DATA");
 
     var canvas = model.canvas();
-
-    var ctx = canvas.getContext('2d');
-
-    var imageData = ctx.getImageData(0, 0, model.width, model.height);
-
-    return _elm_lang$core$Native_Array.fromJSArray(imageData.data);
-  }
-
-
-  function fromImageData(size, array) {
-    LOG("FROM IMAGE DATA")
-
-    var canvas = document.createElement("canvas");
-
-    canvas.width = size.width;
-    canvas.height = size.height;
-
     var ctx = canvas.getContext("2d");
-
-    var imageData = ctx.createImageData(size.width, size.height);
-    var data = imageData.data;
-
-    var dataToPut = _elm_lang$core$Native_Array.toJSArray(array);
-
-    var i = 0;
-    while (i < dataToPut.length) {
-      data[i] = dataToPut[i];
-      i++;
-    }
-
-    ctx.putImageData(imageData, 0, 0);
-
-    return makeModel(canvas);
-
-  }
-
-
-  function setPixel(color, position, model) {
-    LOG("SET PIXEL");
-
-    var model = copyModel(model);
-
-    var canvas = model.canvas();
-
-    var ctx = canvas.getContext('2d');
-
-    var imageData = ctx.createImageData(1, 1);
-    var data = imageData.data;
-
-    data[0] = color.red;
-    data[1] = color.green;
-    data[2] = color.blue;
-    data[3] = Math.floor(color.alpha * 255);
-
-    ctx.putImageData(imageData, position.x, position.y);
-
-    return model;
-  }
-
-
-  function setPixels(pixels, model) {
-    LOG("SET PIXELS")
-
-    var model = copyModel(model);
-
-    var canvas = model.canvas();
-
-    var ctx = canvas.getContext('2d');
-
-    while (pixels.ctor == "::") {
-      var color = pixels._0._0;
-      var position = pixels._0._1;
-      var imageData = ctx.createImageData(1,1);
-      var data = imageData.data;
-
-      data[0] = color.red;
-      data[1] = color.green;
-      data[2] = color.blue;
-      data[3] = Math.floor(color.alpha * 255);
-
-      ctx.putImageData(imageData, position.x, position.y);
-
-      pixels = pixels._1;
-    }
-
-    return model;
-
-  }
-
-
-  function calculateIndex(width, x, y) {
-    return ((x + (y * width)) * 4);
-  }
-
-
-  function crop(position, size, model) {
-
-    var canvas = document.createElement("canvas");
-    canvas.width = size.width;
-    canvas.height = size.height;
-
-    var ctx = canvas.getContext("2d");
-
-    ctx.drawImage(
-      model.canvas(), 
-      position.x, 
-      position.y,
-      size.width,
-      size.height,
-      0,
-      0,
+    var imageData = ctx.getImageData(
+      point._0, 
+      point._1,
       size.width,
       size.height
     );
 
-    return makeModel(canvas);
-
+    return _elm_lang$core$Native_List.fromArray(imageData.data);
   }
 
 
-  function fill(color, model) {
-
-    var canvas = document.createElement("canvas");
-    canvas.width = model.width;
-    canvas.height = model.height;
-
-    var ctx = canvas.getContext('2d');
-
-    var imageData = ctx.createImageData(canvas.width, canvas.height);
-    var data = imageData.data;
-
-    var numberOfPixels = canvas.width * canvas.height;
-
-    var i = 0;
-    while (i < numberOfPixels) {
-      var pixelIndex = i * 4;
-
-      data[ pixelIndex     ] = color.red;
-      data[ pixelIndex + 1 ] = color.green;
-      data[ pixelIndex + 2 ] = color.blue;
-      data[ pixelIndex + 3 ] = Math.floor(color.alpha * 255);
-      i++;
-    }
-
-    ctx.putImageData(imageData, 0, 0);
+  function setSize(size, model) {
+    var canvas = cloneModel(model).canvas();
+    canvas.width = size.width;
+    canvas.height = size.height;
 
     return makeModel(canvas);
-
   }
 
 
@@ -243,99 +465,67 @@ var _elm_community$canvas$Native_Canvas = function () {
   }
 
 
-  function drawImage(image, position, model) {
-    LOG("DRAW IMAGE");
 
-    var model = copyModel(model);
+  function toHtml(factList, model) {
+    LOG("TO HTML");
 
-    var canvas = model.canvas();
-
-    var ctx = canvas.getContext('2d');
-
-    ctx.drawImage(image.img(), position.x, position.y);
-
-   return model;
+    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, model, implementation);
 
   }
 
 
-  function drawCanvas(modelToDraw, position, model) {
-    LOG("DRAW CANVAS")
+  var implementation = {
+    render: renderCanvas,
+    diff: diff
+  };
 
-    var model = copyModel(model);
-
-    var canvas = model.canvas();
-
-    var ctx = canvas.getContext('2d');
-
-    ctx.drawImage(modelToDraw.canvas(), position.x, position.y);
-
-    return model;
-  }
-
-
-  function toHtml(factList, canvas) {
-    LOG("TO HTML")
-
-    // this is some trickery..
-
-    // by defining implementation in this scope, I am making
-    // a new object. The Elm virtual dom checks to see if
-    // implementation has changed between re-renders. If it
-    // is different, the virtual dom chooses to redraw
-    // the element entirely using renderCanvas. This isnt
-    // a problem in elm-canvas, because its just handing off
-    // an already existing html element stored in the model.
-    // In other contexts, or if does for every dom element,
-    // this would be greatly un-performant.
-
-    // A more normal way of doing this, would be to define
-    // implementation outside of toHtml, on the same level as
-    // toHtml and every other function. That way its literally
-    // the same object being passed into virtualDom.custom, rather
-    // than new - however identical - objects.
-    var implementation = 
-      {
-        render: renderCanvas,
-        diff: diff
-      }
-
-    return _elm_lang$virtual_dom$Native_VirtualDom.custom(factList, canvas, implementation);
-
-  }
 
   function renderCanvas(model) {
-    LOG('RENDER CANVAS');
-
-    return copyModel(model).canvas();  
+    LOG("RENDER CANVAS");
+    return cloneModel(model).canvas();
   }
 
 
-  function diff(oldModel, newModel) {
-    LOG("DIFF")
+  function diff(old, new_) {
+    LOG("DIFF");
+
+
+    var diffCanvases = old.model.canvas() !== new_.model.canvas();
 
     return {
       applyPatch: function(domNode, data) {
         LOG("APPLY PATCH");
-        return data.model.canvas();
+
+        if (diffCanvases) {
+
+          var model = data.model;
+
+          domNode.width = model.width;
+          domNode.height = model.height;
+
+          var ctx = domNode.getContext("2d");
+          ctx.clearRect(0, 0, domNode.width, domNode.height);
+          ctx.drawImage(data.model.canvas(), 0, 0);
+        }
+
+        return domNode;
+
       },
-      data: newModel
+      data: new_
     };
 
   }
 
+
   return {
     initialize: initialize,
-    fill: F2(fill),
+    setSize: F2(setSize), // eslint-disable-line no-undef
     getSize: getSize,
-    drawCanvas: F3(drawCanvas),
     loadImage: loadImage,
-    drawImage: F3(drawImage),
-    crop: F3(crop),
-    setPixel: F3(setPixel),
-    setPixels: F2(setPixels),
-    toHtml: F2(toHtml),
-    getImageData: getImageData,
-    fromImageData: F2(fromImageData),
+    toHtml: F2(toHtml), // eslint-disable-line no-undef
+    getImageData: F3(getImageData), // eslint-disable-line no-undef
+    clone: cloneModel,
+    batch: F2(batch), // eslint-disable-line no-undef
+    toDataURL: F3(toDataURL) // eslint-disable-line no-undef
   };
 }();
