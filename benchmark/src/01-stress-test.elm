@@ -8,7 +8,7 @@ import Random
 import Task
 import Date exposing (Date)
 import Time exposing (Time)
-import Canvas exposing (Canvas, Position, Size, DrawOp(..))
+
 
 
 -- Constants
@@ -52,8 +52,7 @@ type alias Model =
     , rectangleDrawTimes : List Float
     , rectangles : List Rectangle
     , results : List TestResult
-    , positionColorGenerator : Random.Generator ( Position, Color )
-    }
+
 
 
 type alias Rectangle =
@@ -80,38 +79,7 @@ init =
             Size resolution.width resolution.height
                 |> Canvas.initialize
 
-        positionColorGenerator : Random.Generator ( Position, Color )
-        positionColorGenerator =
-            let
-                positionGenerator : Random.Generator Position
-                positionGenerator =
-                    Random.map2
-                        Position
-                        (Random.int 0 (resolution.width - rectSize.width))
-                        (Random.int 0 (resolution.height - rectSize.height))
 
-                colorGenerator : Random.Generator Color
-                colorGenerator =
-                    Random.map3
-                        Color.rgb
-                        (Random.int 0 255)
-                        (Random.int 0 255)
-                        (Random.int 0 255)
-            in
-                Random.map2 (,) positionGenerator colorGenerator
-
-        model : Model
-        model =
-            { canvas = canvas
-            , testStartedAt = 0
-            , rectangleDrawTimes = []
-            , rectangles = []
-            , results = []
-            , positionColorGenerator = positionColorGenerator
-            }
-    in
-        ( model
-        , Random.generate RandomRectangle model.positionColorGenerator
         )
 
 
@@ -129,11 +97,7 @@ defaultRect =
 
 type Msg
     = Benchmark
-    | TestBegin Float
-    | TestEnd Float
-    | RandomRectangle ( Position, Color )
-    | RenderBegin (List Rectangle) Float
-    | RenderEnd (List Rectangle) Float Float
+ Rectangle) Float Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -187,54 +151,7 @@ update msg model =
                         , slowest = slowest
                         , average = average
                         , totalTime = totalTime
-                        }
-
-                results : List TestResult
-                results =
-                    List.append model.results [ result ]
-            in
-                ( { model | results = results }
-                , Cmd.none
-                )
-
-        RandomRectangle ( position, color ) ->
-            let
-                rectangle : Rectangle
-                rectangle =
-                    Rectangle
-                        position
-                        rectSize
-                        color
-
-                rectangles : List Rectangle
-                rectangles =
-                    List.append model.rectangles [ rectangle ]
-            in
-                if (List.length model.rectangles) < numberOfRects then
-                    ( { model | rectangles = rectangles }
-                    , Random.generate RandomRectangle model.positionColorGenerator
-                    )
-                else
-                    ( model
-                    , Cmd.none
-                    )
-
-        RenderBegin rectangles timestamp ->
-            let
-                canvas : Canvas
-                canvas =
-                    model.canvas
-                        |> Canvas.batch ops
-
-                ops : List DrawOp
-                ops =
-                    [ FillStyle rectangle.color
-                    , Rect rectangle.position rectangle.size
-                    , Fill
-                    ]
-
-                rectangle : Rectangle
-                rectangle =
+            rectangle =
                     rectangles
                         |> List.head
                         |> Maybe.withDefault defaultRect
@@ -342,15 +259,7 @@ view model =
         averageResult =
             { index = "Average"
             , fastest = Maybe.withDefault -1 <| List.minimum <| List.map .fastest model.results
-            , slowest = Maybe.withDefault -1 <| List.maximum <| List.map .slowest model.results
-            , average = (\sum -> sum / (toFloat <| List.length model.results)) <| List.sum <| List.map .average model.results
-            , totalTime = (\sum -> sum / (toFloat <| List.length model.results)) <| List.sum <| List.map .totalTime model.results
-            }
-
-        allResults : List TestResult
-        allResults =
-            if (List.length model.results) > 1 then
-                List.append model.results [ averageResult ]
+     List.append model.results [ averageResult ]
             else
                 model.results
 
