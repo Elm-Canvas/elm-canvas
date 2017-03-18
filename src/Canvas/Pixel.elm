@@ -15,7 +15,7 @@ module Canvas.Pixel
 @docs put, get
 
 # Point Calculation
-@docs line, rectangle, bezier
+@docs line, rectangle, bezier, circle, ellipse
 -}
 
 import Canvas exposing (Canvas, Size, DrawOp(..))
