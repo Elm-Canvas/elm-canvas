@@ -3,7 +3,7 @@
 /*global _elm_lang$core$Native_Scheduler */
 /*global _elm_lang$virtual_dom$Native_VirtualDom */
 
-var _elm_community$canvas$Native_Canvas = function () {  // eslint-disable-line no-unused-vars
+var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line no-unused-vars
 
 
   function LOG(msg) { // eslint-disable-line no-unused-vars
