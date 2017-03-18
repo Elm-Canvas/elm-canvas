@@ -8,7 +8,7 @@ Making the canvas API accessible within Elm. The canvas element is a very simple
 
 # Getting started
 
-Checkout the examples. Clone this repo, and run them locally from `./examples` (type `elm package install` and then `elm-reactor` from that directory).
+Checkout the [examples](https://github.com/Elm-Canvas/examples).
 
 # Whats this all this about?
 
