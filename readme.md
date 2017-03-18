@@ -1,6 +1,6 @@
 🚨🚨THIS IS EXPERIMENTAL.🚨🚨 
 
-We are trying to make this stable, and for all we know it is, but we havent used it nearly enough to know for sure. Use are your own risk. If you do discover problems please let us know, it would be really useful.
+We are trying to make this package reliable, and for all we know it is, but we havent used it nearly enough to know for sure. Use are your own risk. If you do discover problems please let us know, it would be really useful.
 
 # Canvas for Elm
 
