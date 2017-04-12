@@ -75,29 +75,33 @@ onDoubleClick message =
             positionDecoder
 
 
-positionInCanvas : ( ( Float, Float ), ( Float, Float ) ) -> Point
-positionInCanvas ( client, offset ) =
+positionInCanvas : ( ( Float, Float ), ( Float, Float ), ( Float, Float ), ( Float, Float ) ) -> Point
+positionInCanvas ( client, offset, body, documentElement ) =
     let
         ( cx, cy ) =
             client
 
         ( ox, oy ) =
             offset
+
+        ( bx, by ) =
+            body
+
+        ( dx, dy ) =
+            documentElement
     in
-        Point.fromFloats ( cx - ox, cy - oy )
+        Point.fromFloats ( (cx + bx + dx) - ox, (cy + by + dy) - oy )
 
 
-positionDecoder : Json.Decoder ( ( Float, Float ), ( Float, Float ) )
+positionDecoder : Json.Decoder ( ( Float, Float ), ( Float, Float ), ( Float, Float ), ( Float, Float ) )
 positionDecoder =
-    Json.at [ "target" ] (toTuple "offsetLeft" "offsetTop")
-        |> Json.map2 (,) (toTuple "clientX" "clientY")
+    Json.map4 (,,,)
+        (toTuple [ "clientX" ] [ "clientY" ])
+        (toTuple [ "target", "offsetLeft" ] [ "target", "offsetTop" ])
+        (toTuple [ "view", "document", "body", "scrollLeft" ] [ "view", "document", "body", "scrollTop" ])
+        (toTuple [ "view", "document", "documentElement", "scrollLeft" ] [ "view", "document", "documentElement", "scrollTop" ])
 
 
-toTuple : String -> String -> Json.Decoder ( Float, Float )
+toTuple : List String -> List String -> Json.Decoder ( Float, Float )
 toTuple x y =
-    Json.map2 (,) (field_ x) (field_ y)
-
-
-field_ : String -> Json.Decoder Float
-field_ key =
-    Json.field key Json.float
+    Json.map2 (,) (Json.at x Json.float) (Json.at y Json.float)
