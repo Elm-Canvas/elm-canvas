@@ -7,6 +7,7 @@ module Canvas
         , DrawImageParams(..)
         , initialize
         , toHtml
+        , draw
         , batch
         , loadImage
         , getImageData
@@ -21,7 +22,7 @@ module Canvas
 @docs Canvas, Size, DrawOp, DrawImageParams
 
 # Basics
-@docs initialize, toHtml, batch
+@docs initialize, toHtml, draw, batch
 
 # Loading Images
 @docs loadImage, Error
@@ -103,6 +104,7 @@ type DrawOp
     | Clip
     | ClosePath
     | DrawImage Canvas DrawImageParams
+    | Batch (List DrawOp)
 
 
 {-| The `DrawOp` `DrawImage` takes a `Canvas` and a `DrawImageParam`. We made three different `DrawImageParam`, because there are three different sets of parameters you can give the native javascript `ctx.drawImage()`. [See here for more info](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage.)
@@ -134,11 +136,26 @@ toHtml : List (Attribute msg) -> Canvas -> Html msg
 toHtml =
     Native.Canvas.toHtml
 
-
-{-| This is our primary way of drawing onto canvases. Give `batch` a list of `DrawOp` and you can apply those `DrawOp` to a canvas.
+{-| This is our primary way of drawing onto canvases. Give `draw` a `drawOp` and apply it to a canvas.
 
     drawLine : Point -> Point -> Canvas -> Canvas
     drawLine p0 p1 =
+        (Canvas.batch >> Canvas.draw)
+            [ BeginPath
+            , LineWidth 2
+            , MoveTo p0
+            , LineTo p1
+            , Stroke
+            ]
+-}
+draw : DrawOp -> Canvas -> Canvas
+draw = 
+    Native.Canvas.draw
+
+{-| You dont want to apply `DrawOp` one at a time. Bundle many `DrawOp` together in one batch, using `batch`.
+
+    line : Point -> Point -> DrawOp
+    line p0 p1 =
         Canvas.batch
             [ BeginPath
             , LineWidth 2
@@ -147,9 +164,9 @@ toHtml =
             , Stroke
             ]
 -}
-batch : List DrawOp -> Canvas -> Canvas
+batch : List DrawOp -> DrawOp
 batch =
-    Native.Canvas.batch
+    Batch
 
 
 {-| Load up an image as a `Canvas` from a url.

@@ -57,17 +57,12 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
   }
 
-
-  function batch(drawOps, model) {
+  function draw(drawOp, model) {
     model = cloneModel(model);
 
     var ctx = model.canvas().getContext("2d");
 
-    while (drawOps.ctor !== "[]") {
-      handleDrawOp(ctx, drawOps._0);
-
-      drawOps = drawOps._1;
-    }
+    handleDrawOp(ctx, drawOp);
 
     return model;
   }
@@ -77,6 +72,17 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
     var point, point1, size, color;
 
     switch (drawOp.ctor) {
+    case "Batch" :
+      var drawOps = drawOp._0;
+
+      while (drawOps.ctor !== "[]") {
+        handleDrawOp(ctx, drawOps._0);
+
+        drawOps = drawOps._1;
+      } 
+
+      break;
+
     case "Font" :
 
       ctx.font = drawOp._0;
@@ -525,7 +531,8 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
     toHtml: F2(toHtml), // eslint-disable-line no-undef
     getImageData: F3(getImageData), // eslint-disable-line no-undef
     clone: cloneModel,
-    batch: F2(batch), // eslint-disable-line no-undef
+    draw: F2(draw),
+    // batch: F2(batch), // eslint-disable-line no-undef
     toDataURL: F3(toDataURL) // eslint-disable-line no-undef
   };
 }();
