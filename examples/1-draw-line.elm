@@ -9,6 +9,7 @@ import MouseEvents exposing (MouseEvent)
 
 -- MAIN --
 
+
 main : Program Never Model Msg
 main =
     Html.beginnerProgram
@@ -36,29 +37,26 @@ type alias Model =
 
 
 
-
--- UPDATE -- 
-
-
+-- UPDATE --
 
 
 update : Msg -> Model -> Model
 update message ( canvas, clickState ) =
-    case (clickState, message) of
-        (Nothing, MouseDown mouseEvent) ->
-            ( canvas, Just (Click (toPoint mouseEvent)))
+    case ( clickState, message ) of
+        ( Nothing, MouseDown mouseEvent ) ->
+            ( canvas, Just (Click (toPoint mouseEvent)) )
 
-        (Just (Moving pt0 pt1), MouseDown mouseEvent) ->
-            ( drawLine pt0 pt1 canvas, Nothing)
+        ( Just (Moving pt0 pt1), MouseDown mouseEvent ) ->
+            ( drawLine pt0 pt1 canvas, Nothing )
 
-        (Just (Click point0), Move mouseEvent) ->
-            ( canvas, Just (Moving point0 (toPoint mouseEvent)))
+        ( Just (Click point0), Move mouseEvent ) ->
+            ( canvas, Just (Moving point0 (toPoint mouseEvent)) )
 
-        (Just (Moving point0 _), Move mouseEvent) ->
-            ( canvas, Just (Moving point0 (toPoint mouseEvent)))
-                    
+        ( Just (Moving point0 _), Move mouseEvent ) ->
+            ( canvas, Just (Moving point0 (toPoint mouseEvent)) )
+
         _ ->
-            ( canvas, clickState)
+            ( canvas, clickState )
 
 
 toPoint : MouseEvent -> Point
@@ -68,8 +66,8 @@ toPoint { targetPos, clientPos } =
         (toFloat (clientPos.y - targetPos.y))
 
 
--- VIEW --
 
+-- VIEW --
 
 
 view : Model -> Html Msg
@@ -104,7 +102,3 @@ drawLine pt0 pt1 =
     ]
         |> Canvas.batch
         |> Canvas.draw
-
-
-
-

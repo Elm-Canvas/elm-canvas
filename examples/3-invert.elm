@@ -7,7 +7,6 @@ import Array exposing (Array)
 import Task
 
 
-
 main : Program Never Model Msg
 main =
     Html.program
@@ -45,12 +44,12 @@ loadImage =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
-    case (message, model) of
-        (ImageLoaded (Ok canvas), _)  ->
+    case ( message, model ) of
+        ( ImageLoaded (Ok canvas), _ ) ->
             ( GotCanvas canvas, Cmd.none )
 
-        (Click, GotCanvas canvas) ->
-            (GotCanvas (invert canvas), Cmd.none)
+        ( Click, GotCanvas canvas ) ->
+            ( GotCanvas (invert canvas), Cmd.none )
 
         _ ->
             ( Loading, loadImage )
@@ -64,10 +63,8 @@ invert canvas =
                 (invertedImageData canvas)
                 (Canvas.getSize canvas)
                 (Point 0 0)
-            
     in
         Canvas.draw drawOp canvas
-
 
 
 invertedImageData : Canvas -> List Int
@@ -78,7 +75,7 @@ invertedImageData canvas =
 
         size =
             Canvas.getSize canvas
-    in    
+    in
         canvas
             |> Canvas.getImageData point size
             |> List.indexedMap invertHelp

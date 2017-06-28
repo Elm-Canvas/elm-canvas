@@ -101,7 +101,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
       point = drawOp._0;
       point1 = drawOp._1;
 
-      ctx.arcTo(point.x, point.y, point1._0, point1._1, drawOp._2);
+      ctx.arcTo(point.x, point.y, point1.x, point1.y, drawOp._2);
       break;
 
     case "StrokeText" :
@@ -205,7 +205,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
       point1 = drawOp._1;
       var point2 = drawOp._2;
 
-      ctx.bezierCurveTo(point.x, point.y, point1._0, point1._1, point2._0, point2._1);
+      ctx.bezierCurveTo(point.x, point.y, point1.x, point1.y, point2._0, point2._1);
       break;
 
     case "QuadraticCurveTo" :
@@ -213,7 +213,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
       point = drawOp._0;
       point1 = drawOp._1;
 
-      ctx.quadraticCurveTo(point.x, point.y, point1._0, point1._1);
+      ctx.quadraticCurveTo(point.x, point.y, point1.x, point1.y);
       break;
 
     case "Rect" :
@@ -359,8 +359,8 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
         destPoint = drawImageOp._0;
         ctx.drawImage(
           srcCanvas,
-          destPoint._0,
-          destPoint._1
+          destPoint.x,
+          destPoint.y
         );
         break;
 
@@ -370,7 +370,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
         destSize = drawImageOp._1;
         ctx.drawImage(
           srcCanvas,
-          destPoint._0, destPoint._1,
+          destPoint.x, destPoint.y,
           destSize.width, destSize.height
         );
         break;
@@ -384,9 +384,9 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
         ctx.drawImage(
           srcCanvas,
-          srcPoint._0, srcPoint._1,
+          srcPoint.x, srcPoint.y,
           srcSize.width, srcSize.height,
-          destPoint._0, destPoint._1,
+          destPoint.x, destPoint.y,
           destSize.width, destSize.height
         );
         break;

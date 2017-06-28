@@ -42,25 +42,24 @@ loadImage =
 -- UPDATE --
 
 
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
-    case (message, model ) of
-        (ImageLoaded (Ok canvas), _ ) ->
-            (GotCanvas canvas [], Cmd.none)
+    case ( message, model ) of
+        ( ImageLoaded (Ok canvas), _ ) ->
+            ( GotCanvas canvas [], Cmd.none )
 
-        (Blit mouseEvent, GotCanvas canvas drawOps) ->
+        ( Blit mouseEvent, GotCanvas canvas drawOps ) ->
             let
                 newDrawOps =
-                    blit 
+                    blit
                         (toPoint mouseEvent)
                         canvas
                         drawOps
             in
-                ( GotCanvas canvas newDrawOps, Cmd.none)
+                ( GotCanvas canvas newDrawOps, Cmd.none )
 
         _ ->
-            (Loading, loadImage)
+            ( Loading, loadImage )
 
 
 toPoint : MouseEvent -> Point
@@ -77,7 +76,7 @@ blit point canvas drawOps =
         scaling =
             Scaled point (Size 64 64)
 
-        newestOp = 
+        newestOp =
             DrawImage canvas scaling
     in
         newestOp :: (List.take 199 drawOps)
@@ -103,11 +102,10 @@ presentIfReady model =
             p [] [ text "Loading image" ]
 
         GotCanvas canvas drawOps ->
-            div 
+            div
                 []
                 [ Canvas.initialize (Size 800 800)
-                    |> Canvas.draw (DrawImage canvas (At (Point 0 0)))
-                    |> Canvas.toHtml 
+                    |> Canvas.draw (Canvas.batch drawOps)
+                    |> Canvas.toHtml
                         [ MouseEvents.onMouseMove Blit ]
                 ]
-

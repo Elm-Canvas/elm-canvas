@@ -13,7 +13,7 @@ main =
 
 
 drawing : DrawOp
-drawing =      
+drawing =
     [ rectangle (Point 10 10) Color.red
     , rectangle (Point 30 30) (Color.rgba 0 0 255 0.5)
     , FillStyle Color.white

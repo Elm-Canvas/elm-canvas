@@ -4,7 +4,7 @@ import Html exposing (..)
 import Canvas exposing (Size, Error, Point, DrawOp(..), Canvas)
 import MouseEvents exposing (MouseEvent)
 import Task
-import Color 
+import Color
 
 
 main : Program Never Model Msg
@@ -15,6 +15,7 @@ main =
         , update = update
         , subscriptions = always Sub.none
         }
+
 
 
 -- TYPES
@@ -43,15 +44,15 @@ loadImage =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
-    case (message, model) of
-        (ImageLoaded (Ok canvas), _) ->
-            ( GotCanvas canvas (Point 0 0), Cmd.none)
+    case ( message, model ) of
+        ( ImageLoaded (Ok canvas), _ ) ->
+            ( GotCanvas canvas (Point 0 0), Cmd.none )
 
-        (Move mouseEvent, GotCanvas canvas _) ->
-            ( GotCanvas canvas (toPoint mouseEvent), Cmd.none)
+        ( Move mouseEvent, GotCanvas canvas _ ) ->
+            ( GotCanvas canvas (toPoint mouseEvent), Cmd.none )
 
         _ ->
-            (Loading, loadImage )
+            ( Loading, loadImage )
 
 
 toPoint : MouseEvent -> Point
@@ -59,6 +60,7 @@ toPoint { targetPos, clientPos } =
     Point
         (toFloat (clientPos.x - targetPos.x))
         (toFloat (clientPos.y - targetPos.y))
+
 
 
 -- VIEW
