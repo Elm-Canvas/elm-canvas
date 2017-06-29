@@ -8,8 +8,6 @@
     ],
     "exposed-modules": [
         "Canvas",
-        "Canvas.Pixel",
-        "Canvas.Events"
     ],
     "native-modules": true,
     "dependencies": {
