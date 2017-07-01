@@ -7,7 +7,7 @@
         "."
     ],
     "exposed-modules": [
-        "Canvas",
+        "Canvas"
     ],
     "native-modules": true,
     "dependencies": {
