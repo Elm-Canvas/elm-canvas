@@ -6,10 +6,6 @@ We are trying to make this package reliable, and for all we know it is, but we h
 
 Making the canvas API accessible within Elm. The canvas element is a very simple way to render 2D graphics.
 
-# Getting started
-
-Checkout the [examples](https://github.com/Elm-Canvas/examples).
-
 # Whats this all this about?
 
 This code ..
