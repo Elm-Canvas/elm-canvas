@@ -46,7 +46,20 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case ( message, model ) of
         ( ImageLoaded (Ok canvas), _ ) ->
-            ( GotCanvas canvas [], Cmd.none )
+            let
+                scaledCanvas =
+                    let
+                        drawOp =
+                            Scaled
+                                (Point 0 0)
+                                (Size 300 300)
+                                |> DrawImage
+                                    canvas
+                    in
+                        Canvas.draw drawOp (Canvas.initialize (Size 300 300))
+                            
+            in
+                ( GotCanvas scaledCanvas [], Cmd.none )
 
         ( Blit mouseEvent, GotCanvas canvas drawOps ) ->
             let
@@ -72,12 +85,8 @@ toPoint { targetPos, clientPos } =
 blit : Point -> Canvas -> List DrawOp -> List DrawOp
 blit point canvas drawOps =
     let
-        scaling : DrawImageParams
-        scaling =
-            Scaled point (Size 64 64)
-
         newestOp =
-            DrawImage canvas scaling
+            DrawImage canvas (At point)
     in
         newestOp :: (List.take 199 drawOps)
 

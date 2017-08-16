@@ -382,6 +382,8 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
         destPoint = drawImageOp._2;
         destSize = drawImageOp._3;
 
+        // console.log(srcCanvas);
+
         ctx.drawImage(
           srcCanvas,
           srcPoint.x, srcPoint.y,
