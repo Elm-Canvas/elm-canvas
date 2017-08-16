@@ -22,25 +22,25 @@ main =
 
 blueRectangle : Canvas
 blueRectangle =
-    Canvas.initialize (Size 400 300)
-        |> Canvas.draw fillBlue
+    let
+        size : Size
+        size =
+            { width = 400
+            , height =  300
+            }
+    in
+        Canvas.initialize size
+            |> Canvas.draw (fillBlue size)
 
 
-fillBlue : DrawOp
-fillBlue =
+fillBlue : Size -> DrawOp
+fillBlue size =
     [ FillStyle Color.blue
     , FillRect (Point 0 0) size
     ]
         |> Canvas.batch
 
 
-size : Size
-size =
-    Size 400 300
-
-
-
--- Canvas.initialize : Size -> Canvas
 -- Canvas.batch : List DrawOp -> DrawOp
 -- Canvas.draw : DrawOp -> Canvas -> Canvas
 -- Canvas.toHtml : List (Attribute a) -> Canvas -> Html a
