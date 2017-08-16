@@ -53,7 +53,7 @@ fillBlue size =
 
 The Elm-Canvas library provides the type `Canvas`, which can be passed around, modified, drawn on, pasted, and ultimately passed into `toHtml` where they are rendered.
 
-Almost all the properties and methods of the 2d canvas context are available in Elm-Canvas. [Understanding them is necessary to full useage of this package.](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D).
+Almost all the properties and methods of the 2d canvas context are available in Elm-Canvas. [Understanding them is necessary for full useage of this package.](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D)
 
 
 ## What is the Canvas Element?
