@@ -157,7 +157,7 @@ draw : DrawOp -> Canvas -> Canvas
 draw = 
     Native.Canvas.draw
 
-{-| You dont want to apply `DrawOp` one at a time. Bundle many `DrawOp` together in one batch, using `batch`.
+{-| You dont want to apply `DrawOp` one at a time, its inefficient. Bundle many `DrawOp` together in one batch, using `batch`.
 
     line : Point -> Point -> DrawOp
     line p0 p1 =
