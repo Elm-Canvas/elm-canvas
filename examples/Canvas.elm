@@ -60,7 +60,7 @@ type alias Size =
     { width : Int, height : Int }
 
 
-{-|-}
+{-| -}
 type alias Point =
     { x : Float, y : Float }
 
@@ -141,6 +141,7 @@ toHtml : List (Attribute msg) -> Canvas -> Html msg
 toHtml =
     Native.Canvas.toHtml
 
+
 {-| This is our primary way of drawing onto canvases. Give `draw` a `drawOp` and apply it to a canvas.
 
     drawLine : Point -> Point -> Canvas -> Canvas
@@ -154,8 +155,9 @@ toHtml =
             ]
 -}
 draw : DrawOp -> Canvas -> Canvas
-draw = 
+draw =
     Native.Canvas.draw
+
 
 {-| You dont want to apply `DrawOp` one at a time. Bundle many `DrawOp` together in one batch, using `batch`.
 

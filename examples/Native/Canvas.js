@@ -205,7 +205,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
       point1 = drawOp._1;
       var point2 = drawOp._2;
 
-      ctx.bezierCurveTo(point.x, point.y, point1.x, point1.y, point2.x, point2.y);
+      ctx.bezierCurveTo(point.x, point.y, point1.x, point1.y, point2._0, point2._1);
       break;
 
     case "QuadraticCurveTo" :
@@ -381,6 +381,8 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
         srcSize = drawImageOp._1;
         destPoint = drawImageOp._2;
         destSize = drawImageOp._3;
+
+        // console.log(srcCanvas);
 
         ctx.drawImage(
           srcCanvas,

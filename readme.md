@@ -6,36 +6,43 @@ We are trying to make this package reliable, and for all we know it is, but we h
 
 Making the canvas API accessible within Elm. The canvas element is a very simple way to render 2D graphics.
 
-# Getting started
-
-Checkout the [examples](https://github.com/Elm-Canvas/examples).
-
 # Whats this all this about?
 
 This code ..
 
 ``` Elm
-import Canvas exposing (DrawOp(..))
-import Canvas.Point as Point
+import Html exposing (Html)
+import Canvas exposing (Size, Point, Canvas, DrawOp(..))
 import Color
 
-
+main : Html a
 main =
-    Canvas.initialize (Canvas.Size 400 300)
-        |> Canvas.batch fillBlue
-        |> Canvas.toHtml []
+    Canvas.toHtml [] blueRectangle
 
 
-fillBlue : List DrawOp
+blueRectangle : Canvas
+blueRectangle =
+    Canvas.initialize (Size 400 300)
+        |> Canvas.draw fillBlue
+
+
+fillBlue : DrawOp
 fillBlue =
     [ FillStyle Color.blue
-    , FillRect
-        (Point.fromInts ( 0, 0 )) 
-        (Canvas.Size 400 300)
+    , FillRect (Point 0 0) size
     ]
+        |> Canvas.batch
+
+
+size : Size
+size =
+    Size 400 300
+
+
 
 -- Canvas.initialize : Size -> Canvas
--- Canvas.batch : List DrawOp -> Canvas -> Canvas
+-- Canvas.batch : List DrawOp -> DrawOp
+-- Canvas.draw : DrawOp -> Canvas -> Canvas
 -- Canvas.toHtml : List (Attribute a) -> Canvas -> Html a
 ```
 
@@ -58,10 +65,7 @@ Almost all the properties and methods of the 2d canvas context are available in 
 
 We made this package for a some really unusual use cases, which likely arent your use case. Think hard before choosing to use Elm-Canvas, you probably dont need it. If you have image assets you want to move around the screen (like in a video game), then [evancz/elm-graphics](https://github.com/evancz/elm-graphics) and [elm-community/webgl](https://github.com/elm-community/webgl) are better options. If you want to render vector graphics use [elm-svg](http://package.elm-lang.org/packages/elm-lang/svg/latest). You should use the canvas when you absolutely need to change pixel values in a very low level way, which is an unusual project requirement.
 
-In making this package, we had various design considerations. On one hand we wanted to make things clearer and simpler than the native canvas API actually is (theres a lot of room for improvement on that front). On the other hand, we knew that there are other packages out there that are clear and simple, and that anyone who needs Elm-Canvas likely wasnt satisfied with a clear and simple API. For Elm-Canvas, we are just trying to expose as much of the native canvas API as we can into Elm. We are making no presumption about why a clear and simple rendering API was not sufficient for you. 
-
-That said, we didnt make a package so sparse as the only expose the native API. The events submodule exposes some useful html event handlers that return the exact position of mouse events. Doing pixel-perfect drawing is notoriously complicated, so we made a pixel submodule to make that more straight forward.
-
+In making this package, we had various design considerations. On one hand we wanted to make things clearer and simpler than the native canvas API actually is (theres a lot of room for improvement on that front). On the other hand, the use cases we had in mind for Elm-Canvas are some what broad. For Elm-Canvas, we are just trying to expose as much of the native canvas API as we can into Elm. Elm-Canvas makes no presumption about a what your specific use case is, but we figure direct access to the canvas api will help you get to where you need.
 
 ## Contributing
 
