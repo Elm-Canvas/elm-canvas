@@ -73,7 +73,7 @@ Pull requests, and general feedback welcome. I am in the `#canvas` channel in th
 
 ## Thanks
 
-Thanks to [Alex](https://github.com/mrozbarry) for contributing to this project, but also for his feedback and insights into what an Elm canvas API needs to look like, which have been instrumental in the development of Elm-Canvas. Thanks to the authors of the [Elm Web-Gl package](https://github.com/elm-community/webgl) for writing really readable code, which I found very educational on how to make native Elm packages. Thanks to all the helpful and insightful people in the Elm slack channel, including [Alex Spurling](https://github.com/alexspurling), the maker of [this elm app called 'quick draw'](https://github.com/alexspurling).
+Thanks to [Alex](https://github.com/mrozbarry) for contributing to this project, but also for his feedback and insights into what an Elm canvas API needs to look like, which have been instrumental in the development of Elm-Canvas. Thanks to the authors of the [Elm Web-Gl package](https://github.com/elm-community/webgl) for writing really readable code, which I found very educational on how to make native Elm packages. Thanks to all the helpful and insightful people in the Elm slack channel, including [Alex Spurling](https://github.com/alexspurling), the maker of [this elm app called 'quick draw'](https://github.com/alexspurling). Thanks to [mdgriffin](https://github.com/mdgriffith), [Noah Gordon](https://github.com/noahzgordon), and all the other nice people at the Elm NYC meet up who had great feedback for this project.. 
 
 ## How to use Elm-Canvas in your project
 
