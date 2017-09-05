@@ -344,7 +344,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
     case "ClosePath" : 
 
-      ctx.clearPath();
+      ctx.closePath();
       break;
 
     case "DrawImage":
