@@ -10,7 +10,7 @@ Making the canvas API accessible within Elm. The canvas element is a very simple
 
 This code ..
 
-``` Elm
+``` elm
 import Html exposing (Html)
 import Canvas exposing (Size, Point, Canvas, DrawOp(..))
 import Color
@@ -77,7 +77,7 @@ Thanks to [Alex](https://github.com/mrozbarry) for contributing to this project,
 
 ## How to use Elm-Canvas in your project
 
-Elm-Canvas is a native module, which means you cant install it from package.elm-lang.org. You can still use this module in your project, but it will take a little work. Here is how to do it..
+Elm-Canvas is a native module, which means you cant install it from package.elm-lang.org. You can still use this module in your project, but it will take a little work. One way to install it, is to use [elm-github-install](https://github.com/gdotdesign/elm-github-install). You can do it manually too, like this..
 
 0 Download either this repo, or better yet, one of the tagged releases (like 0.1.0).
 

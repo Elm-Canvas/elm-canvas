@@ -3,8 +3,8 @@
 To run the examples in this folder, follow the following steps:
 
 ```bash
-git clone https://github.com/evancz/url-parser.git
-cd url-parser
+git clone https://github.com/Elm-Canvas/elm-canvas.git
+cd elm-canvas
 cd examples
 elm-reactor
 ```
