@@ -341,17 +341,17 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
           color = _elm_lang$core$Color$toRgb(styleParameter._0);
 
-          ctx.strokeStyle = getCssString(color);
+          ctx.fillStyle = getCssString(color);
           break;
 
       case "PatternStyle":
 
-          ctx.strokeStyle = styleParameter._0.pattern();
+          ctx.fillStyle = styleParameter._0.pattern();
           break;
 
       case "GradientStyle":
 
-          ctx.strokeStyle = styleParameter._0.gradient();
+          ctx.fillStyle = styleParameter._0.gradient();
           break;
 
       }
