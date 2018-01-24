@@ -7,7 +7,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
 
   function LOG(msg) { // eslint-disable-line no-unused-vars
-    // console.log(msg);
+     //console.log(msg);
   }
 
 
@@ -57,6 +57,24 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
   }
 
+  function createPattern(canvas, repeat) {
+
+    var patternCanvas = document.createElement("canvas");
+    var ctx = patternCanvas.getContext("2d");
+
+    var pattern = ctx.createPattern(canvas.canvas(), repeat)
+
+    function getPattern() {
+      return pattern;
+    }
+
+    return {
+      ctor: "Pattern",
+      pattern: getPattern,
+    };
+
+  }
+
 
   function draw(drawOp, model) {
     model = cloneModel(model);
@@ -80,7 +98,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
         handleDrawOp(ctx, drawOps._0);
 
         drawOps = drawOps._1;
-      } 
+      }
 
       break;
 
@@ -129,7 +147,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
       break;
 
     case "LineJoin" :
-    
+
       ctx.lineJoin = drawOp._0;
       break;
 
@@ -139,7 +157,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
       break;
 
     case "LineDashOffset" :
-    
+
       ctx.lineDashOffset = drawOp._0;
       break;
 
@@ -242,8 +260,8 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
     case "SetTransform" :
 
       ctx.setTransform(
-        drawOp._0, 
-        drawOp._1, 
+        drawOp._0,
+        drawOp._1,
         drawOp._2,
         drawOp._3,
         drawOp._4,
@@ -254,8 +272,8 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
     case "Transform" :
 
       ctx.transform(
-        drawOp._0, 
-        drawOp._1, 
+        drawOp._0,
+        drawOp._1,
         drawOp._2,
         drawOp._3,
         drawOp._4,
@@ -279,9 +297,29 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
     case "StrokeStyle" :
 
-      color = _elm_lang$core$Color$toRgb(drawOp._0);
+      var styleParameter = drawOp._0;
 
-      ctx.strokeStyle = getCssString(color);
+      switch (styleParameter.ctor) {
+      case "ColorStyle":
+
+          color = _elm_lang$core$Color$toRgb(styleParameter._0);
+
+          ctx.strokeStyle = getCssString(color);
+          break;
+
+      case "PatternStyle":
+
+          ctx.strokeStyle = styleParameter._0.pattern();
+          break;
+
+      case "GradientStyle":
+
+          ctx.strokeStyle = styleParameter._0.gradient();
+          break;
+
+      }
+
+
       break;
 
     case "TextAlign" :
@@ -296,10 +334,29 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
     case "FillStyle" :
 
-      color = _elm_lang$core$Color$toRgb(drawOp._0);
+      var styleParameter = drawOp._0;
 
-      ctx.fillStyle = getCssString(color);
+      switch (styleParameter.ctor) {
+      case "ColorStyle":
+
+          color = _elm_lang$core$Color$toRgb(styleParameter._0);
+
+          ctx.strokeStyle = getCssString(color);
+          break;
+
+      case "PatternStyle":
+
+          ctx.strokeStyle = styleParameter._0.pattern();
+          break;
+
+      case "GradientStyle":
+
+          ctx.strokeStyle = styleParameter._0.gradient();
+          break;
+
+      }
       break;
+
 
     case "Fill" :
 
@@ -342,7 +399,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
       ctx.clip();
       break;
 
-    case "ClosePath" : 
+    case "ClosePath" :
 
       ctx.closePath();
       break;
@@ -445,7 +502,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
     var canvas = model.canvas();
     var ctx = canvas.getContext("2d");
     var imageData = ctx.getImageData(
-      point.x, 
+      point.x,
       point.y,
       size.width,
       size.height
@@ -533,6 +590,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
     getImageData: F3(getImageData), // eslint-disable-line no-undef
     clone: cloneModel,
     draw: F2(draw),
+    createPattern: F2(createPattern),
     toDataURL: F3(toDataURL) // eslint-disable-line no-undef
   };
 }();

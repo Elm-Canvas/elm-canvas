@@ -4,12 +4,16 @@ module Canvas
         , Error
         , Point
         , Size
+        , Pattern
+--        , Gradient(..)
         , DrawOp(..)
         , DrawImageParams(..)
+        , StyleParameter(..)
         , initialize
         , toHtml
         , draw
         , batch
+        , createPattern
         , loadImage
         , getImageData
         , getSize
@@ -20,10 +24,10 @@ module Canvas
 {-| The canvas html element is a very simple way to render 2D graphics. Check out these examples, and get an explanation of the canvas element [here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first, because its probably what you need. Elm-Canvas is for when you need unusually direct and low level access to the canvas element.
 
 # Main Types
-@docs Canvas, Point, Size, DrawOp, DrawImageParams
+@docs Canvas, Point, Size, DrawOp, Pattern, DrawImageParams, StyleParameter
 
 # Basics
-@docs initialize, toHtml, draw, batch
+@docs initialize, toHtml, draw, batch, createPattern
 
 # Loading Images
 @docs loadImage, Error
@@ -47,6 +51,16 @@ import Native.Canvas
 type Canvas
     = Canvas
 
+{-| A `Pattern` represents an image repeated in a specified direction, used to fill rectangles, lines, etc
+-}
+type Pattern
+    = Pattern
+
+--{-| A `Gradient` may be used to fill rectangles, lines, etc
+---}
+type Gradient
+    = LinearGradient
+    | RadialGradient
 
 {-| Sometimes loading a `Canvas` from a url wont work. When it doesnt, youll get an `Error` instead.
 -}
@@ -97,10 +111,10 @@ type DrawOp
     | Transform Float Float Float Float Float Float
     | Translate Point
     | StrokeRect Point Size
-    | StrokeStyle Color
+    | StrokeStyle StyleParameter
     | TextAlign String
     | TextBaseline String
-    | FillStyle Color
+    | FillStyle StyleParameter
     | BeginPath
     | BezierCurveTo Point Point Point
     | QuadraticCurveTo Point Point
@@ -111,6 +125,13 @@ type DrawOp
     | DrawImage Canvas DrawImageParams
     | Batch (List DrawOp)
 
+
+{-| `StyleParameter` is for FillStyle and StrokeStyle
+-}
+type StyleParameter
+  = ColorStyle Color
+  | PatternStyle Pattern
+--  | GradientStyle Gradient
 
 {-| The `DrawOp` `DrawImage` takes a `Canvas` and a `DrawImageParam`. We made three different `DrawImageParam`, because there are three different sets of parameters you can give the native javascript `ctx.drawImage()`. [See here for more info](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage.)
 -}
@@ -130,6 +151,11 @@ initialize : Size -> Canvas
 initialize =
     Native.Canvas.initialize
 
+{-| `createPattern` takes a `Canvas` containing the image to be repeated and a `String` of "repeat|repeat-x|repeat-y|no-repeat". It returns a `Pattern` to be used with the `PatternStyle` `StyleParameter` .
+-}
+createPattern : Canvas -> String -> Pattern
+createPattern =
+    Native.Canvas.createPattern
 
 {-| To turn a `Canvas` into `Html msg`, run it through `toHtml`. The first parameter of `toHtml` is a list of attributes just like the html nodes in `elm-lang/html`.
 
@@ -154,7 +180,7 @@ toHtml =
             ]
 -}
 draw : DrawOp -> Canvas -> Canvas
-draw = 
+draw =
     Native.Canvas.draw
 
 {-| You dont want to apply `DrawOp` one at a time, its inefficient. Bundle many `DrawOp` together in one batch, using `batch`.
