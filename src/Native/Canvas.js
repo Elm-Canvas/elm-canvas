@@ -7,7 +7,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
 
   function LOG(msg) { // eslint-disable-line no-unused-vars
-     console.log(msg);
+     //console.log(msg);
   }
 
 
@@ -352,7 +352,6 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
           for (var i = 0; i < colorStops.length; i++) {
             colorStop = colorStops[i];
             color = _elm_lang$core$Color$toRgb(colorStop._1);
-            LOG(color);
             grd.addColorStop(colorStop._0, getCssString(color));
           }
 
@@ -451,7 +450,6 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
           for (var i = 0; i < colorStops.length; i++) {
             colorStop = colorStops[i];
             color = _elm_lang$core$Color$toRgb(colorStop._1);
-            LOG(color);
             grd.addColorStop(colorStop._0, getCssString(color));
           }
 
