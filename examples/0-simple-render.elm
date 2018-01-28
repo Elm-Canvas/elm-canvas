@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (Html)
-import Canvas exposing (Size, Point, Canvas, StyleParameter(..), DrawOp(..))
+import Canvas exposing (Size, Point, Canvas, Style(..), DrawOp(..))
 import Color exposing (Color)
 
 

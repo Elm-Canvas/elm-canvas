@@ -7,7 +7,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
 
   function LOG(msg) { // eslint-disable-line no-unused-vars
-     //console.log(msg);
+     console.log(msg);
   }
 
 
@@ -56,25 +56,6 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
     return makeModel(canvas);
 
   }
-
-  function createPattern(canvas, repeat) {
-
-    var patternCanvas = document.createElement("canvas");
-    var ctx = patternCanvas.getContext("2d");
-
-    var pattern = ctx.createPattern(canvas.canvas(), repeat)
-
-    function getPattern() {
-      return pattern;
-    }
-
-    return {
-      ctor: "Pattern",
-      pattern: getPattern,
-    };
-
-  }
-
 
   function draw(drawOp, model) {
     model = cloneModel(model);
@@ -309,12 +290,74 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
       case "PatternStyle":
 
-          ctx.strokeStyle = styleParameter._0.pattern();
+          var repeat;
+
+          switch (styleParameter._1.ctor) {
+          case "Repeat":
+            repeat = "repeat";
+            break;
+
+          case "RepeatX":
+            repeat = "repeat-x";
+            break;
+
+          case "RepeatY":
+            repeat = "repeat-y";
+            break;
+
+          case "NoRepeat":
+            repeat = "no-repeat";
+            break;
+          }
+
+          var image = styleParameter._0.canvas();
+          var pattern = ctx.createPattern(image, repeat)
+          ctx.strokeStyle = pattern; 
           break;
 
       case "GradientStyle":
+        
+          var gradient = styleParameter._0;
+          var colorStops, start, end;
+          var grd;
 
-          ctx.strokeStyle = styleParameter._0.gradient();
+          switch (gradient.ctor) {
+          case "LinearGradient":
+            start = gradient._0;
+            end = gradient._1;
+            grd = ctx.createLinearGradient(
+                start.x, start.y,
+                end.x, end.y
+            );
+            colorStops = gradient._2;
+            break;
+
+          case "RadialGradient":
+            start = gradient._0;
+            var startRadius = gradient._1;
+            end = gradient._2;
+            var endRadius = gradient._3;
+            grd = ctx.createRadialGradient(
+                start.x, start.y,
+                startRadius,
+                end.x, end.y,
+                endRadius
+            );
+            colorStops = gradient._4;
+            break;
+          }
+
+          colorStops = _elm_lang$core$Native_List.toArray(colorStops);
+          var colorStop, color;
+          for (var i = 0; i < colorStops.length; i++) {
+            colorStop = colorStops[i];
+            color = _elm_lang$core$Color$toRgb(colorStop._1);
+            LOG(color);
+            grd.addColorStop(colorStop._0, getCssString(color));
+          }
+
+
+          ctx.strokeStyle = grd;
           break;
 
       }
@@ -346,13 +389,75 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
       case "PatternStyle":
 
-          ctx.fillStyle = styleParameter._0.pattern();
+          var repeat;
+
+          switch (styleParameter._1.ctor) {
+          case "Repeat":
+            repeat = "repeat";
+            break;
+
+          case "RepeatX":
+            repeat = "repeat-x";
+            break;
+
+          case "RepeatY":
+            repeat = "repeat-y";
+            break;
+
+          case "NoRepeat":
+            repeat = "no-repeat";
+            break;
+          }
+
+          var image = styleParameter._0.canvas();
+          var pattern = ctx.createPattern(image, repeat)
+          ctx.fillStyle = pattern; 
           break;
 
       case "GradientStyle":
 
-          ctx.fillStyle = styleParameter._0.gradient();
+          var gradient = styleParameter._0;
+          var colorStops, start, end;
+          var grd;
+
+          switch (gradient.ctor) {
+          case "LinearGradient":
+            start = gradient._0;
+            end = gradient._1;
+            grd = ctx.createLinearGradient(
+                start.x, start.y,
+                end.x, end.y
+            );
+            colorStops = gradient._2;
+            break;
+
+          case "RadialGradient":
+            start = gradient._0;
+            var startRadius = gradient._1;
+            end = gradient._2;
+            var endRadius = gradient._3;
+            grd = ctx.createRadialGradient(
+                start.x, start.y,
+                startRadius,
+                end.x, end.y,
+                endRadius
+            );
+            colorStops = gradient._4;
+            break;
+          }
+
+          colorStops = _elm_lang$core$Native_List.toArray(colorStops);
+          var colorStop, color;
+          for (var i = 0; i < colorStops.length; i++) {
+            colorStop = colorStops[i];
+            color = _elm_lang$core$Color$toRgb(colorStop._1);
+            LOG(color);
+            grd.addColorStop(colorStop._0, getCssString(color));
+          }
+
+          ctx.fillStyle = grd;
           break;
+
 
       }
       break;
@@ -590,7 +695,6 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
     getImageData: F3(getImageData), // eslint-disable-line no-undef
     clone: cloneModel,
     draw: F2(draw),
-    createPattern: F2(createPattern),
     toDataURL: F3(toDataURL) // eslint-disable-line no-undef
   };
 }();

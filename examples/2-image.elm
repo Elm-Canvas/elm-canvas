@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Canvas exposing (Size, Error, Point, DrawOp(..), Canvas, Pattern, StyleParameter(..))
+import Canvas exposing (Size, Error, Point, DrawOp(..), Canvas, Style(..), Repeat(..))
 import MouseEvents exposing (MouseEvent)
 import Task
 import Color
@@ -22,12 +22,12 @@ main =
 
 
 type Msg
-    = ImageLoaded (Result Error (Canvas, Pattern))
+    = ImageLoaded (Result Error (Canvas, Canvas))
     | Move MouseEvent
 
 
 type Model
-    = GotCanvas Canvas Pattern Point
+    = GotCanvas Canvas Canvas Point
     | Loading
 
 
@@ -37,7 +37,6 @@ loadImages =
         ImageLoaded
         <| Task.map2 (,)
           (Canvas.loadImage "./steelix.png")
-          <| Task.map (flip Canvas.createPattern "repeat")
           (Canvas.loadImage "./sand.png")
 
 
@@ -96,9 +95,9 @@ presentIfReady model =
                         [ MouseEvents.onMouseMove Move ]
 
 
-drawSquare : Point -> Size -> Pattern -> DrawOp
+drawSquare : Point -> Size -> Canvas -> DrawOp
 drawSquare point size pattern =
-    [ StrokeStyle (PatternStyle pattern)
+    [ StrokeStyle (PatternStyle pattern Repeat)
     , LineWidth 15
     , StrokeRect point (calcSize point size)
     ]
