@@ -115,7 +115,7 @@ type DrawOp
     | Batch (List DrawOp)
 
 
-{-| `Style` specifies the style to apply as a `FillStyle` and `StrokeStyle`
+{-| `Style` specifies the style to apply as a `FillStyle` or a `StrokeStyle`
 -}
 type Style
   = ColorStyle Color
@@ -130,14 +130,14 @@ type Repeat
   | RepeatY
   | NoRepeat
 
-{-| A `Gradient` may be used to fill rectangles, lines, etc
+{-| A `Gradient` may be used to fill rectangles, lines, etc. The `LinearGradient` takes a starting `Point` for the gradient, an ending `Point` for the gradient, and the `ColorStop`s to apply. The `RadialGradient` takes the `Point` of the center of the starting circle, a `Float` representing its radius, the `Point` representing the center of the ending circle, a `Float` representing its radius, and the `ColorStop`s to apply.
 -}
 type Gradient
     = LinearGradient Point Point (List ColorStop)
     | RadialGradient Point Float Point Float (List ColorStop)
 
 
-{-| A `ColorStop` is used in the construction of a `Gradient`. The constructor takes an `Float` stop representing a position betwen the start and end of a gradient, and a `Color` representing the color to display at the stop position.
+{-| A `ColorStop` is used in the construction of a `Gradient`. The constructor takes a `Float` stop representing a position betwen the start and end of a gradient, and a `Color` representing the color to display at the stop position.
 -}
 type ColorStop
   = ColorStop Float Color
