@@ -8,7 +8,6 @@ module Canvas
         , DrawImageParams(..)
         , Style(..)
         , Repeat(..)
-        , Gradient(..)
         , ColorStop(..)
         , initialize
         , toHtml
@@ -24,7 +23,7 @@ module Canvas
 {-| The canvas html element is a very simple way to render 2D graphics. Check out these examples, and get an explanation of the canvas element [here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first, because its probably what you need. Elm-Canvas is for when you need unusually direct and low level access to the canvas element.
 
 # Main Types
-@docs Canvas, Point, Size, DrawOp, DrawImageParams, Style, Repeat, Gradient, ColorStop
+@docs Canvas, Point, Size, DrawOp, DrawImageParams, Style, Repeat, ColorStop
 
 # Basics
 @docs initialize, toHtml, draw, batch
@@ -115,32 +114,29 @@ type DrawOp
     | Batch (List DrawOp)
 
 
-{-| `Style` specifies the style to apply as a `FillStyle` or a `StrokeStyle`
+{-| `Style` specifies the style to apply as a `FillStyle` or a `StrokeStyle`. The Gradient styles may be used to fill rectangles, lines, etc. The `LinearGradient` takes a starting `Point` for the gradient, an ending `Point` for the gradient, and the `ColorStop`s to apply. The `RadialGradient` takes the `Point` of the center of the starting circle, a `Float` representing its radius, the `Point` representing the center of the ending circle, a `Float` representing its radius, and the `ColorStop`s to apply.
 -}
 type Style
-  = ColorStyle Color
-  | PatternStyle Canvas Repeat
-  | GradientStyle Gradient
+    = Color Color
+    | Pattern Canvas Repeat
+    | LinearGradient Point Point (List ColorStop)
+    | RadialGradient Point Float Point Float (List ColorStop)
 
-{-| Specifies the axis/axes along which to replicate a pattern. For use with the `PatternStyle` `Style`.
+
+{-| Specifies the axis/axes along which to replicate a pattern. For use with the `Pattern` `Style`.
 -}
 type Repeat
-  = Repeat
-  | RepeatX
-  | RepeatY
-  | NoRepeat
-
-{-| A `Gradient` may be used to fill rectangles, lines, etc. The `LinearGradient` takes a starting `Point` for the gradient, an ending `Point` for the gradient, and the `ColorStop`s to apply. The `RadialGradient` takes the `Point` of the center of the starting circle, a `Float` representing its radius, the `Point` representing the center of the ending circle, a `Float` representing its radius, and the `ColorStop`s to apply.
--}
-type Gradient
-    = LinearGradient Point Point (List ColorStop)
-    | RadialGradient Point Float Point Float (List ColorStop)
+    = Repeat
+    | RepeatX
+    | RepeatY
+    | NoRepeat
 
 
 {-| A `ColorStop` is used in the construction of a `Gradient`. The constructor takes a `Float` stop representing a position betwen the start and end of a gradient, and a `Color` representing the color to display at the stop position.
 -}
 type ColorStop
-  = ColorStop Float Color
+    = ColorStop Float Color
+
 
 {-| The `DrawOp` `DrawImage` takes a `Canvas` and a `DrawImageParam`. We made three different `DrawImageParam`, because there are three different sets of parameters you can give the native javascript `ctx.drawImage()`. [See here for more info](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage.)
 -}

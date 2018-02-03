@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Canvas exposing (Size, Error, Point, DrawOp(..), Canvas, Style(..), Repeat(..))
+import Canvas exposing (Size, Error, Point, DrawOp(..), Canvas, Style(..), Repeat(Repeat), ColorStop)
 import MouseEvents exposing (MouseEvent)
 import Task
 import Color
@@ -97,7 +97,11 @@ presentIfReady model =
 
 drawSquare : Point -> Size -> Canvas -> DrawOp
 drawSquare point size pattern =
-    [ StrokeStyle (PatternStyle pattern Repeat)
+  let
+      grad = RadialGradient (Point 74 50) 5 (Point 90 60) 100 [(Canvas.ColorStop 0 Color.red), (Canvas.ColorStop 1 Color.orange)]
+  in
+    --[ StrokeStyle (Pattern pattern Repeat)
+    [ StrokeStyle (grad)
     , LineWidth 15
     , StrokeRect point (calcSize point size)
     ]

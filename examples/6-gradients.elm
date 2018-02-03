@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (Html, Attribute)
 import Html.Attributes exposing (style)
-import Canvas exposing (Size, Point, DrawOp(..), Canvas, Style(..), ColorStop(..))
+import Canvas exposing (Size, Point, DrawOp(..), Canvas, Style(LinearGradient, RadialGradient), ColorStop(..))
 import Color exposing (Color)
 import MouseEvents exposing (MouseEvent)
 
@@ -14,7 +14,7 @@ main : Program Never Model Msg
 main =
     Html.beginnerProgram
         { model =
-            ( Canvas.initialize (Size 800 800)
+            ( drawBackground <| Canvas.initialize (Size 800 800)
             , Nothing
             )
         , view = view
@@ -90,16 +90,31 @@ handleClickState ( canvas, clickState ) =
         _ ->
             canvas
 
+drawBackground : Canvas -> Canvas
+drawBackground =
+  let
+    colorStops = [ ColorStop 1 Color.red
+                 , ColorStop 0.9 Color.orange
+                 , ColorStop 0.7 Color.yellow
+                 , ColorStop 0.5 Color.green
+                 , ColorStop 0.3 Color.blue
+                 , ColorStop 0.1 Color.purple
+                 ]
+    gradient = RadialGradient (Point 400 400) 0 (Point 400 400) 400 colorStops
+  in
+    [ BeginPath
+    , FillStyle gradient
+    , FillRect (Point 0 0) (Size 800 800)
+    , Fill
+    ]
+        |> Canvas.batch
+        |> Canvas.draw
 
 drawLine : Point -> Point -> Canvas -> Canvas
 drawLine pt0 pt1 =
   let
-    colorStops = [ ColorStop 0 Color.red
-                 , ColorStop 0.3 Color.orange
-                 , ColorStop 0.5 Color.yellow
-                 , ColorStop 0.6 Color.green
-                 , ColorStop 0.8 Color.blue
-                 , ColorStop 1 Color.purple
+    colorStops = [ ColorStop 0 Color.white
+                 , ColorStop 1 Color.black
                  ]
     gradient = LinearGradient (Point pt0.x 0) (Point pt1.x 0) colorStops
   in
