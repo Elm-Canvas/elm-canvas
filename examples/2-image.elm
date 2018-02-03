@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Canvas exposing (Size, Error, Point, DrawOp(..), Canvas, Style(..), Repeat(Repeat), ColorStop)
+import Canvas exposing (Size, Error, Point, DrawOp(..), Canvas, Style(Color))
 import MouseEvents exposing (MouseEvent)
 import Task
 import Color
@@ -10,7 +10,7 @@ import Color
 main : Program Never Model Msg
 main =
     Html.program
-        { init = ( Loading, loadImages )
+        { init = ( Loading, loadImage )
         , view = view
         , update = update
         , subscriptions = always Sub.none
@@ -22,23 +22,20 @@ main =
 
 
 type Msg
-    = ImageLoaded (Result Error (Canvas, Canvas))
+    = ImageLoaded (Result Error Canvas)
     | Move MouseEvent
 
 
 type Model
-    = GotCanvas Canvas Canvas Point
+    = GotCanvas Canvas Point
     | Loading
 
 
-loadImages : Cmd Msg
-loadImages =
+loadImage : Cmd Msg
+loadImage =
     Task.attempt
         ImageLoaded
-        <| Task.map2 (,)
-          (Canvas.loadImage "./steelix.png")
-          (Canvas.loadImage "./sand.png")
-
+        (Canvas.loadImage "./steelix.png")
 
 
 
@@ -48,14 +45,14 @@ loadImages =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case ( message, model ) of
-        ( ImageLoaded (Ok (canvas, texture)), _ ) ->
-            ( GotCanvas canvas texture (Point 0 0), Cmd.none )
+        ( ImageLoaded (Ok canvas), _ ) ->
+            ( GotCanvas canvas (Point 0 0), Cmd.none )
 
-        ( Move mouseEvent, GotCanvas canvas texture _ ) ->
-            ( GotCanvas canvas texture (toPoint mouseEvent), Cmd.none )
+        ( Move mouseEvent, GotCanvas canvas _ ) ->
+            ( GotCanvas canvas (toPoint mouseEvent), Cmd.none )
 
         _ ->
-            ( Loading, loadImages )
+            ( Loading, loadImage )
 
 
 toPoint : MouseEvent -> Point
@@ -84,24 +81,20 @@ presentIfReady model =
         Loading ->
             p [] [ text "Loading image" ]
 
-        GotCanvas canvas pattern point ->
+        GotCanvas canvas point ->
             let
                 size =
                     Canvas.getSize canvas
             in
                 canvas
-                    |> Canvas.draw (drawSquare point size pattern)
+                    |> Canvas.draw (drawSquare point size)
                     |> Canvas.toHtml
                         [ MouseEvents.onMouseMove Move ]
 
 
-drawSquare : Point -> Size -> Canvas -> DrawOp
-drawSquare point size pattern =
-  let
-      grad = RadialGradient (Point 74 50) 5 (Point 90 60) 100 [(Canvas.ColorStop 0 Color.red), (Canvas.ColorStop 1 Color.orange)]
-  in
-    --[ StrokeStyle (Pattern pattern Repeat)
-    [ StrokeStyle (grad)
+drawSquare : Point -> Size -> DrawOp
+drawSquare point size =
+    [ StrokeStyle <| Color Color.red
     , LineWidth 15
     , StrokeRect point (calcSize point size)
     ]

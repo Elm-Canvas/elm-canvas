@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (Html, Attribute)
 import Html.Attributes exposing (style)
-import Canvas exposing (Size, Point, DrawOp(..), Canvas, Style(..), ColorStop(..))
+import Canvas exposing (Size, Point, DrawOp(..), Canvas)
 import Color exposing (Color)
 import MouseEvents exposing (MouseEvent)
 
@@ -93,20 +93,9 @@ handleClickState ( canvas, clickState ) =
 
 drawLine : Point -> Point -> Canvas -> Canvas
 drawLine pt0 pt1 =
-  let
-    colorStops = [ ColorStop 0 Color.red
-                 , ColorStop 0.3 Color.orange
-                 , ColorStop 0.5 Color.yellow
-                 , ColorStop 0.6 Color.green
-                 , ColorStop 0.8 Color.blue
-                 , ColorStop 1 Color.purple
-                 ]
-    gradient = LinearGradient (Point pt0.x 0) (Point pt1.x 0) colorStops
-  in
     [ BeginPath
     , LineWidth 30
     , LineCap "round"
-    , StrokeStyle gradient
     , MoveTo pt0
     , LineTo pt1
     , Stroke

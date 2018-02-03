@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (style)
-import Canvas exposing (Canvas, Point, Size, DrawOp(..))
+import Canvas exposing (Canvas, Point, Size, DrawOp(..), Style(Color))
 import Time exposing (Time)
 import Color exposing (Color)
 import Random exposing (Generator)
@@ -213,7 +213,7 @@ drawDot { point, color } =
             point.y - (dotSize / 2)
     in
         [ BeginPath
-        , FillStyle color
+        , FillStyle <| Color color
         , Rect
             (Point x y)
             (Size (round dotSize) (round dotSize))
@@ -225,7 +225,7 @@ drawDot { point, color } =
 fade : Time -> DrawOp
 fade dt =
     [ BeginPath
-    , FillStyle (Color.rgba 255 255 255 (0.5 * dt))
+    , FillStyle <| Color (Color.rgba 255 255 255 (0.5 * dt))
     , Rect (Point 0 0) canvasSize
     , Fill
     ]
