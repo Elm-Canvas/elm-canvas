@@ -315,52 +315,57 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
           ctx.strokeStyle = pattern;
           break;
 
-      case "LinearGradient":
+      case "Gradient":
 
+          var gradient = styleParameter._0;
           var colorStops, start, end;
           var grd;
 
-          start = styleParameter._0;
-          end = styleParameter._1;
-          grd = ctx.createLinearGradient(
-              start.x, start.y,
-              end.x, end.y
-          );
+          switch (gradient.ctor) {
+          case "Linear":
 
-          colorStops = _elm_lang$core$Native_List.toArray(styleParameter._2);
+              start = gradient._0;
+              end = gradient._1;
+              grd = ctx.createLinearGradient(
+                  start._0, start._1,
+                  end._0, end._1
+              );
 
-          var colorStop, color;
-          for (var i = 0; i < colorStops.length; i++) {
-            colorStop = colorStops[i];
-            color = _elm_lang$core$Color$toRgb(colorStop._1);
-            grd.addColorStop(colorStop._0, getCssString(color));
+              colorStops = _elm_lang$core$Native_List.toArray(gradient._2);
+
+              var colorStop, color;
+              for (var i = 0; i < colorStops.length; i++) {
+                colorStop = colorStops[i];
+                color = _elm_lang$core$Color$toRgb(colorStop._1);
+                grd.addColorStop(colorStop._0, getCssString(color));
+              }
+              ctx.strokeStyle = grd;
+              break;
+
+          case "Radial":
+
+              start = gradient._0;
+              var startRadius = gradient._1;
+              end = gradient._2;
+              var endRadius = gradient._3;
+              grd = ctx.createRadialGradient(
+                  start._0, start._1,
+                  startRadius,
+                  end._0, end._1,
+                  endRadius
+              );
+
+              colorStops = _elm_lang$core$Native_List.toArray(gradient._4);
+
+              var colorStop, color;
+              for (var i = 0; i < colorStops.length; i++) {
+                colorStop = colorStops[i];
+                color = _elm_lang$core$Color$toRgb(colorStop._1);
+                grd.addColorStop(colorStop._0, getCssString(color));
+              }
+              ctx.strokeStyle = grd;
+              break;
           }
-          ctx.strokeStyle = grd;
-          break;
-
-      case "RadialGradient":
-
-          start = styleParameter._0;
-          var startRadius = styleParameter._1;
-          end = styleParameter._2;
-          var endRadius = styleParameter._3;
-          grd = ctx.createRadialGradient(
-              start.x, start.y,
-              startRadius,
-              end.x, end.y,
-              endRadius
-          );
-
-          colorStops = _elm_lang$core$Native_List.toArray(styleParameter._4);
-
-          var colorStop, color;
-          for (var i = 0; i < colorStops.length; i++) {
-            colorStop = colorStops[i];
-            color = _elm_lang$core$Color$toRgb(colorStop._1);
-            grd.addColorStop(colorStop._0, getCssString(color));
-          }
-          ctx.strokeStyle = grd;
-          break;
 
       }
 
@@ -416,53 +421,57 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
           ctx.fillStyle = pattern;
           break;
 
-      case "LinearGradient":
+      case "Gradient":
 
+          var gradient = styleParameter._0;
           var colorStops, start, end;
           var grd;
 
-          start = styleParameter._0;
-          end = styleParameter._1;
-          grd = ctx.createLinearGradient(
-              start.x, start.y,
-              end.x, end.y
-          );
+          switch (gradient.ctor) {
+          case "Linear":
 
-          colorStops = _elm_lang$core$Native_List.toArray(styleParameter._2);
+              start = gradient._0;
+              end = gradient._1;
+              grd = ctx.createLinearGradient(
+                  start._0, start._1,
+                  end._0, end._1
+              );
 
-          var colorStop, color;
-          for (var i = 0; i < colorStops.length; i++) {
-            colorStop = colorStops[i];
-            color = _elm_lang$core$Color$toRgb(colorStop._1);
-            grd.addColorStop(colorStop._0, getCssString(color));
+              colorStops = _elm_lang$core$Native_List.toArray(gradient._2);
+
+              var colorStop, color;
+              for (var i = 0; i < colorStops.length; i++) {
+                colorStop = colorStops[i];
+                color = _elm_lang$core$Color$toRgb(colorStop._1);
+                grd.addColorStop(colorStop._0, getCssString(color));
+              }
+              ctx.fillStyle = grd;
+              break;
+
+          case "Radial":
+
+              start = gradient._0;
+              var startRadius = gradient._1;
+              end = gradient._2;
+              var endRadius = gradient._3;
+              grd = ctx.createRadialGradient(
+                  start._0, start._1,
+                  startRadius,
+                  end._0, end._1,
+                  endRadius
+              );
+
+              colorStops = _elm_lang$core$Native_List.toArray(gradient._4);
+
+              var colorStop, color;
+              for (var i = 0; i < colorStops.length; i++) {
+                colorStop = colorStops[i];
+                color = _elm_lang$core$Color$toRgb(colorStop._1);
+                grd.addColorStop(colorStop._0, getCssString(color));
+              }
+              ctx.fillStyle = grd;
+              break;
           }
-          ctx.fillStyle = grd;
-          break;
-
-      case "RadialGradient":
-
-          start = styleParameter._0;
-          var startRadius = styleParameter._1;
-          end = styleParameter._2;
-          var endRadius = styleParameter._3;
-          grd = ctx.createRadialGradient(
-              start.x, start.y,
-              startRadius,
-              end.x, end.y,
-              endRadius
-          );
-
-          colorStops = _elm_lang$core$Native_List.toArray(styleParameter._4);
-
-          var colorStop, color;
-          for (var i = 0; i < colorStops.length; i++) {
-            colorStop = colorStops[i];
-            color = _elm_lang$core$Color$toRgb(colorStop._1);
-            grd.addColorStop(colorStop._0, getCssString(color));
-          }
-          console.log(grd)
-          ctx.fillStyle = grd;
-          break;
 
 
       }
