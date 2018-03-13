@@ -1,45 +1,57 @@
 module Canvas
     exposing
         ( Canvas
+        , DrawImageParams(..)
+        , DrawOp(..)
         , Error
         , Point
+        , Repeat(..)
         , Size
-        , DrawOp(..)
-        , DrawImageParams(..)
-        , initialize
-        , toHtml
-        , draw
+        , Style(..)
         , batch
-        , loadImage
+        , draw
         , getImageData
         , getSize
+        , initialize
+        , loadImage
         , setSize
         , toDataUrl
+        , toHtml
         )
 
 {-| The canvas html element is a very simple way to render 2D graphics. Check out these examples, and get an explanation of the canvas element [here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first, because its probably what you need. Elm-Canvas is for when you need unusually direct and low level access to the canvas element.
 
+
 # Main Types
-@docs Canvas, Point, Size, DrawOp, DrawImageParams
+
+@docs Canvas, Point, Size, DrawOp, DrawImageParams, Style, Repeat
+
 
 # Basics
+
 @docs initialize, toHtml, draw, batch
 
+
 # Loading Images
+
 @docs loadImage, Error
 
+
 # Image Data
+
 @docs getImageData, toDataUrl
 
+
 # Sizing
+
 @docs getSize, setSize
 
 -}
 
-import Html exposing (Html, Attribute)
-import Task exposing (Task)
-import Color exposing (Color)
+import Color exposing (Color, Gradient)
+import Html exposing (Attribute, Html)
 import Native.Canvas
+import Task exposing (Task)
 
 
 {-| A `Canvas` contains image data, and can be rendered as html with `toHtml`. It is the primary type of this package.
@@ -60,7 +72,7 @@ type alias Size =
     { width : Int, height : Int }
 
 
-{-|-}
+{-| -}
 type alias Point =
     { x : Float, y : Float }
 
@@ -97,10 +109,10 @@ type DrawOp
     | Transform Float Float Float Float Float Float
     | Translate Point
     | StrokeRect Point Size
-    | StrokeStyle Color
+    | StrokeStyle Style
     | TextAlign String
     | TextBaseline String
-    | FillStyle Color
+    | FillStyle Style
     | BeginPath
     | BezierCurveTo Point Point Point
     | QuadraticCurveTo Point Point
@@ -110,6 +122,23 @@ type DrawOp
     | ClosePath
     | DrawImage Canvas DrawImageParams
     | Batch (List DrawOp)
+
+
+{-| `Style` specifies the style to apply as a `FillStyle` or a `StrokeStyle`.
+-}
+type Style
+    = Color Color
+    | Pattern Canvas Repeat
+    | Gradient Gradient
+
+
+{-| Specifies the axis/axes along which to replicate a pattern. For use with the `Pattern` `Style`.
+-}
+type Repeat
+    = Repeat
+    | RepeatX
+    | RepeatY
+    | NoRepeat
 
 
 {-| The `DrawOp` `DrawImage` takes a `Canvas` and a `DrawImageParam`. We made three different `DrawImageParam`, because there are three different sets of parameters you can give the native javascript `ctx.drawImage()`. [See here for more info](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage.)
@@ -125,6 +154,7 @@ type DrawImageParams
     squareCanvas : Int -> Canvas
     squareCanvas length =
         initialize (Size length length)
+
 -}
 initialize : Size -> Canvas
 initialize =
@@ -136,10 +166,12 @@ initialize =
     pixelatedRender : Canvas -> Html Msg
     pixelatedRender canvas =
         canvas |> toHtml [ class "pixelated" ]
+
 -}
 toHtml : List (Attribute msg) -> Canvas -> Html msg
 toHtml =
     Native.Canvas.toHtml
+
 
 {-| This is our primary way of drawing onto canvases. Give `draw` a `drawOp` and apply it to a canvas.
 
@@ -152,10 +184,12 @@ toHtml =
             , LineTo p1
             , Stroke
             ]
+
 -}
 draw : DrawOp -> Canvas -> Canvas
-draw = 
+draw =
     Native.Canvas.draw
+
 
 {-| You dont want to apply `DrawOp` one at a time, its inefficient. Bundle many `DrawOp` together in one batch, using `batch`.
 
@@ -168,6 +202,7 @@ draw =
             , LineTo p1
             , Stroke
             ]
+
 -}
 batch : List DrawOp -> DrawOp
 batch =
@@ -191,6 +226,7 @@ batch =
                     Nothing ->
                         -- ..
         -- ..
+
 -}
 loadImage : String -> Task Error Canvas
 loadImage =
@@ -213,6 +249,7 @@ loadImage =
         [ 0, 0, 0, 255,      255, 0, 0, 255
         , 0, 0, 0, 255,      255, 255, 255, 255
         ]
+
 -}
 getImageData : Point -> Size -> Canvas -> List Int
 getImageData =

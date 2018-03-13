@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Canvas exposing (Size, Error, Point, DrawOp(..), Canvas)
+import Canvas exposing (Size, Error, Point, DrawOp(..), Canvas, Style(Color))
 import MouseEvents exposing (MouseEvent)
 import Task
 import Color
@@ -94,7 +94,7 @@ presentIfReady model =
 
 drawSquare : Point -> Size -> DrawOp
 drawSquare point size =
-    [ StrokeStyle Color.red
+    [ StrokeStyle <| Color Color.red
     , LineWidth 15
     , StrokeRect point (calcSize point size)
     ]

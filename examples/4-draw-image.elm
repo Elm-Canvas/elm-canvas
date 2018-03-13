@@ -57,7 +57,7 @@ update message model =
                                     canvas
                     in
                         Canvas.draw drawOp (Canvas.initialize (Size 300 300))
-                            
+
             in
                 ( GotCanvas scaledCanvas [], Cmd.none )
 
