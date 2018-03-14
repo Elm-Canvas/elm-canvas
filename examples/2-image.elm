@@ -1,8 +1,9 @@
 module Main exposing (..)
 
-import Canvas exposing (Canvas, DrawOp(..), Error, Point, Size, Style(Color))
+import Canvas exposing (Canvas, Error, Point, Size)
 import Color
-import Html exposing (..)
+import Ctx exposing (Ctx)
+import Html exposing (Html, p, text)
 import MouseEvents exposing (MouseEvent)
 import Task
 
@@ -80,18 +81,18 @@ view model =
 
 drawSquare : Point -> Canvas -> Canvas
 drawSquare point canvas =
-    Canvas.draw
-        (squareOp point (Canvas.getSize canvas))
-        canvas
+    canvas
+        |> Canvas.getSize
+        |> square point
+        |> Ctx.draw canvas
 
 
-squareOp : Point -> Size -> DrawOp
-squareOp point size =
-    [ StrokeStyle <| Color Color.red
-    , LineWidth 15
-    , StrokeRect point (calcSize point size)
+square : Point -> Size -> List Ctx
+square point size =
+    [ Ctx.strokeStyle <| Ctx.Color Color.red
+    , Ctx.lineWidth 15
+    , Ctx.strokeRect point (calcSize point size)
     ]
-        |> Canvas.batch
 
 
 calcSize : Point -> Size -> Size

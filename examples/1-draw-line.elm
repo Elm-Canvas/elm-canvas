@@ -1,7 +1,8 @@
 module Main exposing (..)
 
-import Canvas exposing (Canvas, DrawOp(..), Point, Size)
+import Canvas exposing (Canvas, Point, Size)
 import Color exposing (Color)
+import Ctx exposing (Ctx)
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (style)
 import MouseEvents exposing (MouseEvent)
@@ -14,7 +15,10 @@ main : Program Never Model Msg
 main =
     Html.beginnerProgram
         { model =
-            ( Canvas.initialize (Size 800 800)
+            ( Canvas.initialize
+                { width = 800
+                , height = 800
+                }
             , NoClick
             )
         , view = view
@@ -92,13 +96,12 @@ handleClickState ( canvas, clickState ) =
 
 
 drawLine : Point -> Point -> Canvas -> Canvas
-drawLine pt0 pt1 =
-    [ BeginPath
-    , LineWidth 30
-    , LineCap "round"
-    , MoveTo pt0
-    , LineTo pt1
-    , Stroke
+drawLine pt0 pt1 canvas =
+    [ Ctx.beginPath
+    , Ctx.lineWidth 30
+    , Ctx.lineCap "round"
+    , Ctx.moveTo pt0
+    , Ctx.lineTo pt1
+    , Ctx.stroke
     ]
-        |> Canvas.batch
-        |> Canvas.draw
+        |> Ctx.draw canvas

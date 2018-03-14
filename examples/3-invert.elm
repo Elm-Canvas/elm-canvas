@@ -1,8 +1,9 @@
 module Main exposing (..)
 
 import Array exposing (Array)
-import Canvas exposing (Canvas, DrawOp(..), Error, Point, Size)
-import Html exposing (..)
+import Canvas exposing (Canvas, Error, Point, Size)
+import Ctx exposing (Ctx)
+import Html exposing (Html)
 import Html.Events as Events
 import Task
 
@@ -57,12 +58,12 @@ update msg model =
 
 invert : Canvas -> Canvas
 invert canvas =
-    Canvas.draw (invertOp canvas) canvas
+    Ctx.draw canvas (invertCtx canvas)
 
 
-invertOp : Canvas -> DrawOp
-invertOp canvas =
-    PutImageData
+invertCtx : Canvas -> Ctx
+invertCtx canvas =
+    Ctx.putImageData
         (invertedImageData canvas)
         (Canvas.getSize canvas)
         { x = 0, y = 0 }
