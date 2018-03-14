@@ -1,9 +1,9 @@
 module Main exposing (..)
 
+import Array exposing (Array)
+import Canvas exposing (Canvas, DrawOp(..), Error, Point, Size)
 import Html exposing (..)
 import Html.Events as Events
-import Canvas exposing (Size, Error, Point, DrawOp(..), Canvas)
-import Array exposing (Array)
 import Task
 
 
@@ -22,20 +22,20 @@ main =
 
 
 type Msg
-    = ImageLoaded (Result Error Canvas)
+    = CanvasLoaded (Result Error Canvas)
     | Click
 
 
 type Model
-    = GotCanvas Canvas
+    = Loaded Canvas
     | Loading
 
 
 loadImage : Cmd Msg
 loadImage =
-    Task.attempt
-        ImageLoaded
-        (Canvas.loadImage "./steelix.png")
+    "./steelix.png"
+        |> Canvas.loadImage
+        |> Task.attempt CanvasLoaded
 
 
 
@@ -43,13 +43,13 @@ loadImage =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update message model =
-    case ( message, model ) of
-        ( ImageLoaded (Ok canvas), _ ) ->
-            ( GotCanvas canvas, Cmd.none )
+update msg model =
+    case ( msg, model ) of
+        ( CanvasLoaded (Ok canvas), _ ) ->
+            ( Loaded canvas, Cmd.none )
 
-        ( Click, GotCanvas canvas ) ->
-            ( GotCanvas (invert canvas), Cmd.none )
+        ( Click, Loaded canvas ) ->
+            ( Loaded (invert canvas), Cmd.none )
 
         _ ->
             ( Loading, loadImage )
@@ -57,28 +57,24 @@ update message model =
 
 invert : Canvas -> Canvas
 invert canvas =
-    let
-        drawOp =
-            PutImageData
-                (invertedImageData canvas)
-                (Canvas.getSize canvas)
-                (Point 0 0)
-    in
-        Canvas.draw drawOp canvas
+    Canvas.draw (invertOp canvas) canvas
+
+
+invertOp : Canvas -> DrawOp
+invertOp canvas =
+    PutImageData
+        (invertedImageData canvas)
+        (Canvas.getSize canvas)
+        { x = 0, y = 0 }
 
 
 invertedImageData : Canvas -> List Int
 invertedImageData canvas =
-    let
-        point =
-            Point 0 0
-
-        size =
-            Canvas.getSize canvas
-    in
-        canvas
-            |> Canvas.getImageData point size
-            |> List.indexedMap invertHelp
+    canvas
+        |> Canvas.getImageData
+            { x = 0, y = 0 }
+            (Canvas.getSize canvas)
+        |> List.indexedMap invertHelp
 
 
 invertHelp : Int -> Int -> Int
@@ -95,20 +91,11 @@ invertHelp index color =
 
 view : Model -> Html Msg
 view model =
-    div
-        []
-        [ p [] [ text "Click to invert colors" ]
-        , presentIfReady model
-        ]
-
-
-presentIfReady : Model -> Html Msg
-presentIfReady model =
     case model of
         Loading ->
             p [] [ text "Loading image" ]
 
-        GotCanvas canvas ->
+        Loaded canvas ->
             Canvas.toHtml
                 [ Events.onClick Click ]
                 canvas

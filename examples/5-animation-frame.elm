@@ -1,12 +1,12 @@
 module Main exposing (..)
 
+import AnimationFrame
+import Canvas exposing (Canvas, DrawOp(..), Point, Size, Style(Color))
+import Color exposing (Color)
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (style)
-import Canvas exposing (Canvas, Point, Size, DrawOp(..), Style(Color))
-import Time exposing (Time)
-import Color exposing (Color)
 import Random exposing (Generator)
-import AnimationFrame
+import Time exposing (Time)
 
 
 main =
@@ -22,39 +22,6 @@ main =
 -- INIT --
 
 
-dotsGenerator : Generator (List Dot)
-dotsGenerator =
-    let
-        pointGenerator : Generator Point
-        pointGenerator =
-            Random.map2 Point
-                (Random.float 0 (toFloat canvasSize.width))
-                (Random.float 0 (toFloat canvasSize.height))
-
-        velocityGenerator : Generator Point
-        velocityGenerator =
-            Random.map2 Point
-                (Random.float -maxSpeed maxSpeed)
-                (Random.float -maxSpeed maxSpeed)
-
-        colorGenerator : Generator Color
-        colorGenerator =
-            Random.map4 Color.rgba
-                (Random.int 20 255)
-                (Random.int 20 255)
-                (Random.int 20 255)
-                (Random.float 1 1)
-
-        dotGenerator : Generator Dot
-        dotGenerator =
-            Random.map3 Dot
-                pointGenerator
-                velocityGenerator
-                colorGenerator
-    in
-        Random.list 100 dotGenerator
-
-
 initCmd : Cmd Msg
 initCmd =
     Random.generate GetDots dotsGenerator
@@ -62,10 +29,45 @@ initCmd =
 
 initModel : Model
 initModel =
-    { canvas =
-        Canvas.initialize canvasSize
+    { canvas = Canvas.initialize canvasSize
     , dots = []
     }
+
+
+dotsGenerator : Generator (List Dot)
+dotsGenerator =
+    Random.list 100 dotGenerator
+
+
+dotGenerator : Generator Dot
+dotGenerator =
+    Random.map3 Dot
+        pointGenerator
+        velocityGenerator
+        colorGenerator
+
+
+pointGenerator : Generator Point
+pointGenerator =
+    Random.map2 Point
+        (Random.float 0 (toFloat canvasSize.width))
+        (Random.float 0 (toFloat canvasSize.height))
+
+
+velocityGenerator : Generator Point
+velocityGenerator =
+    Random.map2 Point
+        (Random.float -maxSpeed maxSpeed)
+        (Random.float -maxSpeed maxSpeed)
+
+
+colorGenerator : Generator Color
+colorGenerator =
+    Random.map4 Color.rgba
+        (Random.int 20 255)
+        (Random.int 20 255)
+        (Random.int 20 255)
+        (Random.float 1 1)
 
 
 
@@ -126,19 +128,23 @@ update msg model =
 
                 newDots =
                     List.map (updateDot dt_) model.dots
-
-                drawOp =
-                    Canvas.batch
-                        [ fade dt_
-                        , drawDots newDots
-                        ]
             in
-                { model
-                    | canvas =
-                        Canvas.draw drawOp model.canvas
-                    , dots = newDots
-                }
-                    ! []
+            { model
+                | canvas =
+                    Canvas.draw
+                        (mainOp dt_ newDots)
+                        model.canvas
+                , dots = newDots
+            }
+                ! []
+
+
+mainOp : Time -> List Dot -> DrawOp
+mainOp dt dots =
+    [ fade dt
+    , dotsOp (List.map (updateDot dt) dots)
+    ]
+        |> Canvas.batch
 
 
 updateDot : Time -> Dot -> Dot
@@ -156,12 +162,12 @@ updateDot dt ({ point, velocity } as dot) =
                     x < 0
 
                 tooFarRight =
-                    (toFloat canvasSize.width) < x
+                    toFloat canvasSize.width < x
             in
-                if tooFarLeft || tooFarRight then
-                    velocity.x * -0.9
-                else
-                    velocity.x
+            if tooFarLeft || tooFarRight then
+                velocity.x * -0.9
+            else
+                velocity.x
 
         newVy =
             let
@@ -169,57 +175,47 @@ updateDot dt ({ point, velocity } as dot) =
                     y < 0
 
                 tooHigh =
-                    (toFloat canvasSize.height) < y
+                    toFloat canvasSize.height < y
             in
-                if tooLow || tooHigh then
-                    (velocity.y * -0.9) + 0.5
-                else
-                    velocity.y + 0.5
-
-        newVelocity =
-            { x = newVx
-            , y = newVy
-            }
-
-        newPoint =
+            if tooLow || tooHigh then
+                (velocity.y * -0.9) + 0.5
+            else
+                velocity.y + 0.5
+    in
+    { dot
+        | point =
             { x =
                 max 0 (min (toFloat canvasSize.width) x)
             , y =
                 max 0 (min (toFloat canvasSize.height) y)
             }
-    in
-        { dot
-            | point = newPoint
-            , velocity = newVelocity
-        }
+        , velocity = { x = newVx, y = newVy }
+    }
 
 
 
 -- DRAW --
 
 
-drawDots : List Dot -> DrawOp
-drawDots dots =
-    Canvas.batch (List.map drawDot dots)
+dotsOp : List Dot -> DrawOp
+dotsOp dots =
+    Canvas.batch (List.map dotOp dots)
 
 
-drawDot : Dot -> DrawOp
-drawDot { point, color } =
-    let
-        x =
-            point.x - (dotSize / 2)
-
-        y =
-            point.y - (dotSize / 2)
-    in
-        [ BeginPath
-        , FillStyle <| Color color
-        , Rect
-            (Point x y)
-            (Size (round dotSize) (round dotSize))
-        , Fill
-        ]
-            |> Canvas.batch
+dotOp : Dot -> DrawOp
+dotOp { point, color } =
+    [ BeginPath
+    , FillStyle <| Color color
+    , Rect
+        { x = point.x - (dotSize / 2)
+        , y = point.y - (dotSize / 2)
+        }
+        { width = round dotSize
+        , height = round dotSize
+        }
+    , Fill
+    ]
+        |> Canvas.batch
 
 
 fade : Time -> DrawOp
@@ -238,18 +234,15 @@ fade dt =
 
 view : Model -> Html Msg
 view model =
-    div
-        []
-        [ Canvas.toHtml
-            [ style
-                [ ( "border", "2px solid #000" )
-                , ( "margin", "0 auto" )
-                , ( "margin-top", "10px" )
-                , ( "display", "block" )
-                ]
+    Canvas.toHtml
+        [ style
+            [ ( "border", "2px solid #000" )
+            , ( "margin", "0 auto" )
+            , ( "margin-top", "10px" )
+            , ( "display", "block" )
             ]
-            model.canvas
         ]
+        model.canvas
 
 
 

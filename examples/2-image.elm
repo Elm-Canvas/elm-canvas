@@ -1,10 +1,10 @@
 module Main exposing (..)
 
+import Canvas exposing (Canvas, DrawOp(..), Error, Point, Size, Style(Color))
+import Color
 import Html exposing (..)
-import Canvas exposing (Size, Error, Point, DrawOp(..), Canvas, Style(Color))
 import MouseEvents exposing (MouseEvent)
 import Task
-import Color
 
 
 main : Program Never Model Msg
@@ -22,20 +22,20 @@ main =
 
 
 type Msg
-    = ImageLoaded (Result Error Canvas)
+    = CanvasLoaded (Result Error Canvas)
     | Move MouseEvent
 
 
 type Model
-    = GotCanvas Canvas Point
+    = Loaded Canvas Point
     | Loading
 
 
 loadImage : Cmd Msg
 loadImage =
-    Task.attempt
-        ImageLoaded
-        (Canvas.loadImage "./steelix.png")
+    "./steelix.png"
+        |> Canvas.loadImage
+        |> Task.attempt CanvasLoaded
 
 
 
@@ -43,13 +43,13 @@ loadImage =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update message model =
-    case ( message, model ) of
-        ( ImageLoaded (Ok canvas), _ ) ->
-            ( GotCanvas canvas (Point 0 0), Cmd.none )
+update msg model =
+    case ( msg, model ) of
+        ( CanvasLoaded (Ok canvas), _ ) ->
+            ( Loaded canvas { x = 0, y = 0 }, Cmd.none )
 
-        ( Move mouseEvent, GotCanvas canvas _ ) ->
-            ( GotCanvas canvas (toPoint mouseEvent), Cmd.none )
+        ( Move mouseEvent, Loaded canvas _ ) ->
+            ( Loaded canvas (toPoint mouseEvent), Cmd.none )
 
         _ ->
             ( Loading, loadImage )
@@ -57,9 +57,9 @@ update message model =
 
 toPoint : MouseEvent -> Point
 toPoint { targetPos, clientPos } =
-    Point
-        (toFloat (clientPos.x - targetPos.x))
-        (toFloat (clientPos.y - targetPos.y))
+    { x = toFloat (clientPos.x - targetPos.x)
+    , y = toFloat (clientPos.y - targetPos.y)
+    }
 
 
 
@@ -68,32 +68,25 @@ toPoint { targetPos, clientPos } =
 
 view : Model -> Html Msg
 view model =
-    div
-        []
-        [ p [] [ text "Elm-Canvas" ]
-        , presentIfReady model
-        ]
-
-
-presentIfReady : Model -> Html Msg
-presentIfReady model =
     case model of
         Loading ->
             p [] [ text "Loading image" ]
 
-        GotCanvas canvas point ->
-            let
-                size =
-                    Canvas.getSize canvas
-            in
-                canvas
-                    |> Canvas.draw (drawSquare point size)
-                    |> Canvas.toHtml
-                        [ MouseEvents.onMouseMove Move ]
+        Loaded canvas point ->
+            Canvas.toHtml
+                [ MouseEvents.onMouseMove Move ]
+                (drawSquare point canvas)
 
 
-drawSquare : Point -> Size -> DrawOp
-drawSquare point size =
+drawSquare : Point -> Canvas -> Canvas
+drawSquare point canvas =
+    Canvas.draw
+        (squareOp point (Canvas.getSize canvas))
+        canvas
+
+
+squareOp : Point -> Size -> DrawOp
+squareOp point size =
     [ StrokeStyle <| Color Color.red
     , LineWidth 15
     , StrokeRect point (calcSize point size)
@@ -103,6 +96,6 @@ drawSquare point size =
 
 calcSize : Point -> Size -> Size
 calcSize { x, y } { width, height } =
-    Size
-        (width - 2 * (floor x))
-        (height - 2 * (floor y))
+    { width = width - 2 * floor x
+    , height = height - 2 * floor y
+    }

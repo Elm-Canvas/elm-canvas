@@ -14,8 +14,10 @@ main : Program Never Model Msg
 main =
     Html.beginnerProgram
         { model =
-            ( drawBackground <| Canvas.initialize (Size 800 800)
-            , Nothing
+            ( { width = 800, height = 800 }
+                |> Canvas.initialize
+                |> drawBackground
+            , NoClick
             )
         , view = view
         , update = update
@@ -23,7 +25,8 @@ main =
 
 
 type ClickState
-    = Click Point
+    = NoClick
+    | Click Point
     | Moving Point Point
 
 
@@ -33,7 +36,7 @@ type Msg
 
 
 type alias Model =
-    ( Canvas, Maybe ClickState )
+    ( Canvas, ClickState )
 
 
 
@@ -41,19 +44,19 @@ type alias Model =
 
 
 update : Msg -> Model -> Model
-update message ( canvas, clickState ) =
-    case ( clickState, message ) of
-        ( Nothing, MouseDown mouseEvent ) ->
-            ( canvas, Just (Click (toPoint mouseEvent)) )
+update msg ( canvas, clickState ) =
+    case ( clickState, msg ) of
+        ( NoClick, MouseDown mouseEvent ) ->
+            ( canvas, Click (toPoint mouseEvent) )
 
-        ( Just (Moving pt0 pt1), MouseDown mouseEvent ) ->
-            ( drawLine pt0 pt1 canvas, Nothing )
+        ( Moving pt0 pt1, MouseDown mouseEvent ) ->
+            ( drawLine pt0 pt1 canvas, NoClick )
 
-        ( Just (Click point0), Move mouseEvent ) ->
-            ( canvas, Just (Moving point0 (toPoint mouseEvent)) )
+        ( Click point, Move mouseEvent ) ->
+            ( canvas, Moving point (toPoint mouseEvent) )
 
-        ( Just (Moving point0 _), Move mouseEvent ) ->
-            ( canvas, Just (Moving point0 (toPoint mouseEvent)) )
+        ( Moving point _, Move mouseEvent ) ->
+            ( canvas, Moving point (toPoint mouseEvent) )
 
         _ ->
             ( canvas, clickState )
@@ -61,9 +64,9 @@ update message ( canvas, clickState ) =
 
 toPoint : MouseEvent -> Point
 toPoint { targetPos, clientPos } =
-    Point
-        (toFloat (clientPos.x - targetPos.x))
-        (toFloat (clientPos.y - targetPos.y))
+    { x = toFloat (clientPos.x - targetPos.x)
+    , y = toFloat (clientPos.y - targetPos.y)
+    }
 
 
 
@@ -84,7 +87,7 @@ view model =
 handleClickState : Model -> Canvas
 handleClickState ( canvas, clickState ) =
     case clickState of
-        Just (Moving pt0 pt1) ->
+        Moving pt0 pt1 ->
             drawLine pt0 pt1 canvas
 
         _ ->
@@ -93,21 +96,8 @@ handleClickState ( canvas, clickState ) =
 
 drawBackground : Canvas -> Canvas
 drawBackground =
-    let
-        colorStops =
-            [ ( 1, Color.red )
-            , ( 0.9, Color.orange )
-            , ( 0.7, Color.yellow )
-            , ( 0.5, Color.green )
-            , ( 0.3, Color.blue )
-            , ( 0.1, Color.purple )
-            ]
-
-        gradient =
-            radial ( 400, 400 ) 0 ( 400, 400 ) 400 colorStops
-    in
     [ BeginPath
-    , FillStyle (Gradient gradient)
+    , rainbowFillStyle
     , FillRect (Point 0 0) (Size 800 800)
     , Fill
     ]
@@ -115,24 +105,39 @@ drawBackground =
         |> Canvas.draw
 
 
+rainbowFillStyle : DrawOp
+rainbowFillStyle =
+    [ ( 1, Color.red )
+    , ( 0.9, Color.orange )
+    , ( 0.7, Color.yellow )
+    , ( 0.5, Color.green )
+    , ( 0.3, Color.blue )
+    , ( 0.1, Color.purple )
+    ]
+        |> radial ( 400, 400 ) 0 ( 400, 400 ) 400
+        |> Gradient
+        |> FillStyle
+
+
 drawLine : Point -> Point -> Canvas -> Canvas
 drawLine pt0 pt1 =
-    let
-        colorStops =
-            [ ( 0, Color.white )
-            , ( 1, Color.black )
-            ]
-
-        gradient =
-            linear ( pt0.x, 0 ) ( pt1.x, 0 ) colorStops
-    in
     [ BeginPath
     , LineWidth 30
     , LineCap "round"
-    , StrokeStyle (Gradient gradient)
+    , blackAndWhiteFillStyle pt0 pt1
     , MoveTo pt0
     , LineTo pt1
     , Stroke
     ]
         |> Canvas.batch
         |> Canvas.draw
+
+
+blackAndWhiteFillStyle : Point -> Point -> DrawOp
+blackAndWhiteFillStyle pt0 pt1 =
+    [ ( 0, Color.white )
+    , ( 1, Color.black )
+    ]
+        |> linear ( pt0.x, 0 ) ( pt1.x, 0 )
+        |> Gradient
+        |> StrokeStyle
