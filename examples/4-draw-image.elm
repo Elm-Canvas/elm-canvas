@@ -1,11 +1,13 @@
 module Main exposing (..)
 
-import Canvas exposing (Canvas, DrawImageParams(..), DrawOp(..), Error, Point, Size)
+import Canvas exposing (Canvas, Error, Point, Size)
 import Color
+import Ctx exposing (Ctx)
 import Html exposing (Html, p, text)
 import Html.Attributes exposing (style)
 import MouseEvents exposing (MouseEvent)
 import Task
+import Util
 
 
 main : Program Never Model Msg
@@ -28,7 +30,7 @@ type Msg
 
 
 type Model
-    = Loaded Canvas (List DrawOp)
+    = Loaded Canvas (List Ctx)
     | Loading
 
 
@@ -61,39 +63,33 @@ update msg model =
 
 scaleDown : Canvas -> Canvas
 scaleDown canvas =
-    { width = 300, height = 300 }
-        |> Canvas.initialize
-        |> Canvas.draw (scaleDownOp canvas)
+    canvas
+        |> scaleDownCtx
+        |> Ctx.draw
+            (Canvas.initialize { width = 300, height = 300 })
 
 
-scaleDownOp : Canvas -> DrawOp
-scaleDownOp canvas =
-    Scaled
+scaleDownCtx : Canvas -> List Ctx
+scaleDownCtx canvas =
+    [ Ctx.drawImageScaled
+        canvas
         { x = 0, y = 0 }
         { width = 300, height = 300 }
-        |> DrawImage canvas
+    ]
 
 
-toPoint : MouseEvent -> Point
-toPoint { targetPos, clientPos } =
-    { x = toFloat (clientPos.x - targetPos.x)
-    , y = toFloat (clientPos.y - targetPos.y)
-    }
-
-
-blit : MouseEvent -> Canvas -> List DrawOp -> List DrawOp
-blit mouseEvent canvas drawOps =
+blit : MouseEvent -> Canvas -> List Ctx -> List Ctx
+blit mouseEvent canvas ctx =
     mouseEvent
-        |> toPoint
+        |> Util.toPoint
         |> center
-        |> At
-        |> DrawImage canvas
-        |> withRest drawOps
+        |> Ctx.drawImage canvas
+        |> withRest ctx
 
 
-withRest : List DrawOp -> DrawOp -> List DrawOp
-withRest rest drawOp =
-    drawOp :: List.take 199 rest
+withRest : List Ctx -> Ctx -> List Ctx
+withRest rest ctx =
+    ctx :: List.take 199 rest
 
 
 center : Point -> Point
@@ -111,10 +107,16 @@ view model =
         Loading ->
             p [] [ text "Loading image" ]
 
-        Loaded canvas drawOps ->
-            Canvas.initialize (Size 800 800)
-                |> Canvas.draw (Canvas.batch drawOps)
-                |> Canvas.toHtml
-                    [ MouseEvents.onMouseMove MouseMoved
-                    , style [ ( "border", "2px solid #000000" ) ]
-                    ]
+        Loaded canvas ctx ->
+            Canvas.toHtml
+                [ MouseEvents.onMouseMove MouseMoved
+                , style [ ( "border", "2px solid #000000" ) ]
+                ]
+                (canvasFromCtx ctx)
+
+
+canvasFromCtx : List Ctx -> Canvas
+canvasFromCtx =
+    { width = 800, height = 800 }
+        |> Canvas.initialize
+        |> Ctx.draw

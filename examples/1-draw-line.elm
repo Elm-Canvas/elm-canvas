@@ -6,6 +6,7 @@ import Ctx exposing (Ctx)
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (style)
 import MouseEvents exposing (MouseEvent)
+import Util
 
 
 -- MAIN --
@@ -49,26 +50,25 @@ update : Msg -> Model -> Model
 update msg ( canvas, clickState ) =
     case ( clickState, msg ) of
         ( NoClick, MouseDown mouseEvent ) ->
-            ( canvas, Click (toPoint mouseEvent) )
+            ( canvas
+            , Click (Util.toPoint mouseEvent)
+            )
 
         ( Moving pt0 pt1, MouseDown mouseEvent ) ->
             ( drawLine pt0 pt1 canvas, NoClick )
 
         ( Click point, Move mouseEvent ) ->
-            ( canvas, Moving point (toPoint mouseEvent) )
+            ( canvas
+            , Moving point (Util.toPoint mouseEvent)
+            )
 
-        ( Moving point0 _, Move mouseEvent ) ->
-            ( canvas, Moving point0 (toPoint mouseEvent) )
+        ( Moving point _, Move mouseEvent ) ->
+            ( canvas
+            , Moving point (Util.toPoint mouseEvent)
+            )
 
         _ ->
             ( canvas, clickState )
-
-
-toPoint : MouseEvent -> Point
-toPoint { targetPos, clientPos } =
-    { x = toFloat (clientPos.x - targetPos.x)
-    , y = toFloat (clientPos.y - targetPos.y)
-    }
 
 
 

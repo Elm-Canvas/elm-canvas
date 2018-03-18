@@ -1,7 +1,6 @@
 module Ctx
     exposing
         ( Ctx
-        , DrawImageParams(..)
         , Repeat(..)
         , Style(..)
         , arc
@@ -14,6 +13,8 @@ module Ctx
         , closePath
         , draw
         , drawImage
+        , drawImageCropScaled
+        , drawImageScaled
         , fill
         , fillRect
         , fillStyle
@@ -82,6 +83,13 @@ module Ctx
 
 @docs Ctx, arc, arcTo, Ctx, batch, beginPath, bezierCurveTo, clearRect, clip, closePath, drawImage, fill, fillRect, fillStyle, fillText, font, globalAlpha, globalCompositionOp, lineCap, lineDashOffset, lineJoin, lineTo, lineWidth, miterLimit, moveTo, none, putImageData, quadraticCurveTo, rect, rotate, scale, setLineDash, setTransform, shadowBlur, shadowColor, shadowOffsetX, stroke, strokeRect, strokeStyle, strokeText, textAlign, textBaseline, transform, draw
 
+
+# Draw Image
+
+For the `drawImage` method, we made three different functions. This is becaus there are three different sets of parameters you can give the native javascript `ctx.drawImage()`. [See here for more info](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage.)
+
+@docs drawImage, drawImageScaled, drawImageCropScaled
+
 -}
 
 import Canvas exposing (Canvas, Point, Size)
@@ -107,7 +115,9 @@ draw canvas ctxs =
     Native.Canvas.draw canvas (batch ctxs)
 
 
-{-| -}
+{-| Set the font before you draw text with `fillText` or `strokeText`
+Ctx.font "48px sans-serif"
+-}
 font : String -> Ctx
 font =
     Font
@@ -347,15 +357,30 @@ closePath =
     ClosePath
 
 
-{-| -}
-drawImage : Canvas -> DrawImageParams -> Ctx
-drawImage =
-    DrawImage
+{-| Just draw the canvas at a point
+-}
+drawImage : Canvas -> Point -> Ctx
+drawImage canvas point =
+    DrawImage canvas (At point)
+
+
+{-| Draw a canvas at a point with a certain size
+-}
+drawImageScaled : Canvas -> Point -> Size -> Ctx
+drawImageScaled canvas point size =
+    DrawImage canvas (Scaled point size)
+
+
+{-| Take a canvas and crop a square out of it at a point and to a size, and draw it onto another canvas a point scaled to a certain size
+-}
+drawImageCropScaled : Canvas -> Point -> Size -> Point -> Size -> Ctx
+drawImageCropScaled canvas p0 s0 p1 s1 =
+    DrawImage canvas (CropScaled p0 s0 p1 s1)
 
 
 {-| You dont want to apply `DrawOp` one at a time, its inefficient. Bundle many `DrawOp` together in one batch, using `batch`.
 
-    line : Point -> Point -> DrawOp
+    line : Point -> Point -> Ctx
     line p0 p1 =
         [ Ctx.beginPath
         , Ctx.lineWidth 2
@@ -440,8 +465,7 @@ type Repeat
     | NoRepeat
 
 
-{-| The `DrawOp` `DrawImage` takes a `Canvas` and a `DrawImageParam`. We made three different `DrawImageParam`, because there are three different sets of parameters you can give the native javascript `ctx.drawImage()`. [See here for more info](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage.)
--}
+{-| -}
 type DrawImageParams
     = At Point
     | Scaled Point Size

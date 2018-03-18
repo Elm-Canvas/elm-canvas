@@ -3,7 +3,7 @@ module Main exposing (..)
 import Array exposing (Array)
 import Canvas exposing (Canvas, Error, Point, Size)
 import Ctx exposing (Ctx)
-import Html exposing (Html)
+import Html exposing (Html, p, text)
 import Html.Events as Events
 import Task
 
@@ -58,7 +58,7 @@ update msg model =
 
 invert : Canvas -> Canvas
 invert canvas =
-    Ctx.draw canvas (invertCtx canvas)
+    Ctx.draw canvas [ invertCtx canvas ]
 
 
 invertCtx : Canvas -> Ctx

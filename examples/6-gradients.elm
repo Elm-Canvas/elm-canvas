@@ -1,10 +1,12 @@
 module Main exposing (..)
 
-import Canvas exposing (Canvas, DrawOp(..), Point, Size, Style(Gradient))
+import Canvas exposing (Canvas, Point, Size)
 import Color exposing (Color, linear, radial)
+import Ctx exposing (Ctx, Style(Gradient))
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (style)
 import MouseEvents exposing (MouseEvent)
+import Util
 
 
 -- MAIN --
@@ -47,26 +49,19 @@ update : Msg -> Model -> Model
 update msg ( canvas, clickState ) =
     case ( clickState, msg ) of
         ( NoClick, MouseDown mouseEvent ) ->
-            ( canvas, Click (toPoint mouseEvent) )
+            ( canvas, Click (Util.toPoint mouseEvent) )
 
         ( Moving pt0 pt1, MouseDown mouseEvent ) ->
             ( drawLine pt0 pt1 canvas, NoClick )
 
         ( Click point, Move mouseEvent ) ->
-            ( canvas, Moving point (toPoint mouseEvent) )
+            ( canvas, Moving point (Util.toPoint mouseEvent) )
 
         ( Moving point _, Move mouseEvent ) ->
-            ( canvas, Moving point (toPoint mouseEvent) )
+            ( canvas, Moving point (Util.toPoint mouseEvent) )
 
         _ ->
             ( canvas, clickState )
-
-
-toPoint : MouseEvent -> Point
-toPoint { targetPos, clientPos } =
-    { x = toFloat (clientPos.x - targetPos.x)
-    , y = toFloat (clientPos.y - targetPos.y)
-    }
 
 
 
@@ -95,17 +90,16 @@ handleClickState ( canvas, clickState ) =
 
 
 drawBackground : Canvas -> Canvas
-drawBackground =
-    [ BeginPath
+drawBackground canvas =
+    [ Ctx.beginPath
     , rainbowFillStyle
-    , FillRect (Point 0 0) (Size 800 800)
-    , Fill
+    , Ctx.fillRect (Point 0 0) (Size 800 800)
+    , Ctx.fill
     ]
-        |> Canvas.batch
-        |> Canvas.draw
+        |> Ctx.draw canvas
 
 
-rainbowFillStyle : DrawOp
+rainbowFillStyle : Ctx
 rainbowFillStyle =
     [ ( 1, Color.red )
     , ( 0.9, Color.orange )
@@ -116,28 +110,27 @@ rainbowFillStyle =
     ]
         |> radial ( 400, 400 ) 0 ( 400, 400 ) 400
         |> Gradient
-        |> FillStyle
+        |> Ctx.fillStyle
 
 
 drawLine : Point -> Point -> Canvas -> Canvas
-drawLine pt0 pt1 =
-    [ BeginPath
-    , LineWidth 30
-    , LineCap "round"
+drawLine pt0 pt1 canvas =
+    [ Ctx.beginPath
+    , Ctx.lineWidth 30
+    , Ctx.lineCap "round"
     , blackAndWhiteFillStyle pt0 pt1
-    , MoveTo pt0
-    , LineTo pt1
-    , Stroke
+    , Ctx.moveTo pt0
+    , Ctx.lineTo pt1
+    , Ctx.stroke
     ]
-        |> Canvas.batch
-        |> Canvas.draw
+        |> Ctx.draw canvas
 
 
-blackAndWhiteFillStyle : Point -> Point -> DrawOp
+blackAndWhiteFillStyle : Point -> Point -> Ctx
 blackAndWhiteFillStyle pt0 pt1 =
     [ ( 0, Color.white )
     , ( 1, Color.black )
     ]
         |> linear ( pt0.x, 0 ) ( pt1.x, 0 )
         |> Gradient
-        |> StrokeStyle
+        |> Ctx.strokeStyle

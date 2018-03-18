@@ -1,8 +1,9 @@
 module Main exposing (..)
 
 import AnimationFrame
-import Canvas exposing (Canvas, DrawOp(..), Point, Size, Style(Color))
+import Canvas exposing (Canvas, Point, Size)
 import Color exposing (Color)
+import Ctx exposing (Ctx, Style(Color))
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (style)
 import Random exposing (Generator)
@@ -119,32 +120,38 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GetDots dots ->
-            { model | dots = dots } ! []
+            ( { model | dots = dots }, Cmd.none )
 
         Tick dt ->
-            let
-                dt_ =
-                    dt / 1000
-
-                newDots =
-                    List.map (updateDot dt_) model.dots
-            in
-            { model
-                | canvas =
-                    Canvas.draw
-                        (mainOp dt_ newDots)
-                        model.canvas
-                , dots = newDots
-            }
-                ! []
+            ( updateCanvas (dt / 1000) model
+            , Cmd.none
+            )
 
 
-mainOp : Time -> List Dot -> DrawOp
-mainOp dt dots =
+updateCanvas : Time -> Model -> Model
+updateCanvas dt model =
+    let
+        newDots =
+            List.map (updateDot dt) model.dots
+    in
+    { model
+        | canvas =
+            Ctx.draw
+                model.canvas
+                (mainCtx dt newDots)
+        , dots = newDots
+    }
+
+
+
+-- DRAW --
+
+
+mainCtx : Time -> List Dot -> List Ctx
+mainCtx dt dots =
     [ fade dt
-    , dotsOp (List.map (updateDot dt) dots)
+    , dotsCtx (List.map (updateDot dt) dots)
     ]
-        |> Canvas.batch
 
 
 updateDot : Time -> Dot -> Dot
@@ -193,39 +200,35 @@ updateDot dt ({ point, velocity } as dot) =
     }
 
 
-
--- DRAW --
-
-
-dotsOp : List Dot -> DrawOp
-dotsOp dots =
-    Canvas.batch (List.map dotOp dots)
+dotsCtx : List Dot -> Ctx
+dotsCtx dots =
+    Ctx.batch (List.map dotCtx dots)
 
 
-dotOp : Dot -> DrawOp
-dotOp { point, color } =
-    [ BeginPath
-    , FillStyle <| Color color
-    , Rect
+dotCtx : Dot -> Ctx
+dotCtx { point, color } =
+    [ Ctx.beginPath
+    , Ctx.fillStyle <| Color color
+    , Ctx.rect
         { x = point.x - (dotSize / 2)
         , y = point.y - (dotSize / 2)
         }
         { width = round dotSize
         , height = round dotSize
         }
-    , Fill
+    , Ctx.fill
     ]
-        |> Canvas.batch
+        |> Ctx.batch
 
 
-fade : Time -> DrawOp
+fade : Time -> Ctx
 fade dt =
-    [ BeginPath
-    , FillStyle <| Color (Color.rgba 255 255 255 (0.5 * dt))
-    , Rect (Point 0 0) canvasSize
-    , Fill
+    [ Ctx.beginPath
+    , Ctx.fillStyle <| Color (Color.rgba 255 255 255 (0.5 * dt))
+    , Ctx.rect { x = 0, y = 0 } canvasSize
+    , Ctx.fill
     ]
-        |> Canvas.batch
+        |> Ctx.batch
 
 
 
@@ -251,5 +254,4 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch
-        [ AnimationFrame.diffs Tick ]
+    AnimationFrame.diffs Tick

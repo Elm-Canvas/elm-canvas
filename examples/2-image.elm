@@ -6,6 +6,7 @@ import Ctx exposing (Ctx)
 import Html exposing (Html, p, text)
 import MouseEvents exposing (MouseEvent)
 import Task
+import Util
 
 
 main : Program Never Model Msg
@@ -47,20 +48,17 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model ) of
         ( CanvasLoaded (Ok canvas), _ ) ->
-            ( Loaded canvas { x = 0, y = 0 }, Cmd.none )
+            ( Loaded canvas { x = 0, y = 0 }
+            , Cmd.none
+            )
 
         ( Move mouseEvent, Loaded canvas _ ) ->
-            ( Loaded canvas (toPoint mouseEvent), Cmd.none )
+            ( Loaded canvas (Util.toPoint mouseEvent)
+            , Cmd.none
+            )
 
         _ ->
             ( Loading, loadImage )
-
-
-toPoint : MouseEvent -> Point
-toPoint { targetPos, clientPos } =
-    { x = toFloat (clientPos.x - targetPos.x)
-    , y = toFloat (clientPos.y - targetPos.y)
-    }
 
 
 
