@@ -49,7 +49,7 @@ module Ctx
         , transform
         )
 
-{-| These are all the methods of the `ctx` api, that you get from `canvas.getContext('2d'). You can get a look at them al [here](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D). These`Ctx`properties and methods can be grouped together with`batch`and then applied to a`Canvas`using`Canvas.draw` in the Canvas module. For example, you could draw a line like this..
+{-| These are all the methods of the `ctx` api, that you get from `canvas.getContext('2d')`. You can look at them all [here](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D). These`Ctx`properties and methods can be grouped together with`batch`and then applied to a`Canvas`using`Ctx.draw`. For example, you could draw a line like this..
 
     drawLine : Point -> Point -> Canvas -> Canvas
     drawLine p0 p1 canvas =
@@ -81,7 +81,7 @@ module Ctx
 
 # Ctx
 
-@docs Ctx, arc, arcTo, Ctx, batch, beginPath, bezierCurveTo, clearRect, clip, closePath, drawImage, fill, fillRect, fillStyle, fillText, font, globalAlpha, globalCompositionOp, lineCap, lineDashOffset, lineJoin, lineTo, lineWidth, miterLimit, moveTo, none, putImageData, quadraticCurveTo, rect, rotate, scale, setLineDash, setTransform, shadowBlur, shadowColor, shadowOffsetX, stroke, strokeRect, strokeStyle, strokeText, textAlign, textBaseline, transform, draw
+@docs Ctx, arc, arcTo, beginPath, bezierCurveTo, clearRect, clip, closePath, fill, fillRect, fillStyle, fillText, font, globalAlpha, globalCompositionOp, lineCap, lineDashOffset, lineJoin, lineTo, lineWidth, miterLimit, moveTo, putImageData, quadraticCurveTo, rect, rotate, scale, setLineDash, setTransform, shadowBlur, shadowColor, shadowOffsetX, stroke, strokeRect, strokeStyle, strokeText, textAlign, textBaseline, transform, draw
 
 
 # Draw Image
@@ -89,6 +89,11 @@ module Ctx
 For the `drawImage` method, we made three different functions. This is becaus there are three different sets of parameters you can give the native javascript `ctx.drawImage()`. [See here for more info](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage.)
 
 @docs drawImage, drawImageScaled, drawImageCropScaled
+
+
+# Params
+
+@docs Repeat, Style
 
 -}
 
@@ -371,14 +376,14 @@ drawImageScaled canvas point size =
     DrawImage canvas (Scaled point size)
 
 
-{-| Take a canvas and crop a square out of it at a point and to a size, and draw it onto another canvas a point scaled to a certain size
+{-| Take a canvas and crop a square out of it at a point and to a size, and draw the cropping at a point scaled to a certain size
 -}
 drawImageCropScaled : Canvas -> Point -> Size -> Point -> Size -> Ctx
 drawImageCropScaled canvas p0 s0 p1 s1 =
     DrawImage canvas (CropScaled p0 s0 p1 s1)
 
 
-{-| You dont want to apply `DrawOp` one at a time, its inefficient. Bundle many `DrawOp` together in one batch, using `batch`.
+{-| You dont want to apply `Ctx` one at a time, its inefficient. Bundle many `Ctx` together in one batch, using `batch`.
 
     line : Point -> Point -> Ctx
     line p0 p1 =
@@ -403,6 +408,8 @@ none =
     Batch []
 
 
+{-| `Ctx` represent all the methods of the `ctx` api. If you are familiar with JavaScript, its what comes from `canvas.getContext('2d')`. You can look at them all [here](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D).
+-}
 type Ctx
     = Font String
     | Arc Point Float Float Float
