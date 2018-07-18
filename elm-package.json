@@ -1,5 +1,5 @@
 {
-    "version": "0.2.0",
+    "version": "0.3.1",
     "summary": "The canvas API in Elm",
     "repository": "https://github.com/elm-canvas/elm-canvas.git",
     "license": "BSD3",
@@ -7,7 +7,7 @@
         "src"
     ],
     "exposed-modules": [
-        "Canvas",
+        "Canvas"
     ],
     "native-modules": true,
     "dependencies": {
