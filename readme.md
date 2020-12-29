@@ -12,7 +12,7 @@ This code ..
 
 ``` elm
 import Html exposing (Html)
-import Canvas exposing (Size, Point, Canvas, DrawOp(..))
+import Canvas exposing (Size, Point, Canvas, DrawOp(..), Style)
 import Color
 
 main : Html a
@@ -35,7 +35,7 @@ blueRectangle =
 
 fillBlue : Size -> DrawOp
 fillBlue size =
-    [ FillStyle Color.blue
+    [ FillStyle (Canvas.Color Color.blue)
     , FillRect (Point 0 0) size
     ]
         |> Canvas.batch
