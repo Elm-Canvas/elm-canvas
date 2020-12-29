@@ -4,11 +4,10 @@
     "repository": "https://github.com/elm-canvas/elm-canvas.git",
     "license": "BSD3",
     "source-directories": [
-        "."
+        ".",
+        "../src"
     ],
-    "exposed-modules": [
-        "Canvas"
-    ],
+    "exposed-modules": [],
     "native-modules": true,
     "dependencies": {
         "elm-lang/animation-frame": "1.0.1 <= v < 2.0.0",

@@ -1,15 +1,9 @@
 module Canvas
     exposing
         ( Canvas
-        , DrawImageParams(..)
-        , DrawOp(..)
         , Error
         , Point
-        , Repeat(..)
         , Size
-        , Style(..)
-        , batch
-        , draw
         , getImageData
         , getSize
         , initialize
@@ -19,17 +13,17 @@ module Canvas
         , toHtml
         )
 
-{-| The canvas html element is a very simple way to render 2D graphics. Check out these examples, and get an explanation of the canvas element [here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first, because its probably what you need. Elm-Canvas is for when you need unusually direct and low level access to the canvas element.
+{-| The canvas html element is a very simple way to render 2D graphics. Check out the examples in the Elm-Canvas github repo, and get an explanation of the canvas element [here](https://github.com/elm-community/canvas). Furthermore, If you havent heard of [Elm-Graphics](http://package.elm-lang.org/packages/evancz/elm-graphics/latest), I recommend checking that out first, because its probably what you need. Elm-Canvas is for when you need unusually direct and low level access to the canvas element.
 
 
 # Main Types
 
-@docs Canvas, Point, Size, DrawOp, DrawImageParams, Style, Repeat
+@docs Canvas, Point, Size
 
 
 # Basics
 
-@docs initialize, toHtml, draw, batch
+@docs initialize, toHtml
 
 
 # Loading Images
@@ -48,7 +42,6 @@ module Canvas
 
 -}
 
-import Color exposing (Color, Gradient)
 import Html exposing (Attribute, Html)
 import Native.Canvas
 import Task exposing (Task)
@@ -77,78 +70,6 @@ type alias Point =
     { x : Float, y : Float }
 
 
-{-| `DrawOp` are how you can draw onto `Canvas`. To do so, give a `List DrawOp` to `Canvas.batch`, and apply that to a `Canvas`. Each `DrawOp` corresponds almost exactly to a method in the canvas api. [You can look up all the context methods here at the Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D). The biggest exception to the canvas api, is how we handle `ctx.drawImage()`. Since `ctx.drawImage()` can take parameters in three different ways, we made a union type `DrawImageParams` to handle each case.
--}
-type DrawOp
-    = Font String
-    | Arc Point Float Float Float
-    | ArcTo Point Point Float
-    | StrokeText String Point
-    | FillText String Point
-    | GlobalAlpha Float
-    | GlobalCompositionOp String
-    | LineCap String
-    | LineDashOffset Float
-    | LineWidth Float
-    | MiterLimit Float
-    | LineJoin String
-    | LineTo Point
-    | MoveTo Point
-    | ShadowBlur Float
-    | ShadowColor Color
-    | ShadowOffsetX Float
-    | ShadowOffsetY Float
-    | Stroke
-    | Fill
-    | FillRect Point Size
-    | Rect Point Size
-    | Rotate Float
-    | Scale Float Float
-    | SetLineDash (List Int)
-    | SetTransform Float Float Float Float Float Float
-    | Transform Float Float Float Float Float Float
-    | Translate Point
-    | StrokeRect Point Size
-    | StrokeStyle Style
-    | TextAlign String
-    | TextBaseline String
-    | FillStyle Style
-    | BeginPath
-    | BezierCurveTo Point Point Point
-    | QuadraticCurveTo Point Point
-    | PutImageData (List Int) Size Point
-    | ClearRect Point Size
-    | Clip
-    | ClosePath
-    | DrawImage Canvas DrawImageParams
-    | Batch (List DrawOp)
-
-
-{-| `Style` specifies the style to apply as a `FillStyle` or a `StrokeStyle`.
--}
-type Style
-    = Color Color
-    | Pattern Canvas Repeat
-    | Gradient Gradient
-
-
-{-| Specifies the axis/axes along which to replicate a pattern. For use with the `Pattern` `Style`.
--}
-type Repeat
-    = Repeat
-    | RepeatX
-    | RepeatY
-    | NoRepeat
-
-
-{-| The `DrawOp` `DrawImage` takes a `Canvas` and a `DrawImageParam`. We made three different `DrawImageParam`, because there are three different sets of parameters you can give the native javascript `ctx.drawImage()`. [See here for more info](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage.)
--}
-type DrawImageParams
-    = At Point
-    | Scaled Point Size
-    | CropScaled Point Size Point Size
-
-
 {-| `initialize` takes `Size`, and returns a `Canvas` of that size. A freshly initialized `Canvas` is entirely transparent, meaning if you used `getImageData` to get its image data, it would be a `List Int` entirely of 0s.
 
     squareCanvas : Int -> Canvas
@@ -173,58 +94,20 @@ toHtml =
     Native.Canvas.toHtml
 
 
-{-| This is our primary way of drawing onto canvases. Give `draw` a `drawOp` and apply it to a canvas.
-
-    drawLine : Point -> Point -> Canvas -> Canvas
-    drawLine p0 p1 =
-        (Canvas.batch >> Canvas.draw)
-            [ BeginPath
-            , LineWidth 2
-            , MoveTo p0
-            , LineTo p1
-            , Stroke
-            ]
-
--}
-draw : DrawOp -> Canvas -> Canvas
-draw =
-    Native.Canvas.draw
-
-
-{-| You dont want to apply `DrawOp` one at a time, its inefficient. Bundle many `DrawOp` together in one batch, using `batch`.
-
-    line : Point -> Point -> DrawOp
-    line p0 p1 =
-        Canvas.batch
-            [ BeginPath
-            , LineWidth 2
-            , MoveTo p0
-            , LineTo p1
-            , Stroke
-            ]
-
--}
-batch : List DrawOp -> DrawOp
-batch =
-    Batch
-
-
 {-| Load up an image as a `Canvas` from a url.
 
     loadSteelix : Cmd Msg
     loadSteelix =
         Task.attempt ImageLoaded (loadImage "./steelix.png")
 
-    update : Msg -> Model -> (Model, Cmd Msg)
-    update message model =
-        case message of
-            ImageLoaded ->
-                case Result.toMaybe result of
-                    Just canvas ->
-                        -- ..
+    update : Msg -> Model -> ( Model, Cmd Msg )
+    update msg model =
+        case msg of
+            ImageLoaded (Ok canvas) ->
+                -- ..
 
-                    Nothing ->
-                        -- ..
+            ImageLoaded (Err Error) ->
+                -- ..
         -- ..
 
 -}

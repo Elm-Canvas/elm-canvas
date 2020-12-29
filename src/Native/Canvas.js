@@ -57,7 +57,7 @@ var _elm_canvas$elm_canvas$Native_Canvas = function () {  // eslint-disable-line
 
   }
 
-  function draw(drawOp, model) {
+  function draw(model, drawOp) {
     model = cloneModel(model);
 
     var ctx = model.canvas().getContext("2d");
